@@ -1,0 +1,25 @@
+from src.cpp_compiler import CPPCompiler
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+app = FastAPI()
+
+class CPPCode(BaseModel):
+    code: str
+
+@app.get('/')
+def root():
+    return {'message':'hello world!'}
+
+@app.post('/compile_and_run')
+def cpp_code_handler(CPPCode):
+    # CPPCompiler.check_code()
+    
+    output = CPPCompiler.build_and_run(CPPCode.code)
+    # TestResultHandler.handle_result(output)
+    
+    # TODO probably should decode output
+    return {'result':output}
+    
