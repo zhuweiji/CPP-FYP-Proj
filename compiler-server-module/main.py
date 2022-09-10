@@ -1,5 +1,11 @@
 from src.cpp_compiler import CPPCompiler, CompilationResult, CodeExecutionResult
 
+import logging
+
+logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
+log = logging.getLogger(__name__)
+
+
 # from fastapi import FastAPI
 # from pydantic import BaseModel
 
@@ -30,10 +36,5 @@ fail_file = r"C:\Users\zhuwe\OneDrive\Desktop\VS_Code_Environment\fyp\simple-cpp
 with open(fail_file, 'r') as f:
     code = f.read()
     result = CPPCompiler.build_and_run(code)
-    if isinstance(result, CompilationResult):
-        if not result.success:
-            print(result.stdout)
-            print(result.stderr)
-            print(result.determine_failure_cause())
-    
+    log.info(result)
     

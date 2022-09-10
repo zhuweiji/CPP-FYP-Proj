@@ -5,7 +5,7 @@ import unittest
 import logging
 import tempfile
 
-logging.basicConfig(format='%(process)d-%(levelname)s:  %(message)s', level=logging.INFO)
+logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
 from src.cpp_compiler import CPPCompiler
@@ -25,6 +25,25 @@ class TestCPPCompiler(unittest.TestCase):
         
     def test_run_exe(self):
         sample_cpp_exe = Path(__file__).parent / 'sample_cpp_bin.exe'
-        assert CPPCompiler.run_executable(sample_cpp_exe).decode('utf-8').strip() == 'hello world!'
+        result = CPPCompiler.run_executable(sample_cpp_exe)
+        assert result
+        assert result.stdout.strip() == 'hello world!'
         
+    def test_ammend_import(self):
+        code = '#ifndef foo_h__\n#define foo_h__\n#include <stdio.h>\n#include "car.cpp"'
+        assert code.replace("car.cpp", "mydir/car.cpp").strip() == CPPCompiler.ammend_imports_with_directory(code, "mydir").strip()
 
+    def test_build_and_run(self):
+        result = CPPCompiler.build_and_run(
+            """
+            #include <iostream>
+
+            int main(){
+                std::cout << "hello world" << std::endl;
+                return 1;
+            }
+            """
+        )
+        
+        assert result.success
+        assert result.stdout.strip() == 'hello world'
