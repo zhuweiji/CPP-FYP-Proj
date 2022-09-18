@@ -1,0 +1,42 @@
+module 1
+imagine calculator
+
+able to add and subtract complex numbers
+have real and imaginary values
+
+tc1 create class
+	class ComplexNumber{
+		int realValue;
+		int complexValue;
+	};
+	
+tc2 create constructor
+	class ComplexNumber{
+		int realValue;
+		int complexValue;
+		
+		public: 
+			ComplexNumber(int real, int complex);
+	};
+
+tc3: create object
+	class ComplexNumber{
+		int realValue;
+		int complexValue;
+		
+		public: 
+			ComplexNumber(int real, int complex);
+	};
+
+tc4: create method
+	class ComplexNumber{
+		int realValue;
+		int complexValue;
+		
+		public: 
+			ComplexNumber(int real, int complex);
+			
+	};
+	
+instance vs class attributes
+seperation of cpp and hpp files
