@@ -21,93 +21,97 @@ class CPPCompiler:
     CPP_TESTS_FOR_STUDENT_CODE = CPP_SRC_FILEDIR / 'tests_for_students'
     
     @classmethod
-    def build_and_run(cls, code: str, test_file:Path=None, import_dir=None):
-        log.debug(f'calling cpp code {code}')
+    def run_tests(cls, code: str, test_file:Path=None, testcases=None):
+        '''	Compile some arbitrary C++ code and test it using a predefined test_file '''
         
-        # improve the docs when possible
-        
-        if not import_dir: import_dir = r'..'
-        
+        # store all intermediate files (compiled executables, etc.) used in the running of this program in a temporary directory
         with tempfile.TemporaryDirectory(dir=cls.CPP_SRC_FILEDIR) as tmp_dir_path:
             with tempfile.NamedTemporaryFile(suffix='.cpp', dir=tmp_dir_path, delete=False) as temp_file:
                 
-                # change (#include) to search in the parent directory, since we are running these files in a sub,temp directory
-                # useful when the student's code has to import classes
-                code = cls.ammend_imports_with_directory(code, dirname=import_dir)
+                # ammend all imports to import from parent - this code file is in a child directory  
+                code = cls.ammend_imports_with_directory(code, dirpath=r'..')
                 temp_file.write(bytes(code, encoding='utf-8'))
                 
             log.debug(f"Created new temp code file: {temp_file.name}")
             exename = temp_file.name.replace('.cpp', '.exe')
 
             try:
-                # g++ tests-main.o car.cpp  test.cpp -o test; ./test -r compact
-                files_to_compile = [temp_file.name]
+                code_filepath = Path(temp_file.name)
+                code_filedir, code_filename = code_filepath.parent.name, code_filepath.name
+                code_import_str = code_filename
+
+                test_file_code = cls.add_import_of_file_to_testfile(
+                    testfile_path=test_file, codefile_dirname=code_import_str)
                 
-                if test_file:
-                    code_filepath = Path(temp_file.name)
-                    code_filedir, code_filename = code_filepath.parent.name, code_filepath.name
-                    # code_import_str = f"{code_filedir}/{code_filename}"
-                    code_import_str = code_filename
+                with tempfile.NamedTemporaryFile(prefix="testfile_", suffix='.cpp', dir=tmp_dir_path, delete=False) as temp_test_file:
+                    temp_test_file.write(bytes(test_file_code, encoding='utf-8'))
 
                     
-                    test_file_code = cls.add_import_of_file_to_testfile(
-                        testfile_path=test_file, codefile_dirname=code_import_str)
-                    
-                    with tempfile.NamedTemporaryFile(prefix="testfile_", suffix='.cpp', dir=tmp_dir_path, delete=False) as temp_test_file:
-                        temp_test_file.write(bytes(test_file_code, encoding='utf-8'))
-
-                    files_to_compile = [*files_to_compile, 
-                                        cls.CPP_SRC_FILEDIR/'tests-main.o',
-                                        temp_test_file.name,
-                                        ]
-                    
-                log.info(files_to_compile)
-                result = cls.compile_file(*files_to_compile, outpath=exename)
-                # result = cls.compile_file(*files_to_compile, outpath=r" G:\projects\CPP-FYP-Proj\testfile.exe")
+                result = cls.compile_file(temp_file.name, temp_test_file.name, outpath=exename)
 
                 if not result.success: return result
                 if not Path(exename).is_file(): raise FileNotFoundError("Compiled executable was not created")
                 
-                log.info('compile complete')
+                log.debug(f'compile complete, file created: {exename}')
                 
-                run_command = exename if not test_file else rf"{exename} -o G:\projects\CPP-FYP-Proj\results"
-                return cls.run_wsl_executable(run_command)
+                return cls.run_a_doctest(exename, 
+                                         testcases=testcases
+                                         )
             except Exception as E:
                 log.error(E)
                 
                 
     @classmethod
     def compile_file(cls, *files, outpath):
+        # g++ tests-main.o car.cpp  test.cpp -o test; ./test -r compact
+        
         files = [str(file) for file in files]
-        result = subprocess.run(f"g++ {' '.join(files)} -o {outpath}", capture_output=True)
-        return CompilationResult(result)
+        log.debug(files)
+        
+        return CompilationResult(
+            cls.shell_run('g++', *files, '-o', outpath)
+            )
         
     @classmethod
-    def run_wsl_executable(cls, command:str):
-        if not command.startswith(r'~/cpp_fyp'): command = r"~/cpp_fyp/" + command
-        # log.info(command)
-        # subprocess.run(["wsl","chmod", "+x" ,f"{command}"])
-        log.info(
-        subprocess.run(["wsl", f"{command}", '--out=result'], capture_output=True)
-        )
-        # return CodeExecutionResult(result)
+    def run_a_doctest(cls, executable, *args, testcases=None):
+        if testcases: 
+            testcases = [testcases] if isinstance(testcases, (int, str)) or len(testcases) == 1 else testcases
+            args = (*args, f"-test-case={','.join(map(str,testcases))}")
+        
+        return cls.run_executable(executable, '--no-intro', 'true', '--no-exitcode', 'true', *args)
+    
+    @classmethod
+    def run_executable(cls, command:str, *args):
+        return CodeExecutionResult(cls.shell_run(command, *args))
+    
+    @classmethod
+    def give_executable_permissions(cls, filepath: Path):
+        return cls.shell_run('chmod', '+x', filepath)
+    
+    @classmethod
+    def shell_run(cls, command, *args):
+        log.debug("wsl.exe", f"{command}", *args)
+        return subprocess.run(["wsl.exe", f"{command}", *args], capture_output=True)
+        
         
     @classmethod
-    def ammend_imports_with_directory(cls, code, dirname):
-        USER_IMPORT_REGEX = r'(#include\s+)"(.+[.cpp|.h|.hpp])"'
+    def ammend_imports_with_directory(cls, code, dirpath) -> str:
+        """prefix all non-stdlib imports with some directory"""
+        
+        USER_DEFINED_IMPORTS_REGEX = r'(#include\s+)"(.+[.cpp|.h|.hpp])"'
         STDLIB_IMPORT_REGEX = r"#include\s+<.+>"
         
         result = ""
         for line in code.split('\n'):
             if re.findall(STDLIB_IMPORT_REGEX, line, flags=re.IGNORECASE):
                 pass
-            elif re.findall(USER_IMPORT_REGEX, line):
-                line = re.sub(USER_IMPORT_REGEX, rf'\1"{dirname}/\2"', line)
+            elif re.findall(USER_DEFINED_IMPORTS_REGEX, line):
+                line = re.sub(USER_DEFINED_IMPORTS_REGEX, rf'\1"{dirpath}/\2"', line)
             result += '\n' + line
         return result
     
     @classmethod
-    def add_import_of_file_to_testfile(cls, testfile_path, codefile_dirname):
+    def add_import_of_file_to_testfile(cls, testfile_path, codefile_dirname) -> str:
         with open(testfile_path, 'r') as f: test_code = f.readlines()
             
         # insert the (#include) of the codefile into the end of the imports
@@ -117,6 +121,24 @@ class CPPCompiler:
         test_code.insert(index, rf'#include "{codefile_dirname}"' + '\n')
 
         return "".join(test_code)
+    
+    @classmethod
+    def inject_code_into_testcase(cls, injectable_code:str, testcase_name: str, testfile_code:str):
+        TESTCASE_REGEX = rf'TEST_CASE\("{testcase_name}"\)'
+        lines = testfile_code.splitlines()
+        
+        found = False
+        for index, line in enumerate(lines):
+            if re.findall(TESTCASE_REGEX, line): 
+                found = True
+                break
+                
+        if found:
+            lines.insert(index+1, injectable_code+'\n')
+            return "\n".join(lines)
+        else:
+            return False
+        
             
                 
 class ProcessResult:
@@ -136,7 +158,7 @@ class ProcessResult:
         
     @property
     def success(self):
-        return not self.stderr
+        return not self.stderr and self.p.returncode in [0,1]
     
     def __str__(self) -> str:
         additional_info = f"Success!" if self.success else f"Failure!"
@@ -145,7 +167,7 @@ class ProcessResult:
     @staticmethod
     def attempt_decode(value): 
         try: return value.decode()
-        except Exception as E: log.info(f"tried to decode value but failed: {E}"); return value
+        except Exception as E: log.error(f"tried to decode value but failed: {E}"); return value
         
 
 class CompilationErrorTypes(Enum):

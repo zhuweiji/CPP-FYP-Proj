@@ -1,5 +1,6 @@
 from pathlib import Path
 import logging
+import re
 
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -21,3 +22,12 @@ def check_path_exists(*args: Path, is_file=None, is_dir=None):
             return False
 
     return True
+
+def safe_get(l: list, index:int):
+    try:
+        return l[index]
+    except IndexError:
+        return None
+    
+def get_named_capture_group(regex:str, s:str):
+    return safe_get([m.groupdict() for m in re.finditer(regex, s)], 0)
