@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import re
-from src.cpp_compiler import CodeExecutionResult, CompilationResult, CompilationErrorTypes
+from src.cpp_compiler_module.cpp_compiler import CodeExecutionResult, CompilationResult, CompilationErrorTypes
 from src.utilities import safe_get, get_named_capture_group
 
 import logging

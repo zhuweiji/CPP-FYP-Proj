@@ -5,6 +5,16 @@ import re
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
+# service level paths (compiler-server-service) 
+SOURCE_DIRPATH = Path(__file__).parents[1]
+SERVICE_DIRPATH = SOURCE_DIRPATH.parent
+
+# project level paths (fyp)
+CPP_SOURCE_DIRPATH = SERVICE_DIRPATH / 'simple-cpp-module' / 'src'
+CPP_TEST_SOURCE_DIRPATH = CPP_SOURCE_DIRPATH / 'tests_for_students'
+
+
+
 def create_directory_ifnotexist(path: Path):
     if not path.is_dir():
         path.mkdir()
@@ -17,6 +27,7 @@ def check_path_exists(*args: Path, is_file=None, is_dir=None):
     pathtype = 'file' if is_file else 'directory'
     
     for path in args:
+        if not isinstance(path, Path): path = Path(str(path))
         if (is_dir and not path.is_dir()) or (is_file and not path.is_file()):
             log.error(f"Checked for the existence of {pathtype} at {path} but {pathtype} does not exist at that path")
             return False

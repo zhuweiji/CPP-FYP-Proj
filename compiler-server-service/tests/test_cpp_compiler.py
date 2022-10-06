@@ -8,7 +8,7 @@ import tempfile
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
-from src.cpp_compiler import CPPCompiler
+from src.cpp_compiler_module.cpp_compiler import CPPCompiler
 
 class TestCPPCompiler(unittest.TestCase):
     CPP_SRC_DIR = Path(__file__).parents[2] / 'simple-cpp-module' / 'src'
@@ -23,7 +23,7 @@ class TestCPPCompiler(unittest.TestCase):
             sample_cpp_file = self.TEST_SOURCES_DIR / 'sample_cpp_file.cpp'
             output_filepath = Path(tmpdirname)/ 'exe_gen_from_test.exe'
             
-            result = CPPCompiler.compile_file(sample_cpp_file, outpath=output_filepath)
+            result = CPPCompiler.compile_file(sample_cpp_file, out_filepath=output_filepath)
             assert result.success
             assert Path(output_filepath).is_file()
         
@@ -38,8 +38,8 @@ class TestCPPCompiler(unittest.TestCase):
         assert code.replace("car.cpp", "mydir/car.cpp").strip() == CPPCompiler.ammend_imports_with_directory(code, "mydir").strip()
         
     def test_add_import_of_file_to_testfile(self):
-        code = CPPCompiler.add_import_of_file_to_testfile(self.TEST_SOURCES_DIR/'testcases_for_truck.cpp',
-                                                   codefile_dirname='aoisdn')
+        code = CPPCompiler.add_import_userfile(self.TEST_SOURCES_DIR/'testcases_for_truck.cpp',
+                                                   import_filepath='aoisdn')
         log.info(code)
         assert '#include "aoisdn"' in code
 
