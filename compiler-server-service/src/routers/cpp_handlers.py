@@ -9,22 +9,23 @@ log = logging.getLogger(__name__)
 
 from src.cpp_compiler_module.cpp_compiler import CPPCompiler
 
+ROUTE_PREFIX = '/cpp'
 
-router = APIRouter()
+router = APIRouter(
+    prefix=ROUTE_PREFIX
+)
 
 
-    
-    
-@router.get('/')
-def root():
-    return {'message': "we're up!"}
+class POST_BODY__CPP_CODE(BaseModel):
+    code: str
+
 
 @router.post('/compile_and_run')
 def handle_compile_and_run(data: POST_BODY__CPP_CODE):
     try:
-        # CPPCompiler.compile_file()
-        # return {'result':output}
-        return {'result':'hello'}
+        log.info(data.code)
+        output = CPPCompiler.compile_and_run_from_code(data.code)
+        return {'result':output.full_str()}
     
     except Exception as E:
         log.exception(E)
@@ -44,6 +45,3 @@ def handle_compile_and_run(data: POST_BODY__CPP_CODE):
 #     # TODO probably should decode output
 #     return {'result':output}
 
-
-class POST_BODY__CPP_CODE(BaseModel):
-    code: str

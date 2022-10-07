@@ -6,13 +6,12 @@ logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', le
 log = logging.getLogger(__name__)
 
 # service level paths (compiler-server-service) 
-SOURCE_DIRPATH = Path(__file__).parents[1]
+SOURCE_DIRPATH = Path(__file__).parent
 SERVICE_DIRPATH = SOURCE_DIRPATH.parent
 
 # project level paths (fyp)
-CPP_SOURCE_DIRPATH = SERVICE_DIRPATH / 'simple-cpp-module' / 'src'
+CPP_SOURCE_DIRPATH = SERVICE_DIRPATH / 'data' / 'simple-cpp-module' / 'src'
 CPP_TEST_SOURCE_DIRPATH = CPP_SOURCE_DIRPATH / 'tests_for_students'
-
 
 
 def create_directory_ifnotexist(path: Path):

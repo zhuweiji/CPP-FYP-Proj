@@ -1,6 +1,7 @@
 from pathlib import Path
 from src.routers import cpp_handlers
 
+
 import logging
 
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
@@ -8,6 +9,7 @@ log = logging.getLogger(__name__)
 
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 
 
@@ -15,7 +17,22 @@ app = FastAPI()
 
 app.include_router(cpp_handlers.router)
 
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get('/')
+def root():
+    return {'message': "we're up!"}
 
 
 

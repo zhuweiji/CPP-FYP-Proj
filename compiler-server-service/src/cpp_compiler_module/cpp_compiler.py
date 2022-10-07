@@ -2,7 +2,7 @@ from contextlib import contextmanager
 import re
 import subprocess
 from typing import Union
-from src.cpp_compiler_module.compile_results import CodeExecutionResult, CompilationResult
+from src.cpp_compiler_module.process_results import CodeExecutionResult, CompilationResult
 from src.utilities import *
 
 from pathlib import Path
@@ -44,7 +44,7 @@ class CPPCompiler:
                     temp_test_file.write(bytes(test_file_code, encoding='utf-8'))
 
                     
-                result = cls.compile_file(temp_file.name, temp_test_file.name, out_filepath=output_binary)
+                result = cls.compile_files(temp_file.name, temp_test_file.name, out_filepath=output_binary)
 
                 if not result.success: return result
                 if not Path(output_binary).is_file(): raise FileNotFoundError("Compiled executable was not created")
@@ -58,22 +58,45 @@ class CPPCompiler:
                 log.error(E)
                 return False
             
+
+    @classmethod 
+    def compile_and_run_from_code(cls, code:Union[str,bytes]):
+        if isinstance(code, str): code = code.encode('utf-8')
+        log.warning(CPP_TEST_SOURCE_DIRPATH.exists())
+        with tempfile.TemporaryDirectory(dir=CPP_TEST_SOURCE_DIRPATH) as tmp_dir_path:
+            with tempfile.NamedTemporaryFile(suffix='.cpp', dir=tmp_dir_path, delete=False) as temp_file:
+                temp_file.write(code)
+            
+            log.info('written')
+            
+            executable_filepath = Path(tmp_dir_path)/'output'
+            temp_file_path = Path(temp_file.name)
+            log.info(temp_file_path.exists())
+            log.warning(temp_file.name)
+            
+            log.info(executable_filepath)
+            
+            compile_result = cls.compile_files(temp_file_path, out_filepath=executable_filepath)
+            log.info(temp_file_path.exists())
+            if not compile_result.success: 
+                return compile_result
+            
+            return cls.run_executable(executable=executable_filepath)
+
     @classmethod
-    @contextmanager
-    def create_temp_dir(cls):
-        temp_dir = tempfile.TemporaryDirectory(dir=CPP_TEST_SOURCE_DIRPATH) 
-        yield Path(temp_dir.name)
-        temp_dir.cleanup()
-        
-                
-    @classmethod
-    def compile_file(cls, *files_to_be_compiled, out_filepath):
+    def compile_files(cls, *files_to_be_compiled, out_filepath):
         """Compiles one or more C++ files together into a single binary"""
         # g++ tests-main.o car.cpp  test.cpp -o test; ./test -r compact
         
+        # if isinstance(out_filepath, tempfile.TemporaryDirectory):
+            # out_filepath = Path(out_filepath.name)
+            
         # convert any non-str objects (Path etc.) to str so they can be run
-        files_to_be_compiled = [str(file) for file in files_to_be_compiled]
-        log.debug(files_to_be_compiled)
+        if isinstance(files_to_be_compiled, tuple):
+            files_to_be_compiled = [str(file) for file in files_to_be_compiled]
+        else:
+            files_to_be_compiled = str(files_to_be_compiled) 
+        
         
         return CompilationResult(
             cls.shell_run('g++', *files_to_be_compiled, '-o', out_filepath)
@@ -137,10 +160,10 @@ class CPPCompiler:
         
     
     @classmethod
-    def run_executable(cls, command:str, *args):
+    def run_executable(cls, executable:Union[str, Path], *args):
         """Runs some command with optional args, and provides a CodeExecutionObject as result
         This function is synchronous and blocking"""
-        return CodeExecutionResult(cls.shell_run(command, *args))
+        return CodeExecutionResult(cls.shell_run(executable, *args))
     
     @classmethod
     def give_executable_permissions(cls, filepath: Path):
@@ -150,6 +173,29 @@ class CPPCompiler:
     @classmethod
     def shell_run(cls, command, *args):
         """Create a process to run some command"""
-        log.debug("wsl.exe", f"{command}", *args)
-        return subprocess.run(["wsl.exe", f"{command}", *args], capture_output=True)
+        log.info(f"wsl.exe {command} {args}")
+        return subprocess.run([f"{command}", *args], capture_output=True)
                 
+
+    @classmethod
+    @contextmanager
+    def create_temp_dir(cls):
+        temp_dir = tempfile.TemporaryDirectory(dir=CPP_TEST_SOURCE_DIRPATH) 
+        yield temp_dir
+        temp_dir.cleanup()
+        
+    @classmethod
+    def create_temp_cpp_file(cls, tmp_dir):
+        """Creates a tempfile with .cpp extension in a temporary directory"""
+        if not isinstance(tmp_dir, tempfile.TemporaryDirectory):
+            raise ValueError
+        
+        tmp_dir_path = Path(tmp_dir.name)
+        return tempfile.NamedTemporaryFile(suffix='.cpp', dir=tmp_dir_path, delete=False)
+
+
+# class TempDirectoryWrapper:
+    # maybe can create some kind of wrapper for tempfile.TemporaryDirectory output of create_temp_dir
+    # result is object of type tempfile.TemporaryDirectory
+    # we keep it as this object because we want to check if a var is a tempdir
+    # but we want to be able to treat this object as a path 

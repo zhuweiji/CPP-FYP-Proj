@@ -1,11 +1,9 @@
 from __future__ import annotations
-from ctypes import Union
 
 from enum import Enum
 from subprocess import CompletedProcess, Popen
 
 import logging
-from types import UnionType
 from typing import Any
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)

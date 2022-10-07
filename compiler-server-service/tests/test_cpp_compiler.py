@@ -23,7 +23,7 @@ class TestCPPCompiler(unittest.TestCase):
             sample_cpp_file = self.TEST_SOURCES_DIR / 'sample_cpp_file.cpp'
             output_filepath = Path(tmpdirname)/ 'exe_gen_from_test.exe'
             
-            result = CPPCompiler.compile_file(sample_cpp_file, out_filepath=output_filepath)
+            result = CPPCompiler.compile_files(sample_cpp_file, out_filepath=output_filepath)
             assert result.success
             assert Path(output_filepath).is_file()
         
