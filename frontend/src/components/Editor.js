@@ -50,7 +50,7 @@ function CodeEditor(){
     async function handleCompileButton(){
         let code = getEditorValue();
         let result = await CompilerService.compile_and_run(code)
-        let result_data = result.json()
+        let result_data = await result.json()
         
         if (!result.ok){
             console.log('error on request to compile')
@@ -62,6 +62,7 @@ function CodeEditor(){
         console.log(output)
 
         setExecutionResult(output);
+        console.log(executionResult);
     }
 
     return(<>
