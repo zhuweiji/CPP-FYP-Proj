@@ -101,14 +101,14 @@ function CodeEditor() {
                 <br /><br /><br />
 
 
-                <Box id="executionResultDisplay" sx={{
-                    width: "100%",
-                    height: "10em",
-                }}>
-                    {executionResult}
-                </Box>
 
             </div>
+            <Box id="executionResultDisplay" sx={{
+                width: "100%",
+                height: "12em",
+            }}>
+                {executionResult}
+            </Box>
         </>
 
     )
