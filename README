@@ -1,0 +1,10 @@
+DEV README
+
+1. run compiler service module via poetry 
+    curl -sSL https://install.python-poetry.org | python3 -
+    poetry install
+    uvicorn main:app --port 8080 --host 0.0.0.0
+
+2. run frontend via npm
+    npm install
+    npm start
