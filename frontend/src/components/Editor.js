@@ -106,6 +106,8 @@ function CodeEditor() {
             <Box id="executionResultDisplay" sx={{
                 width: "100%",
                 height: "12em",
+                fontFamily: 'Inconsolata', 
+                padding:"5%",
             }}>
                 {executionResult}
             </Box>

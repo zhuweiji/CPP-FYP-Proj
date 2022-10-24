@@ -40,15 +40,10 @@ class NearbyPoints {
   +Cursor before
   +Cursor after
 }
-class Hotel {
- -UUID id
-+String name
--Int objectid 
-}
+
 GeoPoint *-- GeoPointType: Composition
 GeoPoint *-- GeographyPoint: Composition
 GeoPoint "1" <|-- "1" NearbyPoint: Implements
 NearbyPoints "1" -- "0..n"NearbyPoint: Contains
-Hotel "1" -- "1" GeoPoint: May Contain
     
     `;

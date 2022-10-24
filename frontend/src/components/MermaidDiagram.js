@@ -5,7 +5,7 @@ import './MermaidDiagram.css'
 
 mermaid.initialize({
     startOnLoad: true,
-    theme: "default",
+    theme: "dark",
     securityLevel: "loose",
     themeCSS: `
     g.classGroup rect {

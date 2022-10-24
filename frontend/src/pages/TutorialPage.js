@@ -11,7 +11,7 @@ import './TutorialPage.css';
 import MermaidDiagram from "../components/MermaidDiagram";
 import example from "../components/example";
 
-function App() {
+function App(props) {
 
   return (
     <div className="App">
@@ -24,17 +24,26 @@ function App() {
       <Grid container spacing={1}>
 
         <Grid item xs={4}>
-          <Box id="instructionPage" sx={{
-            height: "90vh",
-          }}>
-            <MermaidDiagram chart={example} />
-
-
+          <MermaidDiagram chart={example} />
+          <Box id="instructionPage" 
+          sx={{
+            height: "50vh",
+            "background-color":"#6B2F6C",
+            color: 'aliceblue',
+            padding: "5%",
+            overflowY: "scroll",
+            scrollbarWidth: "thin",
+            textAlign: 'center',
+            fontFamily: "Open Sans",
+          }}
+          >
             <div className="instructionsDiv">
               <p>Hello</p>
               <br/>
               <p>Welcome to Comprehend C++</p>
               <p>In this section we will try to create log hello world into the console.</p>
+              <p>Proident nisi proident dolore eiusmod non tempor quis est dolor amet ullamco ipsum reprehenderit ex. Esse in culpa amet veniam elit ea in nostrud pariatur sit id non aute reprehenderit. Voluptate tempor culpa voluptate exercitation id.</p>
+
             </div>
               
           </Box>
