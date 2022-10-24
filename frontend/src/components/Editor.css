@@ -1,3 +1,12 @@
-.executionResultDisplay {
-    color: #a6e22e;
+#executionResultDisplay {
+    color: #9cd025;
+    background-color: #333333;
+}
+
+
+#editorDiv{
+    border: 1px solid #979797;
+    border-radius: 2%;
+    padding: 2%;
+    margin-right: 5px;
 }

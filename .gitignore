@@ -1,9 +1,6 @@
 **/.vscode/
-**/tempCodeRunnerFile.python
-
-
-**/scratch.py
 **/tempCodeRunnerFile.py
+**/scratch.py
 
 # Byte-compiled / optimized / DLL files
 **/__pycache__

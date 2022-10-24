@@ -20,8 +20,9 @@ class CompilerService{
                 })
             
             return result;
-        } catch{
-            
+        } catch (error) {
+            console.log("Error when sending code for compilation")
+            console.error(error);
         }
     }
 }

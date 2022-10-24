@@ -1,4 +1,4 @@
-import React, { useState, useRef} from "react";
+import React, { useState, useRef } from "react";
 
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid'; // Grid version 2
@@ -21,13 +21,13 @@ function App() {
         <Grid item xs={4}>
           <p>Hello</p>
         </Grid>
+        
         <Grid item xs={8}>
-          <CodeEditor/>
+          <CodeEditor />
         </Grid>
 
       </Grid>
-      {/* <header className="App-header"> */}
-      {/* </header> */}
+
     </div>
   );
 }
