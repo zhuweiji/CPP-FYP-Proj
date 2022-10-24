@@ -7,7 +7,7 @@ import Editor, { useMonaco } from "@monaco-editor/react";
 import CodeIcon from '@mui/icons-material/Code';
 
 
-import {Container, Stack, Box, Button} from '@mui/material';
+import { Container, Stack, Box, Button, ButtonGroup } from '@mui/material';
 
 import './Editor.css';
 import CompilerService from "../services/CompilerBackend";
@@ -59,7 +59,7 @@ function CodeEditor() {
         let result = await CompilerService.compile_and_run(code)
 
         let defaultErrorMessage = "There was an error on the compiler server. Please wait and try again later."
-        if (!result){
+        if (!result) {
             setExecutionResult(defaultErrorMessage);
             return
         }
@@ -93,21 +93,33 @@ function CodeEditor() {
                     theme={theme}
                 // theme="vs-dark"
                 />
-                
-                <Button variant="outlined" size="large" endIcon={<CodeIcon />} onClick={handleCompileButton} disabled={!isEditorReady}>
-                    Compile
-                </Button>
 
-                <br /><br /><br />
-
-
-
+                <br /><br />
+                <Stack direction="row" justifyContent="end">
+                    <Button variant="outlined" size="large" endIcon={<CodeIcon />} onClick={handleCompileButton} disabled={!isEditorReady} justify="flex-end">
+                        Compile
+                    </Button>
+                </Stack>
             </div>
+
+            <Stack direction="row" justifyContent="start"
+                sx={{
+                    padding: "10px"
+                }}
+            >
+                <p style={{fontFamily: "Inconsolata"}}> View results from execution: </p>
+                <ButtonGroup variant="text" aria-label="text button group">
+                    <Button> 1 </Button>
+                    <Button> 2 </Button>
+                    <Button variant="outlined"> 3 </Button>
+                </ButtonGroup>
+            </Stack>
+
             <Box id="executionResultDisplay" sx={{
                 width: "100%",
                 height: "12em",
-                fontFamily: 'Inconsolata', 
-                padding:"5%",
+                fontFamily: 'Inconsolata',
+                padding: "5%",
             }}>
                 {executionResult}
             </Box>
