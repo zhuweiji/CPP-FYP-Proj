@@ -1,8 +1,6 @@
 import React, { useState, useRef } from "react";
 import ButtonAppBar from "../components/Nav";
 
-import coding_image from '../static/coding_image.jpg'
-
 import { red, blue, green, blueGrey } from '@mui/material/colors';
 import { Typography, Box, Grid, Container } from '@mui/material';
 

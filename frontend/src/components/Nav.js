@@ -12,6 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import CodeIcon from '@mui/icons-material/Code';
 import * as React from 'react';
 
 const pages = ['Tutorials', 'Instructions', 'Interactive Games'];
@@ -40,7 +41,7 @@ const ResponsiveAppBar = () => {
         <AppBar position='sticky' sx={{ bgcolor: indigo[900]}}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                    <CodeIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                     <Typography
                         variant="h6"
                         noWrap
