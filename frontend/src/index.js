@@ -1,13 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import reportWebVitals from './reportWebVitals';
+
 import './index.css';
 import TutorialPage from './pages/TutorialPage';
-import reportWebVitals from './reportWebVitals';
+import Homepage from './pages/Homepage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <TutorialPage />
+    {/* <TutorialPage /> */}
+    <Homepage/>
   </React.StrictMode>
 );
 

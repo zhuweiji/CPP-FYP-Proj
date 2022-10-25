@@ -1,8 +1,9 @@
 import React, { useState, useRef } from "react";
 
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid'; // Grid version 2
-import { Box, Container } from '@mui/material'
+import Grid from '@mui/material/Grid'; 
+import { Box, Container, Fab, Button } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add';
+
 
 import CodeEditor from "../components/Editor";
 import ButtonAppBar from "../components/Nav";
@@ -14,15 +15,10 @@ import example from "../components/example";
 function App(props) {
 
   return (
-    <div className="App">
+    <div>
       <ButtonAppBar></ButtonAppBar>
-
-      <br /><br /><br />
-      <br />
-
-
+      
       <Grid container spacing={1}>
-
         <Grid item xs={4}>
           <MermaidDiagram chart={example} />
           <Box id="instructionPage" 
