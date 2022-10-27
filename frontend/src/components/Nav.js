@@ -13,14 +13,22 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import CodeIcon from '@mui/icons-material/Code';
-import * as React from 'react';
 
-const pages = ['Tutorials', 'Instructions', 'Interactive Games'];
+import React, { useState, useRef, useCallback } from "react";
+import { useNavigate } from 'react-router-dom';
+
+const pages_and_links = [{ 'page': 'Tutorials', 'link': '/tutorials' }, { 'page': 'Instructions', 'link': 'instructions' }, { 'page': 'Interactive Games', 'link': 'games' }];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const ResponsiveAppBar = () => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+    const navigate = useNavigate();
+    const redirectToTutorialListPage = useCallback(() => navigate('/tutorials', { replace: false }), [navigate]);
+    const redirectToInstructionsPage = useCallback(() => navigate('/instructions', { replace: false }), [navigate]);
+    const redirectToGamesPage = useCallback(() => navigate('/games', { replace: false }), [navigate]);
+
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -38,7 +46,7 @@ const ResponsiveAppBar = () => {
     };
 
     return (
-        <AppBar position='sticky' sx={{ bgcolor: indigo[900]}}>
+        <AppBar position='sticky' sx={{ bgcolor: indigo[900] }}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <CodeIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -89,19 +97,20 @@ const ResponsiveAppBar = () => {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
-                                </MenuItem>
-                            ))}
+                            {pages_and_links.map((item) => {
+                                let page = item['page']
+                                let link = item['link']
+                                return (
+                                    <MenuItem key={page} onClick={handleCloseNavMenu} href={link}>
+                                        <Typography textAlign="center">{page}</Typography>
+                                    </MenuItem>
+                                )
+                            })}
                         </Menu>
                     </Box>
-                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                    <CodeIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
                     <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href=""
+                        variant="h5" noWrap component="a" href=""
                         sx={{
                             mr: 2,
                             display: { xs: 'flex', md: 'none' },
@@ -116,15 +125,21 @@ const ResponsiveAppBar = () => {
                         Comprehend C++
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
-                        ))}
+                        {pages_and_links.map((item) => {
+                            let page = item['page']
+                            let link = item['link']
+                            return (
+                                <Button
+                                    key={page}
+                                    onClick={handleCloseNavMenu}
+                                    sx={{ my: 2, color: 'white', display: 'block' }}
+                                    href={link}
+                                >
+                                    {page}
+                                </Button>
+                            )
+                        }
+                        )}
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>

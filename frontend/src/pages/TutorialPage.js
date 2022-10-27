@@ -18,13 +18,13 @@ function App(props) {
     <div>
       <ButtonAppBar></ButtonAppBar>
       
-      <Grid container spacing={1}>
+      <Grid container spacing={1} className='TutorialPage'>
         <Grid item xs={4}>
           <MermaidDiagram chart={example} />
           <Box id="instructionPage" 
           sx={{
             height: "50vh",
-            "background-color":"#6B2F6C",
+            "backgroundColor":"#6B2F6C",
             color: 'aliceblue',
             padding: "5%",
             overflowY: "scroll",

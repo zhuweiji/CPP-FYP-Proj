@@ -1,3 +1,7 @@
+.HomePage{
+    
+}
+
 .columnOne, .columnTwo, .columnThree {
     height: 100%;
     width: 100%;
@@ -12,7 +16,7 @@
 }
 
 .columnOne{
-    background-image: url('../static/coding_laptop.jpg'), linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+    background-image: url('../static/coding_laptop-min.jpg'), linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
 }
 
 
@@ -21,7 +25,7 @@
 }
 
 .columnThree {
-    background-image: url('../static/editor_real.jpg'), linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+    background-image: url('../static/editor_real-min.jpg'), linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
 }
 
 .columnOne:hover, .columnTwo:hover, .columnThree:hover{

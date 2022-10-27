@@ -1,26 +1,33 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
+import { useNavigate } from 'react-router-dom';
+
 import ButtonAppBar from "../components/Nav";
 
 import { red, blue, green, blueGrey } from '@mui/material/colors';
-import { Typography, Box, Grid, Container } from '@mui/material';
+import { Typography, Box, Grid, Container} from '@mui/material';
 
 import './Homepage.css'
 
 
 export default function Homepage(props) {
+    const navigate = useNavigate();
+    const redirectToTutorialList = useCallback(() => navigate('/tutorials', { replace: false }), [navigate]);
+    const redirectToGamesPage = useCallback(() => navigate('/games', { replace: false }), [navigate]);
+    const redirectToIDE = useCallback(() => navigate('/ide', { replace: false }), [navigate]);
+
     return (
-        <>
+        <Box component='div'>
             <ButtonAppBar></ButtonAppBar>
-            <Grid container spacing={1} style={{ minHeight: '100vh', backgroundColor: blueGrey[900]}}>
+            <Grid container spacing={1} style={{ backgroundColor: blueGrey[900], minHeight: '100vh', }}>
                 <Grid item xs={4}>
-                    <div className="columnOne" onClick={()=>alert('hello!')}>
+                    <div className="columnOne" onClick={redirectToTutorialList}>
                         <Typography variant="h2" >Guided Tutorials</Typography>
                     </div>
 
                 </Grid>
 
                 <Grid item xs={4} >
-                    <div className="columnTwo">
+                    <div className="columnTwo" onClick={redirectToGamesPage}>
                         <Container>
                             <Typography variant="h2">Interactive Games</Typography>
                         </Container>
@@ -28,7 +35,7 @@ export default function Homepage(props) {
                 </Grid>
 
                 <Grid item xs={4} >
-                    <div className="columnThree">
+                    <div className="columnThree" onClick={redirectToIDE}>
                         <Container>
                             <Typography variant="h2">C++ Online IDE</Typography>
                         </Container>
@@ -37,7 +44,6 @@ export default function Homepage(props) {
 
                 </Grid>
             </Grid>
-
-        </>
+        </Box>
     )
 }

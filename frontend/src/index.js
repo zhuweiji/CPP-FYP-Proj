@@ -2,15 +2,47 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Route,
+} from "react-router-dom";
+
 import './index.css';
 import TutorialPage from './pages/TutorialPage';
 import Homepage from './pages/Homepage';
+import TutorialList from './pages/TutorialListPage.js';
+import ErrorPage from './pages/ErrorPage';
+import UnderConstruction from './pages/UnderConstruction';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Homepage />,
+    errorElement: <ErrorPage />,
+  }, {
+    path: "tutorials",
+    element: <TutorialList/>,
+  }, {
+    path: "tutorial/tutorialId",
+    element: <TutorialPage />,
+  }, {
+    path: "games",
+    element: <UnderConstruction />,
+  }, {
+    path: "ide",
+    element: <UnderConstruction />,
+  }, {
+    path: "instructions",
+    element: <UnderConstruction />,
+  }, 
+  
+]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    {/* <TutorialPage /> */}
-    <Homepage/>
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 
