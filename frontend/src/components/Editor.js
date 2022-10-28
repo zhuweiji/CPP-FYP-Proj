@@ -1,13 +1,16 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 /* https://www.npmjs.com/package/@monaco-editor/react */
 import Editor, { useMonaco } from "@monaco-editor/react";
 
-// import { Box as div, Button } from "@mui/material";
 import CodeIcon from '@mui/icons-material/Code';
 
 
-import { Container, Stack, Box, Button, ButtonGroup } from '@mui/material';
+import { Container, Stack, Box, Button, ButtonGroup, Chip, Tooltip, Typography, Divider, IconButton } from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import ErrorIcon from '@mui/icons-material/Error';
 
 import './Editor.css';
 import CompilerService from "../services/CompilerBackend";
@@ -26,12 +29,25 @@ int main() {
 let defaultTextInTerminal = `>> Hello! Compile something and view the results here
 `
 
+// TODO:  want to change this to proper enum so that storing the states wont be an array of a chunk of text: rn its ["we're testing ... ", "we're testing.."]
+const CompilerServerStatuses = Object.freeze({
+    UNTESTED: "We're testing the connection to the compiler server",
+    READY: "Strong connection to the compiler server",
+    INTERMITTENT: "There have been some issues with the connection to the compiler server",
+    UNCONTACTABLE: "The compiler server is unreachable - Check your connection or the compiler server could be down for maintainance",
+})
+
 function CodeEditor() {
     const monacoRef = useRef(null);
     const [isEditorReady, setIsEditorReady] = useState(false);
+    const [compilerServerStatus, setCompilerServerStatus] = useState(CompilerServerStatuses.UNTESTED);
+
     const [executionResult, setExecutionResult] = useState(defaultTextInTerminal);
+    const compilerServerProbeResults = [];
 
     const [theme, setTheme] = useState("light");
+
+    let compilerServerProbeIntervalMS = 5000;
 
     function handleEditorWillMount(monaco) {
         // here is the monaco instance
@@ -54,25 +70,48 @@ function CodeEditor() {
         return monacoRef.current.getValue();
     }
 
+    function compilerStatusIcon(){
+        let icon;
+        if (compilerServerStatus == CompilerServerStatuses.UNTESTED){
+            icon = <RestartAltIcon color='disabled'/>;
+        } else if (compilerServerStatus == CompilerServerStatuses.READY){
+            icon = <CheckIcon color='success'/>;
+        } else if (compilerServerStatus == CompilerServerStatuses.INTERMITTENT){
+            icon = <ErrorIcon color='warning'/>;
+        } else if (compilerServerStatus == CompilerServerStatuses.UNCONTACTABLE){
+            icon = <ClearIcon color='error'/>;
+        }
+        
+        return <Tooltip title={compilerServerStatus}>
+            <IconButton>
+                {icon}
+            </IconButton>
+        </Tooltip>
+        
+    }
+
     async function handleCompileButton() {
         let code = getEditorValue();
         let result = await CompilerService.compile_and_run(code)
 
         let defaultErrorMessage = "There was an error on the compiler server. Please wait and try again later."
-        if (!result) {
+
+        // TODO: this should be in a catch
+        if (!result || !result.ok || result.status_code !== 200) {
+            if (compilerServerStatus == CompilerServerStatuses.READY || compilerServerStatus == CompilerServerStatuses.UNTESTED) {
+                setCompilerServerStatus(CompilerServerStatuses.INTERMITTENT);
+            }
+
+            console.log('error on request to compile')
+            console.error(result)
+            if (result){
+                console.error(result_data.json())
+            }
             setExecutionResult(defaultErrorMessage);
             return
         }
 
         let result_data = await result.json()
-
-        if (!result.ok || result.status_code !== 200) {
-            console.log('error on request to compile')
-            console.error(result)
-            console.error(result_data)
-            setExecutionResult(defaultErrorMessage);
-            return
-        }
 
         console.log(result_data)
         let output = result_data['result']
@@ -80,6 +119,31 @@ function CodeEditor() {
 
         setExecutionResult(output);
     }
+
+    async function testConnectionToCompilerServer(){
+        let probeResults = await CompilerService.check_connection();
+        compilerServerProbeResults.unshift(probeResults); // append to front of list
+
+        if (compilerServerProbeResults.length >= 5){
+            compilerServerProbeResults.pop()
+        }
+        if (compilerServerProbeResults.every((value) => value === true)){
+            setCompilerServerStatus(CompilerServerStatuses.READY);
+        } else if (compilerServerProbeResults.every((value) => value === false)) {
+            setCompilerServerStatus(CompilerServerStatuses.UNCONTACTABLE);
+        } else {
+            setCompilerServerStatus(CompilerServerStatuses.INTERMITTENT);
+        }
+    }
+
+    useEffect(()=>{
+        const interval = setInterval(() => {
+                testConnectionToCompilerServer();
+        }, compilerServerProbeIntervalMS);
+
+            return () => clearInterval(interval);
+    }, [])
+    
 
     return (
         <>
@@ -95,24 +159,35 @@ function CodeEditor() {
                 />
 
                 <br /><br />
-                <Stack direction="row" justifyContent="end">
+
+                <Stack direction="row" justifyContent="end" alignItems="center">
                     <Button variant="outlined" size="large" endIcon={<CodeIcon />} onClick={handleCompileButton} disabled={!isEditorReady} justify="flex-end">
                         Compile
                     </Button>
                 </Stack>
             </div>
 
-            <Stack direction="row" justifyContent="start"
+            <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="center"
                 sx={{
-                    padding: "10px"
-                }}
-            >
-                <p style={{fontFamily: "Inconsolata"}}> View results from execution: </p>
-                <ButtonGroup variant="text" aria-label="text button group">
-                    <Button> 1 </Button>
-                    <Button> 2 </Button>
-                    <Button variant="outlined"> 3 </Button>
-                </ButtonGroup>
+                    "paddingLeft": "1rem",
+                    "paddingTop": "0.5rem",
+                    "paddingBottom": "0.5rem",
+                    "paddingRight": "0.5rem",
+                }}>
+
+                <div>
+                    <Stack direction="row" alignItems="center">
+                        <Typography style={{ fontFamily: "Inconsolata" }}> View results from execution: </Typography>
+                        <ButtonGroup variant="text" aria-label="text button group">
+                            <Button> 1 </Button>
+                            <Button> 2 </Button>
+                            <Button variant="outlined"> 3 </Button>
+                        </ButtonGroup>
+                    </Stack>
+                    
+                </div>
+                
+                {compilerStatusIcon()}
             </Stack>
 
             <Box id="executionResultDisplay" sx={{

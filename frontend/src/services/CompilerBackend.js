@@ -1,15 +1,14 @@
 
 
-class CompilerService{
+class CompilerService {
     static HOST_URL = "localhost:8080"
 
-    static async compile_and_run(codeString){
-        
+    static async compile_and_run(codeString) {
         const data = {
             'code': codeString
         }
 
-        try{
+        try {
             let result = await fetch('http://localhost:8080/cpp/compile_and_run',
                 {
                     method: 'POST',
@@ -18,11 +17,25 @@ class CompilerService{
                     },
                     body: JSON.stringify(data)
                 })
-            
+
             return result;
         } catch (error) {
             console.log("Error when sending code for compilation")
             console.error(error);
+        }
+    }
+
+    static async check_connection() {
+        try {
+            let result = await fetch('http://localhost:8080/cpp',
+                {
+                    method: 'GET',
+                })
+            // TODO: if server includes status in the get method, can check the status here
+            return true;
+        } catch (error) {
+            console.error(`Encountered error while checking connection to compiler server: ${error}`);
+            return false;
         }
     }
 }

@@ -19,14 +19,14 @@ export default function Homepage(props) {
         <Box component='div'>
             <ButtonAppBar></ButtonAppBar>
             <Grid container spacing={1} style={{ backgroundColor: blueGrey[900], minHeight: '100vh', }}>
-                <Grid item xs={4}>
+                <Grid item md={4}>
                     <div className="columnOne" onClick={redirectToTutorialList}>
                         <Typography variant="h2" >Guided Tutorials</Typography>
                     </div>
 
                 </Grid>
 
-                <Grid item xs={4} >
+                <Grid item md={4} >
                     <div className="columnTwo" onClick={redirectToGamesPage}>
                         <Container>
                             <Typography variant="h2">Interactive Games</Typography>
@@ -34,7 +34,7 @@ export default function Homepage(props) {
                     </div>
                 </Grid>
 
-                <Grid item xs={4} >
+                <Grid item md={4} >
                     <div className="columnThree" onClick={redirectToIDE}>
                         <Container>
                             <Typography variant="h2">C++ Online IDE</Typography>
