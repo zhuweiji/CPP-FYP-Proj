@@ -81,7 +81,7 @@ export default function TutorialList(props) {
                     topic['tuts'].map((tutorial, index) =>
                         <div key={index}>
                             <ListItem key={index} disablePadding>
-                                <ListItemButton><ListItemText primary={tutorial} /></ListItemButton>
+                                <ListItemButton href={`tutorial/${index}`}><ListItemText primary={tutorial} /></ListItemButton>
                             </ListItem>
                         </div>
                     )
