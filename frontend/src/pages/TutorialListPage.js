@@ -30,7 +30,7 @@ let topic2 = {
     id: 2,
     topic_name: 'Tutorial 2 - Object Oriented Design in C++',
     description: 'Implement the Object Oriented principles in C++ to make your understanding language agnostic',
-    tuts: [`My First C++ Objects: The O in OOP stands for Java`,
+    tuts: [`My First C++ Object`,
         "Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud.",
         "Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip.",
         "Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.",
