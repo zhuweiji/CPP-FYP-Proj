@@ -47,7 +47,7 @@ function App(props) {
 
         </Grid>
 
-        <Grid item xs>
+        <Grid item xs={8}>
           <CodeEditor />
         </Grid>
 

@@ -33,7 +33,7 @@ export default function Homepage(props) {
 
                             </Grid>
                             <Grid item>
-                                <Typography variant="h6" className="subtext">Go through a guided experience that will help you understand OOP in C++. Learn in the best way using notebook style editors and a full web IDE that will allow you to start coding immediately. </Typography>
+                                <Typography variant="h6" className="subtext">Learn OOP in C++ step-by-step. Use notebook style editors and a full web IDE to craft code from class diagrams and other specifications . </Typography>
                             </Grid>
                         </Grid>
                     </div>
