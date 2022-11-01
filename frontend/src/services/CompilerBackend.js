@@ -32,6 +32,7 @@ class CompilerService {
                     method: 'GET',
                 })
             // TODO: if server includes status in the get method, can check the status here
+            // TODO: include throttled status on server and in the editor icon
             return true;
         } catch (error) {
             console.error(`Encountered error while checking connection to compiler server: ${error}`);

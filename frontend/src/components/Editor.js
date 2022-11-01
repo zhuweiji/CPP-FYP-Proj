@@ -11,6 +11,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import ErrorIcon from '@mui/icons-material/Error';
+import AcUnitIcon from '@mui/icons-material/AcUnit';
 
 import './Editor.css';
 import CompilerService from "../services/CompilerBackend";
@@ -34,7 +35,8 @@ const CompilerServerStatuses = Object.freeze({
     UNTESTED: "We're testing the connection to the compiler server",
     READY: "Strong connection to the compiler server",
     INTERMITTENT: "There have been some issues with the connection to the compiler server",
-    UNCONTACTABLE: "The compiler server is unreachable - Check your connection or the compiler server could be down for maintainance",
+    UNCONTACTABLE: "The compiler server is unreachable - Check your connection or the compiler server could be down",
+    THROTTLED: "You have sent too many compile requests recently. The compiler server is throttling your requests temporarily."
 })
 
 function CodeEditor() {
@@ -80,6 +82,8 @@ function CodeEditor() {
             icon = <ErrorIcon color='warning'/>;
         } else if (compilerServerStatus == CompilerServerStatuses.UNCONTACTABLE){
             icon = <ClearIcon color='error'/>;
+        } else if (compilerServerStatus == CompilerServerStatuses.THROTTLED){
+            icon = <AcUnitIcon color='secondary'/>;
         }
         
         return <Tooltip title={compilerServerStatus}>
