@@ -32,6 +32,7 @@ let defaultTextInTerminal = `>> Hello! Compile something and view the results he
 
 // TODO:  want to change this to proper enum so that storing the states wont be an array of a chunk of text: rn its ["we're testing ... ", "we're testing.."]
 const CompilerServerStatuses = Object.freeze({
+    WILL_NOT_TEST: "",
     UNTESTED: "We're testing the connection to the compiler server",
     READY: "Strong connection to the compiler server",
     INTERMITTENT: "There have been some issues with the connection to the compiler server",
@@ -40,11 +41,11 @@ const CompilerServerStatuses = Object.freeze({
 })
 
 function CodeEditor() {
-    let TEST_CONNECTION = false;
+    let TEST_CONNECTION = true;
     
     const monacoRef = useRef(null);
     const [isEditorReady, setIsEditorReady] = useState(false);
-    const [compilerServerStatus, setCompilerServerStatus] = useState(CompilerServerStatuses.UNTESTED);
+    const [compilerServerStatus, setCompilerServerStatus] = useState(TEST_CONNECTION ? CompilerServerStatuses.UNTESTED : CompilerServerStatuses.WILL_NOT_TEST);
 
     const [executionResult, setExecutionResult] = useState(defaultTextInTerminal);
     const compilerServerProbeResults = [];
@@ -76,7 +77,9 @@ function CodeEditor() {
 
     function compilerStatusIcon(){
         let icon;
-        if (compilerServerStatus == CompilerServerStatuses.UNTESTED){
+        if (compilerServerStatus == CompilerServerStatuses.WILL_NOT_TEST) {
+
+        } else if (compilerServerStatus == CompilerServerStatuses.UNTESTED){
             icon = <RestartAltIcon color='disabled'/>;
         } else if (compilerServerStatus == CompilerServerStatuses.READY){
             icon = <CheckIcon color='success'/>;
