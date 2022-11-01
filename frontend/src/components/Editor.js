@@ -40,6 +40,8 @@ const CompilerServerStatuses = Object.freeze({
 })
 
 function CodeEditor() {
+    let TEST_CONNECTION = false;
+    
     const monacoRef = useRef(null);
     const [isEditorReady, setIsEditorReady] = useState(false);
     const [compilerServerStatus, setCompilerServerStatus] = useState(CompilerServerStatuses.UNTESTED);
@@ -141,11 +143,15 @@ function CodeEditor() {
     }
 
     useEffect(()=>{
-        const interval = setInterval(() => {
+        if (TEST_CONNECTION){
+            const interval = setInterval(() => {
                 testConnectionToCompilerServer();
-        }, compilerServerProbeIntervalMS);
+            }, compilerServerProbeIntervalMS);
 
             return () => clearInterval(interval);
+        } else{
+
+        }
     }, [])
     
 

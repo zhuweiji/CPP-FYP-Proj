@@ -15,20 +15,49 @@
     justify-content: center;
 }
 
-.columnOne{
-    background-image: url('../static/coding_laptop-min.jpg'), linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+.columnOne .subtext,
+.columnTwo .subtext,
+.columnThree .subtext
+{
+    opacity: 0;
+    transition: 0.5s;
+    height: 0;
+    overflow: hidden;
 }
 
+.columnOne:hover .subtext,
+.columnTwo:hover .subtext,
+.columnThree:hover .subtext {
+    opacity: 1;
+    height: auto;
+}
+
+.columnOne{
+    background-image: url('../static/coding_laptop-min.jpg'), linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+    transition: 1s;
+}
+
+.columnOne:hover {
+    background-image: url('../static/coding_laptop-min.jpg'), linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+}
 
 .columnTwo {
     background-image: url('../static/game.jpg'), linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+}
+.columnTwo:hover {
+    background-image: url('../static/game.jpg'), linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.8));
 }
 
 .columnThree {
     background-image: url('../static/editor_real-min.jpg'), linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
 }
 
-.columnOne:hover, .columnTwo:hover, .columnThree:hover{
+.columnThree:hover {
+    background-image: url('../static/editor_real-min.jpg'), linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+}
+
+/* .columnOne:hover, .columnTwo:hover, .columnThree:hover{
     filter: brightness(60%);
     cursor: pointer;
-}
+} */
+

@@ -75,7 +75,7 @@ export default function TutorialList(props) {
             <Typography sx={{ mt: 4, mb: 2 }} variant="p" component="div"><i>{topic['description']}</i></Typography>
 
 
-            <List key={topic['id']} sx={{ 'paddingBottom': '4rem' }}>
+            <List key={topic['id']} sx={{ 'paddingBottom': '4rem'}}>
                 <Divider />
                 {
                     topic['tuts'].map((tutorial, index) =>
@@ -90,7 +90,7 @@ export default function TutorialList(props) {
         </div>)
 
 
-    return (<>
+    return (<div className="listPage">
         <ButtonAppBar></ButtonAppBar>
 
         <Box sx={{ width: '100%', margin: '5%'}}>
@@ -98,5 +98,5 @@ export default function TutorialList(props) {
             <br/>
             {listItems}
         </Box>
-    </>)
+    </div>)
 }

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ButtonAppBar from "../components/Nav";
 
 import { red, blue, green, blueGrey } from '@mui/material/colors';
-import { Typography, Box, Grid, Container} from '@mui/material';
+import { Typography, Box, Grid, Container } from '@mui/material';
 
 import './Homepage.css'
 
@@ -18,28 +18,65 @@ export default function Homepage(props) {
     return (
         <Box component='div'>
             <ButtonAppBar></ButtonAppBar>
-            <Grid container spacing={1} style={{ backgroundColor: blueGrey[900], minHeight: '100vh', }}>
+            <Grid container spacing={1}  style={{ backgroundColor: blueGrey[900], height: '100vh', }}>
                 <Grid item md={4}>
                     <div className="columnOne" onClick={redirectToTutorialList}>
-                        <Typography variant="h2" >Guided Tutorials</Typography>
+                        <Grid
+                            container
+                            direction="column"
+                            alignItems="center"
+                            rowSpacing={5}
+                            sx={{padding:"2rem"}}
+                        >
+                            <Grid item>
+                                <Typography variant="h2" >Guided Tutorials</Typography>
+
+                            </Grid>
+                            <Grid item>
+                                <Typography variant="h6" className="subtext">Go through a guided experience that will help you understand OOP in C++. Learn in the best way using notebook style editors and a full web IDE that will allow you to start coding immediately. </Typography>
+                            </Grid>
+                        </Grid>
                     </div>
 
                 </Grid>
 
                 <Grid item md={4} >
                     <div className="columnTwo" onClick={redirectToGamesPage}>
-                        <Container>
-                            <Typography variant="h2">Interactive Games</Typography>
-                        </Container>
+                        <Grid
+                            container
+                            direction="column"
+                            alignItems="center"
+                            rowSpacing={5}
+                            sx={{ padding: "2rem" }}
+                        >
+                            <Grid item>
+                                <Typography variant="h2">Interactive Games</Typography>
+
+                            </Grid>
+                            <Grid item>
+                                <Typography variant="h6" className="subtext" >Compete with your friends, offline bots, or other people on the site to develop proficiency and speed. </Typography>
+                            </Grid>
+                        </Grid>
                     </div>
                 </Grid>
 
                 <Grid item md={4} >
                     <div className="columnThree" onClick={redirectToIDE}>
-                        <Container>
-                            <Typography variant="h2">C++ Online IDE</Typography>
-                        </Container>
+                        <Grid
+                            container
+                            direction="column"
+                            alignItems="center"
+                            rowSpacing={5}
+                            sx={{ padding: "2rem" }}
+                        >
+                            <Grid item>
+                                <Typography variant="h2">C++ Online IDE</Typography>
 
+                            </Grid>
+                            <Grid item>
+                                <Typography variant="h6" className="subtext">Use our web IDE to run C++ code without the hassle of setting up a dev environment yourself.</Typography>
+                            </Grid>
+                        </Grid>
                     </div>
 
                 </Grid>
