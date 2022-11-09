@@ -7,6 +7,7 @@ log = logging.getLogger(__name__)
 
 CPP_MODULE_DIR_PATH = Path(__file__).parent
 COMPILER_SERVER_SERVICE_DIR_PATH = CPP_MODULE_DIR_PATH.parent
+USER_TEMP_FILES_DIR_PATH = CPP_MODULE_DIR_PATH / 'user_temp_files'
 
 CPP_SOURCE_FILES_DIR_PATH = COMPILER_SERVER_SERVICE_DIR_PATH / 'cpp_source_files' 
 GUIDED_TUTORIALS_DIR_PATH = CPP_SOURCE_FILES_DIR_PATH / 'guided_tutorials'

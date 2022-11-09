@@ -27,7 +27,7 @@ class CompilerService {
 
     static async check_connection() {
         try {
-            let result = await fetch('http://localhost:8080/cpp',
+            let result = await fetch('http://localhost:8080/cpp/',
                 {
                     method: 'GET',
                 })

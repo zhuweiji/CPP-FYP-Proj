@@ -7,6 +7,7 @@ from pathlib import Path
 import tempfile
 import logging
 
+
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
@@ -45,8 +46,8 @@ class CPP_Compiler:
         3 write to the temp file ✔️
         4 compile the temp file using a c++ compiler ✔️
         5 run the output ✔️
-        6 get the results 
-        7 interpret the results
+        6 get the results ✔️
+        7 interpret the results 
             a. the following questions should be answerable
                 did it compile?
                     if not, then what are the errors?
@@ -57,6 +58,13 @@ class CPP_Compiler:
     2. be able to run pre-written unit tests on the code
                 
     """
+    @classmethod
+    def write_compile_run(cls, code:str):
+        with tempfile.TemporaryDirectory(dir=USER_TEMP_FILES_DIR_PATH) as tmp_dir_path:
+            result = cls.write_and_compile(code=code, temp_dir_path=tmp_dir_path, executable_filepath='output.exe')
+            if not result.success: return result
+            return CPP_Compiler.run_cpp_executable(Path(tmp_dir_path)/"output.exe")
+    
     @classmethod
     def write_and_compile(cls, code: Union[str, bytes], temp_dir_path, executable_filepath:Union[Path,str]='output.exe'):
         """Writes some C++ code into a temporary file, then compiles and runs it"""

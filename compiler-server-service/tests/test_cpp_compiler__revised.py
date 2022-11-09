@@ -14,11 +14,11 @@ class TestCompiler(unittest.TestCase):
     temp_output_filename2 = 'test_to_be_removed2.exe'
     def step_compile_cpp_file(self):
         result = CPP_Compiler.compile_files(CPP_TEST_FILES_DIR_PATH / 'hello_world.cpp', out_filepath=self.temp_output_filepath)
-        assert result, str(result.determine_failure_cause())
+        assert result.success, str(result.determine_failure_cause())
         
     def step_compile_cpp_file_with_custom_headers(self):
         result = CPP_Compiler.compile_files_with_custom_headers(CPP_TEST_FILES_DIR_PATH / 'hello_world.cpp', out_filepath=self.temp_output_filepath)
-        assert result, str(result.determine_failure_cause())
+        assert result.success, str(result.determine_failure_cause())
     
     def step_run_cpp_exe(self):
         result = CPP_Compiler.run_cpp_executable(self.temp_output_filepath)
@@ -28,7 +28,7 @@ class TestCompiler(unittest.TestCase):
         else:
             self.fail('executable should have piped hello world! to stdout')
         
-    def step_write_compile_run(self):
+    def step_write_compile(self):
         # could split this into write_compile and run_tests
         with tempfile.TemporaryDirectory(dir=CPP_TEST_FILES_DIR_PATH) as tmp_dir_path:
             cpp_code = """#include <iostream>
@@ -38,8 +38,18 @@ class TestCompiler(unittest.TestCase):
             }"""
             
             result = CPP_Compiler.write_and_compile(code=cpp_code, temp_dir_path=tmp_dir_path, executable_filepath=self.temp_output_filename2)
-            assert result
-            assert CPP_Compiler.run_cpp_executable(Path(tmp_dir_path)/self.temp_output_filename2)
+            assert result.success
+            
+    def step_write_compile_run(self):
+        cpp_code = """#include <iostream>
+            int main(){
+                std::cout << "hello world!" << std::endl;
+                return 0;
+            }"""
+        
+        result = CPP_Compiler.write_compile_run(cpp_code)
+        assert result.success
+            
             
     # def step_run_cpp_exe__after_write_compile(self):
     #     result = CPP_Compiler.run_cpp_executable(self.temp_output_filename2)
@@ -59,7 +69,7 @@ class TestCompiler(unittest.TestCase):
             try:
                 step()
             except Exception as e:
-                self.fail(f"Test {test_number} failed: {e}")
+                self.fail(f"Test {test_number} failed: {step.__name__}\n{e}")
     
                 
 class TestProcessWrapper(unittest.TestCase): 

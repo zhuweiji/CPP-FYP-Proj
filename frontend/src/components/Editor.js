@@ -105,28 +105,29 @@ function CodeEditor() {
 
         let defaultErrorMessage = "There was an error on the compiler server. Please wait and try again later."
 
-        // TODO: this should be in a catch
-        if (!result || !result.ok || result.status_code !== 200) {
-            if (compilerServerStatus == CompilerServerStatuses.READY || compilerServerStatus == CompilerServerStatuses.UNTESTED) {
-                setCompilerServerStatus(CompilerServerStatuses.INTERMITTENT);
-            }
+        // // TODO: this should be in a catch
+        // if (!result || !result.ok || result.status_code !== 200) {
+        //     if (compilerServerStatus == CompilerServerStatuses.READY || compilerServerStatus == CompilerServerStatuses.UNTESTED) {
+        //         setCompilerServerStatus(CompilerServerStatuses.INTERMITTENT);
+        //     }
 
-            console.log('error on request to compile')
-            console.error(result)
-            if (result){
-                console.error(result_data.json())
-            }
-            setExecutionResult(defaultErrorMessage);
-            return
-        }
+        //     console.log('error on request to compile')
+        //     console.error(result)
+        //     if (result){
+        //         console.error(result.json())
+        //     }
+        //     setExecutionResult(defaultErrorMessage);
+        //     return
+        // }
 
         let result_data = await result.json()
 
         console.log(result_data)
-        let output = result_data['result']
-        console.log(output)
+        // need to do some parsing of the output (currently is CodeExectionResult: ... out > ....)
+        let displayed_output = result_data['result']
+        console.log(displayed_output)
 
-        setExecutionResult(output);
+        setExecutionResult(displayed_output);
     }
 
     async function testConnectionToCompilerServer(){
@@ -208,6 +209,7 @@ function CodeEditor() {
                 height: "12em",
                 fontFamily: 'Inconsolata',
                 padding: "5%",
+                whiteSpace: "pre-line" // displays line breaks instead of keeping text on same line
             }}>
                 {executionResult}
             </Box>

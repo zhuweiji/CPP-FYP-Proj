@@ -13,8 +13,8 @@ pytest = "^7.1.3"
 [tool.poetry.dev-dependencies]
 
 [tool.poetry.scripts]
-start = "compiler_server_service.scripts:start"
-test = "compiler_server_service.scripts:test"
+start = "scripts:start"
+test = "scripts:test"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

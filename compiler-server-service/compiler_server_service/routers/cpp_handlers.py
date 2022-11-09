@@ -7,7 +7,7 @@ import logging
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
-from compiler_server_service.cpp_compiler_module.cpp_compiler import CPPCompiler
+from compiler_server_service.cpp_compiler.cpp_compiler_revised import CPP_Compiler
 
 ROUTE_PREFIX = '/cpp'
 
@@ -19,13 +19,17 @@ router = APIRouter(
 class POST_BODY__CPP_CODE(BaseModel):
     code: str
 
+@router.get('/')
+def root():
+    return {'message': "we're up"}
 
 @router.post('/compile_and_run')
 def handle_compile_and_run(data: POST_BODY__CPP_CODE):
     try:
         log.info(data.code)
-        output = CPPCompiler.compile_and_run_from_code(data.code)
-        return {'result':output.full_str()}
+        compile_result = CPP_Compiler.write_compile_run(data.code)
+    
+        return {'result': compile_result.full_str()}
     
     except Exception as E:
         log.exception(E)

@@ -17,13 +17,13 @@ class CompilationErrorTypes(Enum):
     NOT_DEFINED  = 2
 
 
-
 class ProcessResult:
     """Captures the result of a process that was run and provides a check if the intended operation was successful or not
     Acts as a thin wrapper around subprocess.CompletedProcess
     """
     def __init__(self, process_handle: CompletedProcess):
         self.p = process_handle
+        
         self.stderr, self.stdout = None, None
         self.capture_stdout(self.p)
         self.capture_stderr(self.p)
@@ -54,6 +54,10 @@ class ProcessResult:
         """Convert byte values to to string"""
         try: return value.decode()
         except Exception as E: log.exception(f"tried to decode value but failed: {E}"); return value
+        
+    # @staticmethod
+    # def custom_create():
+        
 
 
 
