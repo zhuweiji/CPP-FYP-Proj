@@ -5,14 +5,12 @@ import re
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
-# service level paths (compiler-server-service) 
-SOURCE_DIRPATH = Path(__file__).parent
-SERVICE_DIRPATH = SOURCE_DIRPATH.parent
+CPP_MODULE_DIR_PATH = Path(__file__).parent
+COMPILER_SERVER_SERVICE_DIR_PATH = CPP_MODULE_DIR_PATH.parent
 
-# project level paths (fyp)
-CPP_SOURCE_DIRPATH = SERVICE_DIRPATH / 'data' / 'simple-cpp-module' / 'src'
-CPP_TEST_SOURCE_DIRPATH = CPP_SOURCE_DIRPATH / 'tests_for_students'
-
+CPP_SOURCE_FILES_DIR_PATH = COMPILER_SERVER_SERVICE_DIR_PATH / 'cpp_source_files' 
+GUIDED_TUTORIALS_DIR_PATH = CPP_SOURCE_FILES_DIR_PATH / 'guided_tutorials'
+CPP_HEADER_FILES_SOURCE_DIR = CPP_SOURCE_FILES_DIR_PATH / 'header_files'
 
 def create_directory_ifnotexist(path: Path):
     if not path.is_dir():

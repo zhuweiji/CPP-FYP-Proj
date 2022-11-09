@@ -4,7 +4,7 @@ from enum import Enum
 from subprocess import CompletedProcess, Popen
 
 import logging
-from typing import Any
+from typing import Any, Union
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
@@ -13,7 +13,7 @@ class CompilationErrorTypes(Enum):
     """List of compilation errors resulting from G++ compilation of C++ code"""
     UNKNOWN      = 0
     NO_WINMAIN   = -1
-    IMPORT_ERROR = 1
+    FILE_NOT_FOUND_ERROR = 1
     NOT_DEFINED  = 2
 
 
@@ -50,7 +50,7 @@ class ProcessResult:
         return f"{self.__class__.__name__}:{additional_info}\nout > {self.stdout}\nerr > {self.stderr}"
     
     @staticmethod
-    def attempt_decode(value):   
+    def attempt_decode(value) -> Union[str, bytes, None]:   
         """Convert byte values to to string"""
         try: return value.decode()
         except Exception as E: log.exception(f"tried to decode value but failed: {E}"); return value
@@ -64,7 +64,7 @@ class CompilationResult(ProcessResult):
         
     def determine_failure_cause(self):
         error_reason_dict = {
-            CompilationErrorTypes.IMPORT_ERROR: self.failed_because_import_error,
+            CompilationErrorTypes.FILE_NOT_FOUND_ERROR: self.failed_because_file_not_found_error,
             CompilationErrorTypes.NOT_DEFINED : self.failed_because_not_defined,
             CompilationErrorTypes.NO_WINMAIN  : self.failed_because_no_winmain,
         }
@@ -75,16 +75,19 @@ class CompilationResult(ProcessResult):
             if checking_func(): return error_reason
         return CompilationErrorTypes.UNKNOWN
     
-    def failed_because_import_error(self):
+    def failed_because_file_not_found_error(self):
         stderr_val = self.stderr if self.stderr else ""
+        if isinstance(stderr_val, bytes): stderr_val = stderr_val.decode()
         return 'no such file or directory' in stderr_val.lower()
     
     def failed_because_not_defined(self):
         stderr_val = self.stderr if self.stderr else ""
+        if isinstance(stderr_val, bytes): stderr_val = stderr_val.decode()
         return 'not declared in this scope' in stderr_val.lower()
     
     def failed_because_no_winmain(self):
         stderr_val = self.stderr if self.stderr else ""
+        if isinstance(stderr_val, bytes): stderr_val = stderr_val.decode()
         return "undefined reference to `WinMain'".lower() in stderr_val.lower()
         
     def __str__(self) -> str:
@@ -92,6 +95,9 @@ class CompilationResult(ProcessResult):
         output = super().__str__()
         if not self.success: output = f"{failure_reason}  {output}"
         return output
+    
+    def __bool__(self) -> bool:
+        return self.success
     # could override success property of parent to include more compile specific checking of error (some errors logged to stdout might not be true errors)        
 
 

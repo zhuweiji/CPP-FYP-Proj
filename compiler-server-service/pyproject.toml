@@ -19,3 +19,8 @@ test = "compiler_server_service.scripts:test"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "WARNING"
+log_cli_format ='%(name)s-%(levelname)s|%(lineno)d:  %(message)s'

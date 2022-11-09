@@ -2,7 +2,7 @@ from contextlib import contextmanager
 import re
 import subprocess
 from typing import Union
-from compiler_server_service.cpp_compiler_module.process_results import CodeExecutionResult, CompilationResult
+from compiler_server_service.cpp_compiler.process_results import CodeExecutionResult, CompilationResult
 from compiler_server_service.utilities import *
 
 from pathlib import Path
@@ -20,7 +20,7 @@ class CPPCompiler:
         '''	Compile some arbitrary C++ code and test it using a predefined test_file '''
         
         # store all intermediate files (compiled executables, etc.) used in the running of this program in a temporary directory
-        with tempfile.TemporaryDirectory(dir=CPP_TEST_SOURCE_DIRPATH) as tmp_dir_path:
+        with tempfile.TemporaryDirectory(dir=GUIDED_TUTORIALS_DIR_PATH) as tmp_dir_path:
             with tempfile.NamedTemporaryFile(suffix='.cpp', dir=tmp_dir_path, delete=False) as temp_file:
                 
                 # ammend all non-stdlib imports in the code (include "Truck.cpp") to import from parent
@@ -62,8 +62,8 @@ class CPPCompiler:
     @classmethod 
     def compile_and_run_from_code(cls, code:Union[str,bytes]):
         if isinstance(code, str): code = code.encode('utf-8')
-        log.warning(CPP_TEST_SOURCE_DIRPATH.exists())
-        with tempfile.TemporaryDirectory(dir=CPP_TEST_SOURCE_DIRPATH) as tmp_dir_path:
+        log.warning(GUIDED_TUTORIALS_DIR_PATH.exists())
+        with tempfile.TemporaryDirectory(dir=GUIDED_TUTORIALS_DIR_PATH) as tmp_dir_path:
             with tempfile.NamedTemporaryFile(suffix='.cpp', dir=tmp_dir_path, delete=False) as temp_file:
                 temp_file.write(code)
             
@@ -180,7 +180,7 @@ class CPPCompiler:
     @classmethod
     @contextmanager
     def create_temp_dir(cls):
-        temp_dir = tempfile.TemporaryDirectory(dir=CPP_TEST_SOURCE_DIRPATH) 
+        temp_dir = tempfile.TemporaryDirectory(dir=GUIDED_TUTORIALS_DIR_PATH) 
         yield temp_dir
         temp_dir.cleanup()
         
