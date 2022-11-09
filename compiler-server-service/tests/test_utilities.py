@@ -5,7 +5,7 @@ import logging
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
-from src.utilities import *
+from compiler_server_service.utilities import *
 
 class TestUtilities(unittest.TestCase):
     def test_check_path_exists(self):

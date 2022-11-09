@@ -1,5 +1,5 @@
 from pathlib import Path
-from src.routers import cpp_handlers
+from compiler_server_service.routers import cpp_handlers
 
 
 import logging

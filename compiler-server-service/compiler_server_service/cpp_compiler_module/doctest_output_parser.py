@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import re
-from src.cpp_compiler_module.cpp_compiler import CodeExecutionResult, CompilationResult
-from src.utilities import safe_get, get_named_capture_group
+from compiler_server_service.cpp_compiler_module.cpp_compiler import CodeExecutionResult, CompilationResult
+from compiler_server_service.utilities import safe_get, get_named_capture_group
 
 import logging
 from typing import Union

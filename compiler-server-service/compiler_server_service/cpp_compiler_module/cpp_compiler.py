@@ -2,8 +2,8 @@ from contextlib import contextmanager
 import re
 import subprocess
 from typing import Union
-from src.cpp_compiler_module.process_results import CodeExecutionResult, CompilationResult
-from src.utilities import *
+from compiler_server_service.cpp_compiler_module.process_results import CodeExecutionResult, CompilationResult
+from compiler_server_service.utilities import *
 
 from pathlib import Path
 import tempfile

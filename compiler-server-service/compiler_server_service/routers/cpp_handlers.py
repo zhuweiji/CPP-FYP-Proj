@@ -7,7 +7,7 @@ import logging
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
-from src.cpp_compiler_module.cpp_compiler import CPPCompiler
+from compiler_server_service.cpp_compiler_module.cpp_compiler import CPPCompiler
 
 ROUTE_PREFIX = '/cpp'
 
