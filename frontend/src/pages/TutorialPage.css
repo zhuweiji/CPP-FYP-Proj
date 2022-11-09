@@ -6,6 +6,15 @@ TutorialPage {
 }
 
 .mermaid svg {
-  max-width: 40%;
-  max-height: 40vh;
+  height: 30vh;
+}
+
+#instructionPage{
+  color: aliceblue;
+  background-color: darkslategrey;  
+  height: 60vh;
+  padding: 5%;
+  overflow-y: auto;
+  text-align: center;
+  font-family: "Open Sans";
 }

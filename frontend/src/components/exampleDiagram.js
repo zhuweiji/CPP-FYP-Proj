@@ -1,5 +1,4 @@
-export default `
-classDiagram
+export default `classDiagram
 class GeoPointType {
  <<enumeration>>
   BROWNFIELD
@@ -47,3 +46,6 @@ GeoPoint "1" <|-- "1" NearbyPoint: Implements
 NearbyPoints "1" -- "0..n"NearbyPoint: Contains
     
     `;
+
+// export default `flowchart LR
+//     Start --> Stop`
