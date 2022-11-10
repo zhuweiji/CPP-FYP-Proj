@@ -1,5 +1,3 @@
-
-
 class CompilerService {
     static HOST_URL = "localhost:8080"
 
@@ -17,7 +15,7 @@ class CompilerService {
                     },
                     body: JSON.stringify(data)
                 })
-
+            console.log(`result in service ${result.status}`)
             return result;
         } catch (error) {
             console.log("Error when sending code for compilation")
@@ -32,12 +30,17 @@ class CompilerService {
                     method: 'GET',
                 })
             // TODO: if server includes status in the get method, can check the status here
-            // TODO: include throttled status on server and in the editor icon
-            return true;
+            return this.probeResponse.ok;
         } catch (error) {
             console.error(`Encountered error while checking connection to compiler server: ${error}`);
-            return false;
+            return this.probeResponse.error;
         }
+    }
+
+    static probeResponse = {
+        'error': -1,
+        'ok': 1,
+        'throttled': 3,
     }
 }
 

@@ -6,12 +6,13 @@ import Editor, { useMonaco } from "@monaco-editor/react";
 import CodeIcon from '@mui/icons-material/Code';
 
 
-import { Container, Stack, Box, Button, ButtonGroup, Chip, Tooltip, Typography, Divider, IconButton } from '@mui/material';
+import { Container, Stack, Box, Button, ButtonGroup, Chip, Tooltip, Typography, Divider, IconButton, Pagination } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import ErrorIcon from '@mui/icons-material/Error';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
+import OpacityIcon from '@mui/icons-material/Opacity';
 
 import './Editor.css';
 import CompilerService from "../services/CompilerBackend";
@@ -37,7 +38,8 @@ const CompilerServerStatuses = Object.freeze({
     READY: "Strong connection to the compiler server",
     INTERMITTENT: "There have been some issues with the connection to the compiler server",
     UNCONTACTABLE: "The compiler server is unreachable - Check your connection or the compiler server could be down",
-    THROTTLED: "You have sent too many compile requests recently. The compiler server is throttling your requests temporarily."
+    THROTTLED: "You have sent too many compile requests recently. The compiler server is throttling your requests temporarily.",
+    RECENLTY_THROTTLED: "Your connection has been throttled recently. Consider slowing down the rate of your compile requests.",
 })
 
 function CodeEditor() {
@@ -50,12 +52,12 @@ function CodeEditor() {
     const [executionResults, setExecutionResults] = useState([]);
 
     const [displayedExecutionResult, setDisplayedExecutionResult] = useState(defaultTextInTerminal);
-    // const [executionResultList, setExecutionResult]
     const compilerServerProbeResults = [];
+    let wasThrottled = false;
 
     const [theme, setTheme] = useState("light");
 
-    let compilerServerProbeIntervalMS = 5000;
+    let compilerServerProbeIntervalMS = 2000;
 
     function handleEditorWillMount(monaco) {
         // here is the monaco instance
@@ -79,6 +81,7 @@ function CodeEditor() {
     }
 
     function compilerStatusIcon() {
+        // using the compilerServerStatus state, return a Tooltip button that corresponds to the state
         let icon;
         if (compilerServerStatus === CompilerServerStatuses.WILL_NOT_TEST) {
 
@@ -92,6 +95,8 @@ function CodeEditor() {
             icon = <ClearIcon color='error' />;
         } else if (compilerServerStatus === CompilerServerStatuses.THROTTLED) {
             icon = <AcUnitIcon color='secondary' />;
+        } else if (compilerServerStatus === CompilerServerStatuses.RECENLTY_THROTTLED) {
+            icon = <OpacityIcon color='secondary' />;
         }
 
         return <Tooltip title={compilerServerStatus}>
@@ -106,48 +111,70 @@ function CodeEditor() {
         setIsEditorReady(false);
         let code = getEditorValue();
         let result = await CompilerService.compile_and_run(code)
+        
+        if (result.status === 429){
+            setCompilerServerStatus(CompilerServerStatuses.THROTTLED);
 
-        let defaultErrorMessage = "There was an error on the compiler server. Please wait and try again later."
+            // TODO: trying to update compilerServerProbeResults to include one throttled value
+            // but because compilerServerProbeResults is being used in two different async functions
+            // i cant change the value here, because its not reflected in the other function
+            wasThrottled = true;
+            setIsEditorReady(true);
+        } else{
 
-        // // TODO: this should be in a catch
-        // if (!result || !result.ok || result.status_code !== 200) {
-        //     if (compilerServerStatus == CompilerServerStatuses.READY || compilerServerStatus == CompilerServerStatuses.UNTESTED) {
-        //         setCompilerServerStatus(CompilerServerStatuses.INTERMITTENT);
-        //     }
+            let defaultErrorMessage = "There was an error on the compiler server. Please wait and try again later."
 
-        //     console.log('error on request to compile')
-        //     console.error(result)
-        //     if (result){
-        //         console.error(result.json())
-        //     }
-        //     setExecutionResult(defaultErrorMessage);
-        //     return
-        // }
+            // // TODO - this should be in a catch
+            // if (!result || !result.ok || result.status_code !== 200) {
+            //     if (compilerServerStatus == CompilerServerStatuses.READY || compilerServerStatus == CompilerServerStatuses.UNTESTED) {
+            //         setCompilerServerStatus(CompilerServerStatuses.INTERMITTENT);
+            //     }
+
+            //     console.log('error on request to compile')
+            //     console.error(result)
+            //     if (result){
+            //         console.error(result.json())
+            //     }
+            //     setExecutionResult(defaultErrorMessage);
+            //     return
+            // }
 
 
-        let result_data = await result.json()
-        console.log(result_data)
+            let result_data = await result.json()
 
-        let displayedOutput = result_data['result']
-        setExecutionResults([...executionResults, displayedOutput]);
+            let displayedOutput = result_data['result']
+            setExecutionResults([...executionResults, displayedOutput]);
 
-        console.log(displayedOutput)
-        setDisplayedExecutionResult(displayedOutput);
+            console.log(displayedOutput)
+            setDisplayedExecutionResult(displayedOutput);
 
-        setIsEditorReady(true);
-
+            setIsEditorReady(true);
+        }
     }
 
     async function testConnectionToCompilerServer() {
         let probeResults = await CompilerService.check_connection();
-        compilerServerProbeResults.unshift(probeResults); // append to front of list
 
-        if (compilerServerProbeResults.length >= 5) {
-            compilerServerProbeResults.pop()
+        console.log(`wasthrottled ${wasThrottled}`)
+        if (wasThrottled === true){
+            console.log('was throttled')
+            compilerServerProbeResults.push(CompilerService.probeResponse.throttled); // append to front of list
+        } else{
+            compilerServerProbeResults.push(probeResults); // append to front of list
         }
-        if (compilerServerProbeResults.every((value) => value === true)) {
+
+
+        if (compilerServerProbeResults.length > 5) {
+            compilerServerProbeResults.shift()
+        }
+
+        console.log(compilerServerProbeResults)
+        
+        if (compilerServerProbeResults.some((value) => value === CompilerService.probeResponse.throttled)) {
+            setCompilerServerStatus(CompilerServerStatuses.RECENLTY_THROTTLED)
+        } else if (compilerServerProbeResults.every((value) => value === CompilerService.probeResponse.ok)) {
             setCompilerServerStatus(CompilerServerStatuses.READY);
-        } else if (compilerServerProbeResults.every((value) => value === false)) {
+        } else if (compilerServerProbeResults.every((value) => value === CompilerService.probeResponse.error)) {
             setCompilerServerStatus(CompilerServerStatuses.UNCONTACTABLE);
         } else {
             setCompilerServerStatus(CompilerServerStatuses.INTERMITTENT);
@@ -200,13 +227,10 @@ function CodeEditor() {
                 <div>
                     <Stack direction="row" alignItems="center">
                         <Typography style={{ fontFamily: "Inconsolata" }}> View results from execution: </Typography>
-                        <ButtonGroup variant="text" aria-label="text button group">
-                            {
-                                // button onclick: display the results in the executionResultDisplay
-                                executionResults.length !== 0 ? executionResults.map((result, index) => <Button key={index}> {index + 1} </Button>) : <Button disabled>1</Button>
-                            }
-
-                        </ButtonGroup>
+                        <Pagination count={executionResults.length} onChange={(event,value) => {
+                            let index = value-1; // onChange value starts from 1
+                            setDisplayedExecutionResult(executionResults[index]);
+                        }}></Pagination>
                     </Stack>
 
                 </div>
