@@ -57,7 +57,7 @@ function CodeEditor() {
 
     const [theme, setTheme] = useState("light");
 
-    let compilerServerProbeIntervalMS = 2000;
+    let compilerServerProbeIntervalMS = 7000;
 
     function handleEditorWillMount(monaco) {
         // here is the monaco instance
@@ -118,6 +118,8 @@ function CodeEditor() {
             // TODO: trying to update compilerServerProbeResults to include one throttled value
             // but because compilerServerProbeResults is being used in two different async functions
             // i cant change the value here, because its not reflected in the other function
+            // https://stackoverflow.com/questions/58612969/different-behavior-of-async-functions-when-assigning-temporary-to-variable
+            // need to fix this to update the probeResults for when first successful compile, but have not probed yet - dont want the icon to stil be the checking icon
             wasThrottled = true;
             setIsEditorReady(true);
         } else{
