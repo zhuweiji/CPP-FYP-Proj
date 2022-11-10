@@ -1,20 +1,25 @@
-from pathlib import Path
-from compiler_server_service.routers import cpp_handlers
-
-
 import logging
 
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+
+from compiler_server_service.limiter.rate_limiter import limiterobj
+from compiler_server_service.routers import cpp_handlers
 
 
 app = FastAPI()
 
+app.state.limiter = limiterobj
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    
 app.include_router(cpp_handlers.router)
 
 origins = [

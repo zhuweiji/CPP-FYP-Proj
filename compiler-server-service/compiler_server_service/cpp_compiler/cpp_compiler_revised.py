@@ -105,6 +105,18 @@ class CPP_Compiler:
         return CompilationResult(
             ProcessWrapper.shell_run('g++', *files_to_be_compiled, '-o', out_filepath)
             )
+        
+    @classmethod
+    def compile_code(cls, code, output_dir=None):
+        raise NotImplementedError
+        # the various output.exe's should be in a directory named by the user's id
+        output_dir = output_dir or USER_TEMP_FILES_DIR_PATH / 'output.exe'
+        command = ["echo", code, "|", "g++", "-xc++", "-", "-o", output_dir]
+        
+        return CompilationResult(ProcessWrapper.shell_run(*command))
     
 
 
+#g++ cheatsheets
+# https://www.cs.bu.edu/fac/gkollios/cs113/Usingg++.html
+# https://bytes.usc.edu/cs104/wiki/gcc/

@@ -42,12 +42,15 @@ const CompilerServerStatuses = Object.freeze({
 
 function CodeEditor() {
     let TEST_CONNECTION = true;
-    
+
     const monacoRef = useRef(null);
     const [isEditorReady, setIsEditorReady] = useState(false);
     const [compilerServerStatus, setCompilerServerStatus] = useState(TEST_CONNECTION ? CompilerServerStatuses.UNTESTED : CompilerServerStatuses.WILL_NOT_TEST);
 
-    const [executionResult, setExecutionResult] = useState(defaultTextInTerminal);
+    const [executionResults, setExecutionResults] = useState([]);
+
+    const [displayedExecutionResult, setDisplayedExecutionResult] = useState(defaultTextInTerminal);
+    // const [executionResultList, setExecutionResult]
     const compilerServerProbeResults = [];
 
     const [theme, setTheme] = useState("light");
@@ -75,31 +78,32 @@ function CodeEditor() {
         return monacoRef.current.getValue();
     }
 
-    function compilerStatusIcon(){
+    function compilerStatusIcon() {
         let icon;
-        if (compilerServerStatus == CompilerServerStatuses.WILL_NOT_TEST) {
+        if (compilerServerStatus === CompilerServerStatuses.WILL_NOT_TEST) {
 
-        } else if (compilerServerStatus == CompilerServerStatuses.UNTESTED){
-            icon = <RestartAltIcon color='disabled'/>;
-        } else if (compilerServerStatus == CompilerServerStatuses.READY){
-            icon = <CheckIcon color='success'/>;
-        } else if (compilerServerStatus == CompilerServerStatuses.INTERMITTENT){
-            icon = <ErrorIcon color='warning'/>;
-        } else if (compilerServerStatus == CompilerServerStatuses.UNCONTACTABLE){
-            icon = <ClearIcon color='error'/>;
-        } else if (compilerServerStatus == CompilerServerStatuses.THROTTLED){
-            icon = <AcUnitIcon color='secondary'/>;
+        } else if (compilerServerStatus === CompilerServerStatuses.UNTESTED) {
+            icon = <RestartAltIcon color='disabled' />;
+        } else if (compilerServerStatus === CompilerServerStatuses.READY) {
+            icon = <CheckIcon color='success' />;
+        } else if (compilerServerStatus === CompilerServerStatuses.INTERMITTENT) {
+            icon = <ErrorIcon color='warning' />;
+        } else if (compilerServerStatus === CompilerServerStatuses.UNCONTACTABLE) {
+            icon = <ClearIcon color='error' />;
+        } else if (compilerServerStatus === CompilerServerStatuses.THROTTLED) {
+            icon = <AcUnitIcon color='secondary' />;
         }
-        
+
         return <Tooltip title={compilerServerStatus}>
             <IconButton>
                 {icon}
             </IconButton>
         </Tooltip>
-        
+
     }
 
     async function handleCompileButton() {
+        setIsEditorReady(false);
         let code = getEditorValue();
         let result = await CompilerService.compile_and_run(code)
 
@@ -120,24 +124,28 @@ function CodeEditor() {
         //     return
         // }
 
+
         let result_data = await result.json()
-
         console.log(result_data)
-        // need to do some parsing of the output (currently is CodeExectionResult: ... out > ....)
-        let displayed_output = result_data['result']
-        console.log(displayed_output)
 
-        setExecutionResult(displayed_output);
+        let displayedOutput = result_data['result']
+        setExecutionResults([...executionResults, displayedOutput]);
+
+        console.log(displayedOutput)
+        setDisplayedExecutionResult(displayedOutput);
+
+        setIsEditorReady(true);
+
     }
 
-    async function testConnectionToCompilerServer(){
+    async function testConnectionToCompilerServer() {
         let probeResults = await CompilerService.check_connection();
         compilerServerProbeResults.unshift(probeResults); // append to front of list
 
-        if (compilerServerProbeResults.length >= 5){
+        if (compilerServerProbeResults.length >= 5) {
             compilerServerProbeResults.pop()
         }
-        if (compilerServerProbeResults.every((value) => value === true)){
+        if (compilerServerProbeResults.every((value) => value === true)) {
             setCompilerServerStatus(CompilerServerStatuses.READY);
         } else if (compilerServerProbeResults.every((value) => value === false)) {
             setCompilerServerStatus(CompilerServerStatuses.UNCONTACTABLE);
@@ -146,18 +154,18 @@ function CodeEditor() {
         }
     }
 
-    useEffect(()=>{
-        if (TEST_CONNECTION){
+    useEffect(() => {
+        if (TEST_CONNECTION) {
             const interval = setInterval(() => {
                 testConnectionToCompilerServer();
             }, compilerServerProbeIntervalMS);
 
             return () => clearInterval(interval);
-        } else{
+        } else {
 
         }
     }, [])
-    
+
 
     return (
         <>
@@ -193,25 +201,28 @@ function CodeEditor() {
                     <Stack direction="row" alignItems="center">
                         <Typography style={{ fontFamily: "Inconsolata" }}> View results from execution: </Typography>
                         <ButtonGroup variant="text" aria-label="text button group">
-                            <Button> 1 </Button>
-                            <Button> 2 </Button>
-                            <Button variant="outlined"> 3 </Button>
+                            {
+                                // button onclick: display the results in the executionResultDisplay
+                                executionResults.length !== 0 ? executionResults.map((result, index) => <Button key={index}> {index + 1} </Button>) : <Button disabled>1</Button>
+                            }
+
                         </ButtonGroup>
                     </Stack>
-                    
+
                 </div>
-                
+
                 {compilerStatusIcon()}
             </Stack>
 
             <Box id="executionResultDisplay" sx={{
                 width: "100%",
-                height: "12em",
+                height: "20em",
                 fontFamily: 'Inconsolata',
                 padding: "5%",
-                whiteSpace: "pre-line" // displays line breaks instead of keeping text on same line
+                whiteSpace: "pre-line", // displays line breaks instead of keeping text on same line
+                overflowY: 'auto',
             }}>
-                {executionResult}
+                {displayedExecutionResult}
             </Box>
         </>
 
