@@ -47,13 +47,14 @@ function CodeEditor() {
 
     const monacoRef = useRef(null);
     const [isEditorReady, setIsEditorReady] = useState(false);
+    const [wasThrottled, setWasThrottled] = useState(false);
+    const [secondsTillUnthrottled, setSecondsTillUnthrottled] = useState(0);
     const [compilerServerStatus, setCompilerServerStatus] = useState(TEST_CONNECTION ? CompilerServerStatuses.UNTESTED : CompilerServerStatuses.WILL_NOT_TEST);
 
     const [executionResults, setExecutionResults] = useState([]);
 
     const [displayedExecutionResult, setDisplayedExecutionResult] = useState(defaultTextInTerminal);
     const compilerServerProbeResults = [];
-    let wasThrottled = false;
 
     const [theme, setTheme] = useState("light");
 
@@ -80,7 +81,19 @@ function CodeEditor() {
         return monacoRef.current.getValue();
     }
 
-    function compilerStatusIcon() {
+    function getThrottledIcon() {
+        if (wasThrottled === true) {
+
+            return <Tooltip title={`${CompilerServerStatuses.THROTTLED}\nYou can next compile in ${secondsTillUnthrottled}s`}>
+                <IconButton>
+                    <AcUnitIcon color="secondary" />
+                </ IconButton>
+
+            </Tooltip>
+        }
+    }
+
+    function getCompilerStatusIcon() {
         // using the compilerServerStatus state, return a Tooltip button that corresponds to the state
         let icon;
         if (compilerServerStatus === CompilerServerStatuses.WILL_NOT_TEST) {
@@ -93,10 +106,6 @@ function CodeEditor() {
             icon = <ErrorIcon color='warning' />;
         } else if (compilerServerStatus === CompilerServerStatuses.UNCONTACTABLE) {
             icon = <ClearIcon color='error' />;
-        } else if (compilerServerStatus === CompilerServerStatuses.THROTTLED) {
-            icon = <AcUnitIcon color='secondary' />;
-        } else if (compilerServerStatus === CompilerServerStatuses.RECENLTY_THROTTLED) {
-            icon = <OpacityIcon color='secondary' />;
         }
 
         return <Tooltip title={compilerServerStatus}>
@@ -111,18 +120,24 @@ function CodeEditor() {
         setIsEditorReady(false);
         let code = getEditorValue();
         let result = await CompilerService.compile_and_run(code)
-        
-        if (result.status === 429){
-            setCompilerServerStatus(CompilerServerStatuses.THROTTLED);
 
-            // TODO: trying to update compilerServerProbeResults to include one throttled value
-            // but because compilerServerProbeResults is being used in two different async functions
-            // i cant change the value here, because its not reflected in the other function
-            // https://stackoverflow.com/questions/58612969/different-behavior-of-async-functions-when-assigning-temporary-to-variable
-            // need to fix this to update the probeResults for when first successful compile, but have not probed yet - dont want the icon to stil be the checking icon
-            wasThrottled = true;
-            setIsEditorReady(true);
-        } else{
+        if (result.status === 429) {
+            setCompilerServerStatus(CompilerServerStatuses.THROTTLED);
+            setWasThrottled(true);
+
+            let msToNextMinute = (60 - new Date().getSeconds()) * 1000;
+            
+            setSecondsTillUnthrottled(msToNextMinute/1000);
+            let updateSecondsToThrottleIntervalId = setInterval(()=>{
+                setSecondsTillUnthrottled((prevState, props)=>prevState-1);
+                },1000);
+
+            setTimeout(() => {
+                clearInterval(updateSecondsToThrottleIntervalId);
+                setWasThrottled(false);
+                setIsEditorReady(true);
+            }, msToNextMinute);
+        } else {
 
             let defaultErrorMessage = "There was an error on the compiler server. Please wait and try again later."
 
@@ -147,7 +162,6 @@ function CodeEditor() {
             let displayedOutput = result_data['result']
             setExecutionResults([...executionResults, displayedOutput]);
 
-            console.log(displayedOutput)
             setDisplayedExecutionResult(displayedOutput);
 
             setIsEditorReady(true);
@@ -157,24 +171,13 @@ function CodeEditor() {
     async function testConnectionToCompilerServer() {
         let probeResults = await CompilerService.check_connection();
 
-        console.log(`wasthrottled ${wasThrottled}`)
-        if (wasThrottled === true){
-            console.log('was throttled')
-            compilerServerProbeResults.push(CompilerService.probeResponse.throttled); // append to front of list
-        } else{
-            compilerServerProbeResults.push(probeResults); // append to front of list
-        }
-
+        compilerServerProbeResults.push(probeResults); // append to front of list
 
         if (compilerServerProbeResults.length > 5) {
             compilerServerProbeResults.shift()
         }
 
-        console.log(compilerServerProbeResults)
-        
-        if (compilerServerProbeResults.some((value) => value === CompilerService.probeResponse.throttled)) {
-            setCompilerServerStatus(CompilerServerStatuses.RECENLTY_THROTTLED)
-        } else if (compilerServerProbeResults.every((value) => value === CompilerService.probeResponse.ok)) {
+        if (compilerServerProbeResults.every((value) => value === CompilerService.probeResponse.ok)) {
             setCompilerServerStatus(CompilerServerStatuses.READY);
         } else if (compilerServerProbeResults.every((value) => value === CompilerService.probeResponse.error)) {
             setCompilerServerStatus(CompilerServerStatuses.UNCONTACTABLE);
@@ -184,6 +187,7 @@ function CodeEditor() {
     }
 
     useEffect(() => {
+        // poll connection to compiler server backend
         if (TEST_CONNECTION) {
             const interval = setInterval(() => {
                 testConnectionToCompilerServer();
@@ -229,15 +233,18 @@ function CodeEditor() {
                 <div>
                     <Stack direction="row" alignItems="center">
                         <Typography style={{ fontFamily: "Inconsolata" }}> View results from execution: </Typography>
-                        <Pagination count={executionResults.length} onChange={(event,value) => {
-                            let index = value-1; // onChange value starts from 1
+                        <Pagination count={executionResults.length} onChange={(event, value) => {
+                            let index = value - 1; // onChange value starts from 1
                             setDisplayedExecutionResult(executionResults[index]);
                         }}></Pagination>
                     </Stack>
 
                 </div>
 
-                {compilerStatusIcon()}
+                <Stack direction="row" alignItems="end">
+                    {getThrottledIcon()}
+                    {getCompilerStatusIcon()}
+                </Stack>
             </Stack>
 
             <Box id="executionResultDisplay" sx={{
