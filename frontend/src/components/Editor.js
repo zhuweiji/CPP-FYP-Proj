@@ -189,6 +189,8 @@ function CodeEditor() {
     useEffect(() => {
         // poll connection to compiler server backend
         if (TEST_CONNECTION) {
+            testConnectionToCompilerServer();
+            
             const interval = setInterval(() => {
                 testConnectionToCompilerServer();
             }, compilerServerProbeIntervalMS);
