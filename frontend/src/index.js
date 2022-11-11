@@ -14,6 +14,7 @@ import Homepage from './pages/Homepage';
 import TutorialList from './pages/TutorialListPage.js';
 import ErrorPage from './pages/ErrorPage';
 import UnderConstruction from './pages/UnderConstruction';
+import IDEPage from './pages/OnlyIDEPage';
 
 const router = createBrowserRouter([
   {
@@ -31,7 +32,7 @@ const router = createBrowserRouter([
     element: <UnderConstruction />,
   }, {
     path: "ide",
-    element: <UnderConstruction />,
+    element: <IDEPage />,
   }, {
     path: "instructions",
     element: <UnderConstruction />,

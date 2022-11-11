@@ -19,7 +19,6 @@ import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 
 import { blueGrey } from '@mui/material/colors';
-import mermaid from "mermaid";
 
 function App(props) {
 

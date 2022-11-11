@@ -28,7 +28,7 @@ def root(request: Request):
 
 
 @router.post('/compile_and_run')
-@limiterobj.limit('1/minute')
+@limiterobj.limit('10/minute')
 def handle_compile_and_run(request: Request, data: POST_BODY__CPP_CODE):
     try:
         log.info(data.code)

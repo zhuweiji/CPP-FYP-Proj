@@ -1,5 +1,5 @@
 module 1
-imagine calculator
+imagine calculator (or calculator?)
 
 able to add and subtract complex numbers
 have real and imaginary values
