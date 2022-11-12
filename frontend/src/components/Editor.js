@@ -6,7 +6,7 @@ import Editor, { useMonaco } from "@monaco-editor/react";
 import CodeIcon from '@mui/icons-material/Code';
 
 
-import { Container, Stack, Box, Button, ButtonGroup, Chip, Tooltip, Typography, Divider, IconButton, Pagination } from '@mui/material';
+import { Container, Stack, Box, Button, ButtonGroup, Chip, Tooltip, Typography, Divider, IconButton, Pagination, CircularProgress } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -217,10 +217,12 @@ function CodeEditor() {
 
                 <br /><br />
 
-                <Stack direction="row" justifyContent="end" alignItems="center">
+                <Stack direction="row" justifyContent="end" alignItems="center" spacing={2}>
                     <Button variant="outlined" size="large" endIcon={<CodeIcon />} onClick={handleCompileButton} disabled={!isEditorReady} justify="flex-end">
                         Compile
                     </Button>
+                    {(!isEditorReady && (compilerServerStatus !== CompilerServerStatuses.UNCONTACTABLE)) ? <CircularProgress size='1rem' /> : null}
+
                 </Stack>
             </div>
 

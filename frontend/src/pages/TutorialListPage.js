@@ -1,9 +1,13 @@
 import React, { useState, useRef } from "react";
 import ButtonAppBar from "../components/Nav";
+import LinearProgressWithLabel from "../components/LinearProgressBar__Labelled";
 
-import { red, blue, green, blueGrey } from '@mui/material/colors';
+
+import { red, blue, green, blueGrey, grey, teal, pink } from '@mui/material/colors';
 import { Typography, Box, Grid, Container, Stack, Paper } from '@mui/material';
 
+import CloseIcon from '@mui/icons-material/Close';
+import DoneIcon from '@mui/icons-material/Done';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -13,7 +17,9 @@ import Divider from '@mui/material/Divider';
 import InboxIcon from '@mui/icons-material/Inbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import BabyImage from "../static/first_steps.jpg";
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
+import { useNavigate } from 'react-router-dom';
 
 
 import './TutorialListPage.css'
@@ -82,34 +88,81 @@ export default function TutorialList(props) {
         const blackCarImage = require(`../static/${image_url}`);
 
         return <div key={topic['id']}>
+
             <Stack direction="column" alignItems="start" className="TutorialBanner" sx={{
                 // backgroundColor: 'black',
-                color: 'whitesmoke', 
+                color: 'whitesmoke',
                 pl: '1rem', pb: '2rem', pr: '10%',
+                minHeight: '15vh',
                 backgroundImage: `url(${blackCarImage}), linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8))`,
                 backgroundPosition: 'center center',
                 backgroundSize: 'cover',
                 backgroundBlendMode: 'overlay',
+                '&:hover': {
+                    boxShadow: 6,
+                },
+                '&:hover .hiddenRow': {
+                    // transform: "translate(0%, 0)",
+                    transition: 'all 0.4s ease-in-out',
+                    opacity: 100,
+                    maxHeight: 1000
+
+                }
             }}>
                 <Typography sx={{ mt: 4, mb: 2 }} variant="h4" component="div">{topic['topic_name']}</Typography>
-                <Typography sx={{ mt: 4, mb: 2 }} variant="p" component="div" className="tutorialBannerDescription"><i>{topic['description']}</i></Typography>
+                <Typography sx={{ mt: 4, mb: 5 }} variant="p" component="div" className="tutorialBannerDescription"><i>{topic['description']}</i></Typography>
+                
+                <Stack direction='row' alignItems='center' className="hiddenRow" spacing={2} 
+                    sx={{ transition: 'all 0.4s ease-in-out 0.5s', opacity: 0.0, maxHeight: 0 }}>
+                    <Typography variant="h6" component="div" >
+                        Tutorial Completed: 
+                    </Typography> 
+                    {false ? <DoneIcon/> : <CloseIcon sx={{color:red[600]}}/>}
+                </Stack>
+                {/* <Stack className='hiddenRow' direction='row'
+                    sx={{
+                        borderRadius: 1,
+                        bgcolor: grey[900],
+                        color: 'text.secondary',
+                        minHeight: 0,
+                    }}
+                >
+                    <Typography variant="p" component="div" sx={{ m: 1.5, color: blue[600]}}>Tutorial Completed: </Typography>
+                    {false ?
+                        <Typography variant="p" component="div" sx={{ m: 1.5, color: green[800] }}>Yes </Typography> : 
+                        <Typography variant="p" component="div" sx={{ m: 1.5, color: red[800]}}>No </Typography>}
+                    <Divider orientation="vertical" variant="middle" flexItem />
+                </Stack> */}
+
             </Stack>
 
-
-            <List key={topic['id']} sx={{ 'paddingBottom': '4rem' }}>
+            <List key={topic['id']} sx={{ mb: '1rem' }}>
                 <Divider />
                 {
                     topic['tuts'].map((tutorial, index) =>
                         <div key={index}>
-                            <Paper elevation={2} >
-                                <ListItem key={index} >
-                                    <ListItemButton href={`tutorial/${index}`}><ListItemText primary={`${index+1}: ${tutorial}`} /></ListItemButton>
+                            <Paper elevation={3} >
+                                <ListItem key={index} sx={{
+                                    '&:hover': {
+                                        boxShadow: 6,
+                                    },
+                                }} >
+
+                                    <Stack direction='row' alignItems="center" sx={{ width: '100%', }}>
+                                        <ListItemButton 
+                                        sx={{'&:hover':{background: 'transparent'}}}
+                                         href={`tutorial/${index}`}><ListItemText primary={`${index + 1}: ${tutorial}`} /></ListItemButton>
+                                        <KeyboardArrowRightIcon id={`hiddenArrow${index}`} />
+                                    </Stack>
                                 </ListItem>
                             </Paper>
                         </div>
                     )
                 }
             </List>
+            <LinearProgressWithLabel value={0} />
+
+            <br /><br />
             <br /><br />
         </div>
     })
@@ -118,7 +171,7 @@ export default function TutorialList(props) {
     return (<div className="listPage">
         <ButtonAppBar></ButtonAppBar>
 
-        <Box sx={{ width: '100%', margin: '5%' }}>
+        <Box sx={{ width: '90vw', margin: '5%' }}>
             <Typography variant="h2">Course Outline</Typography>
             <Divider sx={{ pb: '3rem' }} />
             <br />

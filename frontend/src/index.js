@@ -15,6 +15,7 @@ import TutorialList from './pages/TutorialListPage.js';
 import ErrorPage from './pages/ErrorPage';
 import UnderConstruction from './pages/UnderConstruction';
 import IDEPage from './pages/OnlyIDEPage';
+import NotebookPage from './pages/OnlyNotebookPage';
 
 const router = createBrowserRouter([
   {
@@ -36,7 +37,10 @@ const router = createBrowserRouter([
   }, {
     path: "instructions",
     element: <UnderConstruction />,
-  }, 
+  }, {
+    path: 'notebook',
+    element: <NotebookPage/>,
+  }
   
 ]);
 
