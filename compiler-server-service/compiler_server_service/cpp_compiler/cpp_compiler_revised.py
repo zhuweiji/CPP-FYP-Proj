@@ -6,17 +6,19 @@ from compiler_server_service.utilities import *
 from pathlib import Path
 import tempfile
 import logging
-
+import platform
 
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
 class ProcessWrapper:
+    is_windows = platform.system() == 'Windows'
+    
     @classmethod
     def shell_run__split_text(cls, str_command:str):
         """Run a string as a command by splitting the string on whitespace
-        e.g. shell_run__split_text('wsl -l -v')"""
+        e.g. shell_run__split_text('ls -la)"""
         commands = str_command.split(' ')
         command = commands[0]
         args = commands[1:]
@@ -25,7 +27,6 @@ class ProcessWrapper:
     @classmethod
     def shell_run(cls, command, *args):
         """Create a process to run some command using *WSL* <- should this be changed? """
-        log.info(f"wsl.exe {command} {args}")
         
         # catch types of exceptions here and feed Enums to ProcessResult for their input
         return subprocess.run([f"{command}", *args], capture_output=True)
@@ -34,6 +35,12 @@ class ProcessWrapper:
     def give_executable_permissions(cls, filepath: Path):
         """Only to be used in linux machines"""
         return cls.shell_run('chmod', '+x', filepath)
+    
+    @classmethod
+    def check_gcc_gpp(cls):
+        compile_result = CompilationResult(cls.shell_run('g++'))
+        return 'fatal error: no input files' in compile_result.stderr
+            
 
 
 

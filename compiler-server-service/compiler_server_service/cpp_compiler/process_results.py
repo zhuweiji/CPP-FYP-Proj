@@ -45,6 +45,9 @@ class ProcessResult:
         stderr_val = self.stderr if self.stderr else ""
         return f"{self.__class__.__name__}:{additional_info}\nout > {stdout_val[:300]}\nerr > {stderr_val[:300]}"
     
+    def __repr__(self) -> str:
+        return self.__str__()
+    
     def full_str(self) -> str:
         additional_info = f"Success!" if self.success else f"Failure!"
         return f"{self.__class__.__name__}:{additional_info}\nout > {self.stdout}\nerr > {self.stderr}"
