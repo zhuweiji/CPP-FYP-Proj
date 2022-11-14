@@ -1,4 +1,5 @@
 import logging
+import os
 import platform
 import subprocess
 import tempfile
@@ -17,6 +18,7 @@ log = logging.getLogger(__name__)
 
 class ProcessWrapper:
     is_windows = platform.system() == 'Windows'
+    process_timeout_seconds = int(os.getenv('PROCESS_RUN_TIMEOUT_SECONDS', 15))
     
     @classmethod
     def shell_run__split_text(cls, str_command:str):
@@ -32,7 +34,7 @@ class ProcessWrapper:
         """Create a process to run some command """
         
         # catch types of exceptions here and feed Enums to ProcessResult for their input
-        return subprocess.run([f"{command}", *args], capture_output=True)
+        return subprocess.run([f"{command}", *args], capture_output=True, timeout=cls.process_timeout_seconds)
     
     @classmethod
     def give_executable_permissions(cls, filepath: Path):

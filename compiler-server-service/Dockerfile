@@ -8,6 +8,7 @@ ENV POETRY_VERSION=1.2.0
 ENV POETRY_HOME=/opt/poetry
 ENV POETRY_VENV=/opt/poetry-venv
 ENV POETRY_CACHE_DIR=/opt/.cache
+ENV PROCESS_RUN_TIMEOUT_SECONDS=15
 
 # Install poetry separated from system interpreter
 RUN python3 -m venv $POETRY_VENV \
