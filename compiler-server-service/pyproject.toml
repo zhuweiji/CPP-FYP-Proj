@@ -15,9 +15,10 @@ websockets = "^10.4"
 [tool.poetry.dev-dependencies]
 
 [tool.poetry.scripts]
-start = "scripts:start"
-test = "scripts:test"
-tests = "scripts:test"
+start       = "scripts:start"
+test        = "scripts:test"
+tests       = "scripts:test"
+healthcheck = "scripts:healthcheck"
 
 
 [build-system]

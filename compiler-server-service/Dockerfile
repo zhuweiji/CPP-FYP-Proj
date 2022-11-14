@@ -24,4 +24,6 @@ RUN poetry install
 
 COPY . /app
 
+HEALTHCHECK CMD poetry run healthcheck
+
 ENTRYPOINT poetry run start
