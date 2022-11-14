@@ -25,7 +25,8 @@ origins = [
     "http://localhost:3000",
     "http://localhost:8080",
     "https://p01--compiler-server--m98yzdkgzrwc.code.run/",
-    
+    "https://p01--compiler-server--m98yzdkgzrwc.code.run/cpp/"
+
 ]
 
 app.add_middleware(
