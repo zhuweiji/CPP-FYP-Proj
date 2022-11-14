@@ -1,12 +1,15 @@
-import subprocess
-from typing import Union
-from compiler_server_service.cpp_compiler.process_results import CodeExecutionResult, CompilationResult
-from compiler_server_service.utilities import *
-
-from pathlib import Path
-import tempfile
 import logging
 import platform
+import subprocess
+import tempfile
+from pathlib import Path
+from typing import Union
+
+from compiler_server_service.cpp_compiler.process_results import (
+    CodeExecutionResult,
+    CompilationResult,
+)
+from compiler_server_service.utilities import *
 
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -26,7 +29,7 @@ class ProcessWrapper:
     
     @classmethod
     def shell_run(cls, command, *args):
-        """Create a process to run some command using *WSL* <- should this be changed? """
+        """Create a process to run some command """
         
         # catch types of exceptions here and feed Enums to ProcessResult for their input
         return subprocess.run([f"{command}", *args], capture_output=True)
@@ -37,7 +40,7 @@ class ProcessWrapper:
         return cls.shell_run('chmod', '+x', filepath)
     
     @classmethod
-    def check_gcc_gpp(cls):
+    def check_gpp_available(cls):
         compile_result = CompilationResult(cls.shell_run('g++'))
         return 'fatal error: no input files' in compile_result.stderr
             

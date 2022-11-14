@@ -1,9 +1,12 @@
-from pathlib import Path
 import logging
 import re
+from pathlib import Path
 
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
+
+# might want to create (or ensure they are created) all these directories with a script on startup 
+# some of the test errors from ProcessWrapper are hard to comprehend when the directories are simply not created
 
 CPP_MODULE_DIR_PATH = Path(__file__).parent
 COMPILER_SERVER_SERVICE_DIR_PATH = CPP_MODULE_DIR_PATH.parent
