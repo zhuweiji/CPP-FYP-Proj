@@ -1,13 +1,13 @@
+import logging
+
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
-import logging
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
 from compiler_server_service.cpp_compiler.cpp_compiler_revised import CPP_Compiler
 from compiler_server_service.limiter.rate_limiter import limiterobj
-
 
 ROUTE_PREFIX = '/cpp'
 

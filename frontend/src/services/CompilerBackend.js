@@ -1,5 +1,5 @@
 class CompilerService {
-    static HOST_URL = "localhost:8080"
+    static HOST_URL = "https://p01--compiler-server--m98yzdkgzrwc.code.run/"
 
     static async compile_and_run(codeString) {
         const data = {
@@ -7,7 +7,7 @@ class CompilerService {
         }
 
         try {
-            let result = await fetch('http://localhost:8080/cpp/compile_and_run',
+            let result = await fetch(`${this.HOST_URL}cpp/compile_and_run`,
                 {
                     method: 'POST',
                     headers: {
@@ -25,7 +25,7 @@ class CompilerService {
 
     static async check_connection() {
         try {
-            let result = await fetch('http://localhost:8080/cpp/',
+            let result = await fetch(`${this.HOST_URL}cpp/`,
                 {
                     method: 'GET',
                 })
