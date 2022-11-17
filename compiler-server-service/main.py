@@ -5,13 +5,12 @@ log = logging.getLogger(__name__)
 
 from pathlib import Path
 
+from compiler_server_service.limiter.rate_limiter import limiterobj
+from compiler_server_service.routers import cpp_handlers
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-
-from compiler_server_service.limiter.rate_limiter import limiterobj
-from compiler_server_service.routers import cpp_handlers
 
 app = FastAPI()
 
@@ -24,6 +23,7 @@ origins = [
     "http://localhost",
     "http://localhost:3000",
     "http://localhost:8080",
+    "https://cpp-fyp-proj.vercel.app",
     "https://p01--compiler-server--m98yzdkgzrwc.code.run/",
     "https://p01--compiler-server--m98yzdkgzrwc.code.run/cpp/"
 
