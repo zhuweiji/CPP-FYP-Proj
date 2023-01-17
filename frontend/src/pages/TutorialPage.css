@@ -2,7 +2,7 @@
 TutorialPage {
   margin: 0;
   height: 100%;
-  overflow: hidden
+  overflow: hidden;
 }
 
 .mermaid svg {
@@ -17,4 +17,7 @@ TutorialPage {
   overflow-y: auto;
   text-align: center;
   font-family: "Open Sans";
+
+  /*  */
+  white-space: pre-line;
 }

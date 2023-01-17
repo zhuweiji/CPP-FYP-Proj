@@ -6,7 +6,7 @@ log = logging.getLogger(__name__)
 from pathlib import Path
 
 from compiler_server_service.limiter.rate_limiter import limiterobj
-from compiler_server_service.routers import cpp_handlers
+from compiler_server_service.routers import cpp_handlers, tutorial_handlers
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
@@ -18,6 +18,8 @@ app.state.limiter = limiterobj
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     
 app.include_router(cpp_handlers.router)
+app.include_router(tutorial_handlers.router)
+
 
 origins = [
     "http://localhost",

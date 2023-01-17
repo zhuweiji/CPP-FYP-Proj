@@ -15,7 +15,7 @@ import AcUnitIcon from '@mui/icons-material/AcUnit';
 import OpacityIcon from '@mui/icons-material/Opacity';
 
 import './Editor.css';
-import CompilerService from "../services/CompilerBackend";
+import CompilerService from "../services/CodeCompileService";
 
 
 

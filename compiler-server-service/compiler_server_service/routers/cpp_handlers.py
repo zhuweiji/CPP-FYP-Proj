@@ -22,7 +22,6 @@ class POST_BODY__CPP_CODE(BaseModel):
 
 
 @router.get('/')
-# @limiterobj.limit('1/minute')
 def root(request: Request):
     return {'message': "we're up"}
 

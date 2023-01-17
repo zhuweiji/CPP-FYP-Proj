@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { AppBar, Box, Stack, Grid } from '@mui/material';
 
@@ -19,8 +19,22 @@ import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 
 import { blueGrey } from '@mui/material/colors';
+import TutorialDataFetch from "../services/TutorialDataFetch";
 
 function App(props) {
+
+  const [leftPaneInstructions, setLeftPaneInstructions] = useState("");
+
+  useEffect(() => {
+    async function IIFE(){
+      let leftPaneData = await TutorialDataFetch.getLeftbarTextInformation(1);
+      leftPaneData = leftPaneData.replaceAll("\\n", "\n");
+      leftPaneData = leftPaneData.replaceAll('"', "");
+      console.log(leftPaneData)
+      setLeftPaneInstructions(leftPaneData);
+    }
+    IIFE();
+  }, [])
 
   return (
     <div>
@@ -35,12 +49,7 @@ function App(props) {
             </div>
 
               <div id="instructionPage">
-                <p>Hello</p>
-                <br />
-                <p>Welcome to Comprehend C++</p>
-                <p>In this section we will try to create log hello world into the console.</p>
-                <p>Proident nisi proident dolore eiusmod non tempor quis est dolor amet ullamco ipsum reprehenderit ex. Esse in culpa amet veniam elit ea in nostrud pariatur sit id non aute reprehenderit. Voluptate tempor culpa voluptate exercitation id.</p>
-
+                {leftPaneInstructions}
               </div>
           </Stack>
 
@@ -59,7 +68,6 @@ function App(props) {
 }
 
 function BottomAppBar() {
-
 
   function toggleMermaidDiagram() {
     let id = 'mermaidDiagramObj'
