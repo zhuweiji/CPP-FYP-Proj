@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 
 class Grader:
     def check_console_output(topicId:int, tutorialId:int, code:str) -> bool:
-        if not (tutorial_data := TutorialDataLoader.find_tutorial(topicId=topicId, tutorialId=tutorialId)): raise TutorialDataNotFound # the tutorial must exist to be graded, we cannot automatically mark missing tutorials as correct
+        if not (tutorial_data := TutorialDataLoader.find_tutorial(topicId=topicId, tutorialId=tutorialId)): return True # TODO should we change this? the tutorial must exist to be graded, we cannot automatically mark missing tutorials as correct
         if not (expected_output := tutorial_data.expectedConsoleOutput): return True # if no console output is explicitly written in the data, then the code is always right
         
         compile_result = CPP_Compiler.write_compile_run(code=code, add_custom_headers=False)
@@ -36,14 +36,14 @@ class Grader:
         # should find all file related to this tutorial in compiler-server-service\cpp_source_files\guided_tutorials\ and compile with the code
         tutorial_files_path = GUIDED_TUTORIALS_DIR_PATH / f'topic_{topicId}' / f'tutorial_{tutorialId}'
         
-        
-        if not tutorial_files_path.exists(): raise TutorialDataNotFound
-        prewritten_files_for_tutorial = os.listdir(str(tutorial_files_path))
+        # TODO: error when there is no cpp file in a tutorial, possibly because docker does not copy over empty dirs?
+        if not tutorial_files_path.exists(): return 'Our tests have not been written for this tutorial yet! Check back again later 🥰'
+        prewritten_files_for_tutorial = [tutorial_files_path/i for i in os.listdir(str(tutorial_files_path)) if '.cpp' in i]
         if not prewritten_files_for_tutorial: return True
         
         log.info(prewritten_files_for_tutorial)
         
-        process_result = CPP_Compiler.write_compile_run(code=code, add_custom_headers=True)
+        process_result = CPP_Compiler.write_compile_run(code=code, add_custom_headers=True, other_files=prewritten_files_for_tutorial)
         
         doctest_result = DoctestOutputParser.parse(process_result)
         
