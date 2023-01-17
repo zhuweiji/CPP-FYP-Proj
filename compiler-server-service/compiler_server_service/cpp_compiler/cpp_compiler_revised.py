@@ -4,7 +4,7 @@ import platform
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Union
+from typing import Iterable, List, Union
 
 from compiler_server_service.cpp_compiler.process_results import (
     CodeExecutionResult,
@@ -71,25 +71,31 @@ class CPP_Compiler:
                 
     """
     @classmethod
-    def write_compile_run(cls, code:str):
+    def write_compile_run(cls, code:str, other_files:List[Union[str, Path]]=(), add_custom_headers:bool=False):
         with tempfile.TemporaryDirectory(dir=USER_TEMP_FILES_DIR_PATH) as tmp_dir_path:
-            result = cls.write_and_compile(code=code, temp_dir_path=tmp_dir_path, executable_filepath='output.exe')
+            result = cls.write_and_compile(code=code, other_files=other_files, temp_dir_path=tmp_dir_path, executable_filepath='output.exe', add_custom_headers=add_custom_headers)
             if not result.success: return result
             return CPP_Compiler.run_cpp_executable(Path(tmp_dir_path)/"output.exe")
     
     @classmethod
-    def write_and_compile(cls, code: Union[str, bytes], temp_dir_path, executable_filepath:Union[Path,str]='output.exe'):
-        """Writes some C++ code into a temporary file, then compiles and runs it"""
+    def write_and_compile(cls, code: Union[str, bytes], temp_dir_path, other_files:List[Union[str, Path]]=(),
+                          executable_filepath:Union[Path,str]='output.exe', add_custom_headers:bool=False):
+        """Writes some C++ code into a temporary file, then compiles and runs it
+        Can include other files to be compiled together with the C++ code as well"""
+        
         if isinstance(code, str): code = code.encode('utf-8')
+        if not isinstance(other_files, Iterable): other_files = (other_files)
+        compile_function = cls.compile_files if not add_custom_headers else cls.compile_files_with_custom_headers
         
         with tempfile.NamedTemporaryFile(suffix='.cpp', dir=temp_dir_path, delete=False) as temp_file:
             temp_file.write(code)
         
         executable_filepath = Path(temp_dir_path) / executable_filepath
-        compile_result = cls.compile_files(temp_file.name, out_filepath=executable_filepath)
+        
+        compile_result = compile_function(temp_file.name, *other_files, out_filepath=executable_filepath) 
         
         return compile_result
-        
+    
     
     @classmethod
     def run_cpp_executable(cls, filepath:Union[str, Path], *args):

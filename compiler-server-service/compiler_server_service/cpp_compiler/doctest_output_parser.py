@@ -1,10 +1,13 @@
-from dataclasses import dataclass
-import re
-from compiler_server_service.cpp_compiler_module.cpp_compiler import CodeExecutionResult, CompilationResult
-from compiler_server_service.utilities import safe_get, get_named_capture_group
-
 import logging
+import re
+from dataclasses import dataclass
 from typing import Union
+
+from compiler_server_service.cpp_compiler.process_results import (
+    CodeExecutionResult,
+    CompilationResult,
+)
+from compiler_server_service.utilities import get_named_capture_group, safe_get
 
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -13,71 +16,111 @@ log = logging.getLogger(__name__)
 class DoctestOutputParser:
     TEST_CASE_SEPERATOR = "==============================================================================="
     
-    def __init__(self, doctest_result) -> None:
-        return self.parse(doctest_result)
-    
     @classmethod
     def parse(cls, doctest_result: Union[str, CodeExecutionResult, CompilationResult]):
-        output = None
-        
-        if isinstance(doctest_result, CompilationResult): 
-            output = cls.parse_compilation_result(doctest_result)
-        else:
-            # output = cls.parse_execution_result(doctest_result)
-            pass
+        parse_function = cls.parse_compilation_result if isinstance(doctest_result, CompilationResult) else cls.parse_execution_result
+        return parse_function(doctest_result)
         
     @classmethod
     def parse_execution_result(cls, result: CodeExecutionResult):
         main_output, secondary_output = result.stdout, result.stderr
         if not isinstance(main_output, str): raise ValueError
         
-        lines = main_output.split(cls.TEST_CASE_SEPERATOR)
         
-        footer = DoctestOutputFooter(lines[-1])
-        if footer.success: return True
+        test_result_blocks = main_output.split(cls.TEST_CASE_SEPERATOR)
         
-        lines = [line for line in lines if line and not DoctestOutputFooter.is_footer(line)]
+        header, footer = None, None
         
-        for line in lines:
-            log.info(DoctestTestCaseFailure(line))
+        if DoctestOutputHeader.is_header(test_result_blocks[0]):
+            header = DoctestOutputHeader(test_result_blocks[0])
+            test_result_blocks = test_result_blocks[1:]
+        
+        if DoctestOutputFooter.is_footer(test_result_blocks[-1]):
+            footer = DoctestOutputFooter(test_result_blocks[-1])
+            test_result_blocks = test_result_blocks[:-1]
+        
+        if footer: overall_result = DoctestOverallResult(all_passed=False, total_number_tests_cases=footer.total_testcases, number_passing_test_cases=footer.passing_testcases, number_failing_test_cases=footer.failing_testcases)
+        if footer.success:
+            overall_result.set_all_passed__true()
+            return overall_result
+            
+        
+        test_result_blocks = [block for block in test_result_blocks if block]
+        
+        
+        failing_testcases = [DoctestTestCaseFailure(block) for block in test_result_blocks]
+        overall_result.failing_test_cases = failing_testcases
+        
+        return overall_result
+        
         
         
     @classmethod
     def parse_compilation_result(cls, result: CompilationResult):
-        main_output, secondary_output = result.stderr, result.stdout
-        pass
+        return DoctestCompilationError(compilation_result=result)
+
+
+@dataclass
+class DoctestCompilationError:
+    """Thin wrapper over CompilationResult as all the error parsing lives there"""
+    compilation_result: CompilationResult
     
     
+
+@dataclass
+class DoctestOverallResult:
+    total_number_tests_cases: int
+    number_passing_test_cases: int
+    number_failing_test_cases: int
+    
+    all_passed: bool = False
+    failing_test_cases: tuple = ()
+    
+    def __bool__(self): return self.all_passed
+    
+    @property
+    def success(self): 
+        return bool(self)
+    
+    def __repr__(self) -> str: return f"DoctestOverallResult: All_passed: {self.all_passed} \nTotal_test_cases: {self.total_number_tests_cases} \nPassing_test_cases: {self.number_passing_test_cases} \nFailing_test_cases: {self.number_failing_test_cases}"
+    def set_all_passed__true(self): self.all_passed = True
+
+
 @dataclass
 class DoctestTestCaseFailure:
     testcase: str
-    subcase: str
     assertion: str
+    subcase: str = "None" # TODO should add the parsing regex for it if we use it in the future
     
     def __init__(self, string: str) -> None:
-        TESTCASE_REGEX = r"TEST CASE:\s+(?P<testcase>.+)\n\s+(?P<subcase>.+)\n"
+        TESTCASE_REGEX = r"TEST CASE:\s+(?P<testcase>.+)"
         ASSERTION_REGEX = r'FATAL ERROR:\s*(?P<assertion>.+) is NOT correct!'
         
-        values = get_named_capture_group(TESTCASE_REGEX, string)
-        
-        if isinstance(values, dict):
-            self.testcase = values.get('testcase', None)
-            self.subcase = values.get('subcase', None)
-            
-            values = get_named_capture_group(ASSERTION_REGEX, string)
-            if isinstance(values, dict):
-                self.assertion = values.get('assertion', None)
-            else:
-                raise ValueError # not sure what should happen in the above case
-        else:
-            raise ValueError # not sure what should happen in the above case
+        self.testcase = get_named_capture_group(TESTCASE_REGEX, string).get('testcase', "Unable to get Testcase Name").strip()
+        self.assertion = get_named_capture_group(ASSERTION_REGEX, string).get('assertion', "Unable to get Assertion").strip()
         
     def __str__(self) -> str:
-        return f"testcase: {self.testcase} | subcase: {self.subcase} | assertion: {self.assertion}"
+        return f"DoctestTestCaseFailure:\nTestcase: {self.testcase} | Subcase: {self.subcase} | Assertion: {self.assertion}"
         
+
+@dataclass
+class DoctestOutputHeader:
+    version: str
     
+    def __init__(self, string:str) -> None:
+        VERSION_REGEX = r"\[doctest\] doctest version is (?P<version>)"
+        self.version = get_named_capture_group(VERSION_REGEX, string)
+    
+    @staticmethod
+    def is_header(string: str):
+        VERSION_REGEX = "[doctest] doctest version is"
+        
+        return VERSION_REGEX in string
+
 @dataclass
 class DoctestOutputFooter:
+    """The bottom most line of a doctest result given that the command line arguments to doctest are unchanged (some will give less verbose output or output matching JUnit tests, or others)
+    Indicates the overall summary of the results of the doctest"""
     total_testcases: int
     passing_testcases: int
     failing_testcases: int
