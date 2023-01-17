@@ -22,10 +22,7 @@ class TestCompiledCodeGrader(unittest.TestCase):
         file_which_contains_actual_code = CPP_TEST_FILES_DIR_PATH / 'truck_for_test.cpp'
         file_containing_tester_code     = CPP_TEST_FILES_DIR_PATH / 'testcases_for_truck.cpp'
         
-        # TODO there is some issue with write_compile_run where it seems to not be compiling or running the code, but no error is thrown
-        # CPP_Compiler.compile_files_with_custom_headers(file_which_contains_actual_code, file_containing_tester_code, out_filepath=CPP_TEST_FILES_DIR_PATH/'another_test_to_be_removed.exe')
-        # execution_result = CPP_Compiler.run_cpp_executable(CPP_TEST_FILES_DIR_PATH/'another_test_to_be_removed.exe')
-        execution_result = CPP_Compiler.write_compile_run(code="int main(){return 0;}", other_files=[file_which_contains_actual_code, file_containing_tester_code], add_custom_headers=True)
+        execution_result = CPP_Compiler.write_compile_run(code="", other_files=[file_which_contains_actual_code, file_containing_tester_code], add_custom_headers=True)
         
         log.warning(execution_result.stderr)
         log.warning(execution_result.stdout)
