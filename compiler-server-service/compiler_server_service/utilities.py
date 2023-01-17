@@ -1,6 +1,7 @@
 import logging
 import re
 from pathlib import Path
+from typing import Union
 
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -15,6 +16,8 @@ USER_TEMP_FILES_DIR_PATH = CPP_MODULE_DIR_PATH / 'user_temp_files'
 CPP_SOURCE_FILES_DIR_PATH = COMPILER_SERVER_SERVICE_DIR_PATH / 'cpp_source_files' 
 GUIDED_TUTORIALS_DIR_PATH = CPP_SOURCE_FILES_DIR_PATH / 'guided_tutorials'
 CPP_HEADER_FILES_SOURCE_DIR = CPP_SOURCE_FILES_DIR_PATH / 'header_files'
+
+TUTORIAL_DATA_FILE_PATH = Path(CPP_MODULE_DIR_PATH / 'data' / 'tutorial_data.json')
 
 def create_directory_ifnotexist(path: Path):
     if not path.is_dir():
@@ -35,7 +38,9 @@ def check_path_exists(*args: Path, is_file=None, is_dir=None):
 
     return True
 
-def safe_get(l: list, index:int):
+def safe_get(l: Union[list, dict], index:int):
+    if isinstance(l, dict) and index not in l: return None
+    
     try:
         return l[index]
     except IndexError:

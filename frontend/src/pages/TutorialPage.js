@@ -21,108 +21,117 @@ import Toolbar from '@mui/material/Toolbar';
 import { blueGrey } from '@mui/material/colors';
 import TutorialDataFetch from "../services/TutorialDataFetch";
 
+import { matchRoutes, useLocation } from "react-router-dom"
+
 function App(props) {
 
-  const [leftPaneInstructions, setLeftPaneInstructions] = useState("");
+    const [leftPaneInstructions, setLeftPaneInstructions] = useState("");
 
-  useEffect(() => {
-    async function IIFE(){
-      let leftPaneData = await TutorialDataFetch.getLeftbarTextInformation(1);
-      leftPaneData = leftPaneData.replaceAll("\\n", "\n");
-      leftPaneData = leftPaneData.replaceAll('"', "");
-      console.log(leftPaneData)
-      setLeftPaneInstructions(leftPaneData);
-    }
-    IIFE();
-  }, [])
+    // get the path of this page (to get the tutorialId of the page)
+    const routeRegex = '/tutorial/(?<tutorialId>[0-9]+)'
 
-  return (
-    <div>
-      <TopNavBar></TopNavBar>
+    let tutorialId = useLocation().pathname.match(routeRegex).groups['tutorialId']
+    if (!tutorialId) console.error('tutorialId of this page could not be found!')
 
-      <Grid container spacing={1} className='TutorialPage' >
-        <Grid item xs={4} id='leftGrid'>
+    useEffect(() => {
+        async function IIFE() {
+            let leftPaneData = await TutorialDataFetch.getLeftbarTextInformation(tutorialId);
+            leftPaneData = leftPaneData.replaceAll("\\n", "\n");
+            leftPaneData = leftPaneData.replaceAll('"', "");
+            setLeftPaneInstructions(leftPaneData);
+        }
+        
+        IIFE();
+    }, [])
 
-          <Stack direction="column" backgroundColor={blueGrey[900]} justifyContent="end" sx={{display:'flex'}} >
-            <div id="mermaidDiagramObj">
-              <MermaidDiagram chart={example} />
-            </div>
 
-              <div id="instructionPage">
-                {leftPaneInstructions}
-              </div>
-          </Stack>
+    return (
+        <div>
+            <TopNavBar></TopNavBar>
 
-        </Grid>
+            <Grid container spacing={1} className='TutorialPage' >
+                <Grid item xs={4} id='leftGrid'>
 
-        <Grid item xs={8}>
-          <CodeEditor />
-        </Grid>
+                    <Stack direction="column" backgroundColor={blueGrey[900]} justifyContent="end" sx={{ display: 'flex' }} >
+                        <div id="mermaidDiagramObj">
+                            <MermaidDiagram chart={example} />
+                        </div>
 
-      </Grid>
+                        <div id="instructionPage">
+                            {leftPaneInstructions}
+                        </div>
+                    </Stack>
 
-      <BottomAppBar></BottomAppBar>
+                </Grid>
 
-    </div>
-  );
+                <Grid item xs={8}>
+                    <CodeEditor />
+                </Grid>
+
+            </Grid>
+
+            <BottomAppBar></BottomAppBar>
+
+        </div>
+    );
 }
 
 function BottomAppBar() {
 
-  function toggleMermaidDiagram() {
-    let id = 'mermaidDiagramObj'
+    function toggleMermaidDiagram() {
+        let id = 'mermaidDiagramObj'
 
-    const divObj = document.getElementById(id)
-    const otherPage = document.getElementById('instructionPage') 
-    
-    let currentDisplayValue = divObj.style.display
-    
-    if (currentDisplayValue === 'none'){
-      divObj.style.display = 'block'
-      otherPage.style.height = '60vh'
-    } else{
-      divObj.style.display = 'none'
-      otherPage.style.height = '90vh'
+        const divObj = document.getElementById(id)
+        const otherPage = document.getElementById('instructionPage')
+
+        let currentDisplayValue = divObj.style.display
+
+        if (currentDisplayValue === 'none') {
+            divObj.style.display = 'block'
+            otherPage.style.height = '60vh'
+        } else {
+            divObj.style.display = 'none'
+            otherPage.style.height = '90vh'
+        }
     }
-  }
 
-  function toggleLeftGrid(){
-    // TODO: when hididng the left grid, the editor takes up the entire screen, but upon unhiding the editor does not revert to original size
-    // maybe have to use base flexbox?
-    let id = 'leftGrid'
-    const divObj = document.getElementById(id)
-    let currentDisplayValue = divObj.style.display
-    
-    if (currentDisplayValue === 'none') {
-      divObj.style.display = 'block'
-    } else {
-      divObj.style.display = 'none'
+    function toggleLeftGrid() {
+        // TODO: when hididng the left grid, the editor takes up the entire screen, but upon unhiding the editor does not revert to original size
+        // maybe have to use base flexbox?
+        let id = 'leftGrid'
+        const divObj = document.getElementById(id)
+        let currentDisplayValue = divObj.style.display
+
+        if (currentDisplayValue === 'none') {
+            divObj.style.display = 'block'
+        } else {
+            divObj.style.display = 'none'
+        }
     }
-  }
 
-  return (
-    <React.Fragment>
-      <CssBaseline />
+    return (
+        <React.Fragment>
+            <CssBaseline />
 
-      <AppBar position="fixed" sx={{ top: 'auto', bottom: 0, height: '3rem', alignContent: 'center', backgroundColor: blueGrey[50] }}>
-        <Toolbar>
-          <IconButton size='small' color="inherit" onClick={toggleMermaidDiagram}>
-            <SchemaTwoToneIcon sx={{ color: blueGrey[900] }} />
-          </IconButton>
+            <AppBar position="fixed" sx={{ top: 'auto', bottom: 0, height: '3rem', alignContent: 'center', backgroundColor: blueGrey[50] }}>
+                <Toolbar>
+                    <IconButton size='small' color="inherit" onClick={toggleMermaidDiagram}>
+                        <SchemaTwoToneIcon sx={{ color: blueGrey[900] }} />
+                    </IconButton>
 
-          <IconButton size='small' color="inherit" onClick={toggleLeftGrid} disabled>
-            <TextSnippetTwoToneIcon sx={{ color: blueGrey[900] }} />
-          </IconButton>
+                    <IconButton size='small' color="inherit" onClick={toggleLeftGrid} disabled>
+                        <TextSnippetTwoToneIcon sx={{ color: blueGrey[900] }} />
+                    </IconButton>
 
-          <Box sx={{ flexGrow: 1 }} />
+                    <Box sx={{ flexGrow: 1 }} />
 
-          <IconButton size='small' color="inherit" disabled>
-            <TerminalTwoToneIcon sx={{ color: blueGrey[900] }} />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-    </React.Fragment>
-  );
+                    <IconButton size='small' color="inherit" disabled>
+                        <TerminalTwoToneIcon sx={{ color: blueGrey[900] }} />
+                    </IconButton>
+                </Toolbar>
+            </AppBar>
+        </React.Fragment>
+    );
 }
 
 export default App;

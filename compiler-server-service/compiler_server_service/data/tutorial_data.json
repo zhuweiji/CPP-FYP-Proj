@@ -1,0 +1,5 @@
+{
+    "tutorial 1": {
+        "leftPaneInstructions": "Hello!\n\nWelcome to Comprehend C++\n\nIn this section we will try to create log hello world into the console.\n\n\n\n=============================================================\nGrading Objectives: Log out 'hello world' into the terminal"
+    }
+}
