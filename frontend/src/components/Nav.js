@@ -17,7 +17,7 @@ import CodeIcon from '@mui/icons-material/Code';
 import React, { useState, useRef, useCallback } from "react";
 import { useNavigate } from 'react-router-dom';
 
-const pages_and_links = [{ 'page': 'Tutorials', 'link': '/tutorials' }, { 'page': 'Instructions', 'link': 'instructions' }, { 'page': 'Interactive Games', 'link': 'games' }];
+const pages_and_links = [{ 'page': 'Tutorials', 'link': '/tutorials' }, { 'page': 'Instructions', 'link': '/instructions' }, { 'page': 'Interactive Games', 'link': '/games' }];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const ResponsiveAppBar = () => {
