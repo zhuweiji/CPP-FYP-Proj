@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { AppBar, Box, Stack, Grid } from '@mui/material';
 
 import CodeEditor from "../components/Editor";
-import TopNavBar from "../components/Nav";
+import TopNavBar from "../components/";
 // import BottomAppBar from "../components/EditorBottomAppBar";
 
 import './TutorialPage.css';
