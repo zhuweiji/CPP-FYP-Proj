@@ -104,7 +104,7 @@ class DoctestOverallResult:
     number_failing_test_cases: int
     
     all_passed: bool = False
-    failing_test_cases: tuple[DoctestTestCaseFailure] = ()
+    failing_test_cases: tuple = ()
     
     def __bool__(self): return self.all_passed
     
