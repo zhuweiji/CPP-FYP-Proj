@@ -1,5 +1,19 @@
 {
-    "tutorial 0": {
-        "leftPaneInstructions": "Hello!\n\nWelcome to Comprehend C++\n\nIn this section we will try to create log hello world into the console.\n\n\n\n=============================================================\nGrading Objectives: Log out 'hello world' into the terminal"
-    }
+    "topics": [
+        {
+            "topicId": 1,
+            "topic_name": "C++ Basics",
+            "description": "Learn the basics of C++ - compiling and running your first hello world programs",
+            "img_name": "first_steps.jpg",
+            "tutorials": [
+                {
+                    "id": 1,
+                    "name": "Hello World!",
+                    "leftPaneInstructions": "Hello!\n\nWelcome to Comprehend C++\n\nIn this section we will try to create log hello world into the console.\n\n\n\n=============================================================\nGrading Objectives: Log 'Hello CPP!' into the terminal",
+                    "expectedConsoleOutput": "Hello CPP!"
+                }
+            ]
+        }
+    ]
+    
 }

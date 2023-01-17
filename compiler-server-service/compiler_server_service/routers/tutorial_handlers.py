@@ -2,8 +2,9 @@ import json
 import logging
 from pathlib import Path
 
-from compiler_server_service.limiter.rate_limiter import limiterobj
-from compiler_server_service.utilities import TUTORIAL_DATA_FILE_PATH, safe_get
+from compiler_server_service.services.limiter.rate_limiter import limiterobj
+from compiler_server_service.services.tutorial_dataloader import TutorialDataLoader
+from compiler_server_service.utilities import safe_get
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
@@ -17,20 +18,10 @@ router = APIRouter(
 )
 
 
-
-with open(TUTORIAL_DATA_FILE_PATH) as f:
-    all_tutorials_data = json.load(f)
-    
-    
-
-log.info(all_tutorials_data)
-
 @router.get('/')
 def root(request: Request):
     return {'message': "we're up"}
 
-
 @router.get('/leftpane_instructions')
-def get_leftpane_instructions(tutorialId: int):
-    if not (tutorial_data := safe_get(all_tutorials_data, f"tutorial {tutorialId}")): return "No data available for this tutorial"
-    return safe_get(tutorial_data, "leftPaneInstructions")
+def get_leftpane_instructions(topicId:int, tutorialId: int):
+    return TutorialDataLoader.find_tutorial(topicId=topicId, tutorialId=tutorialId).leftPaneInstructions or "Sorry! No instructions found for this tutorial"

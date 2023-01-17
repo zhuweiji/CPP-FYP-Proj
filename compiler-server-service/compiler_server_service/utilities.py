@@ -48,3 +48,8 @@ def safe_get(l: Union[list, dict], index:int):
     
 def get_named_capture_group(regex:str, s:str):
     return safe_get([m.groupdict() for m in re.finditer(regex, s)], 0)
+
+
+class MissingSetupData(IOError):
+    'Some required data for the setup of this program is missing'
+    pass

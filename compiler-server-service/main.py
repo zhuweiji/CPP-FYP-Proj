@@ -5,8 +5,8 @@ log = logging.getLogger(__name__)
 
 from pathlib import Path
 
-from compiler_server_service.limiter.rate_limiter import limiterobj
 from compiler_server_service.routers import cpp_handlers, tutorial_handlers
+from compiler_server_service.services.limiter.rate_limiter import limiterobj
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler

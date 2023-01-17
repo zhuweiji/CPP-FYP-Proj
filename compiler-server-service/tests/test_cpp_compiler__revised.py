@@ -4,11 +4,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from compiler_server_service.cpp_compiler.cpp_compiler_revised import (
+from compiler_server_service.services.cpp_compiler.cpp_compiler_revised import (
     CPP_Compiler,
     ProcessWrapper,
 )
-from compiler_server_service.cpp_compiler.doctest_output_parser import (
+from compiler_server_service.services.cpp_compiler.doctest_output_parser import (
     DoctestOutputParser,
 )
 from tests.utilities import *

@@ -3,7 +3,7 @@ import re
 from dataclasses import dataclass
 from typing import Union
 
-from compiler_server_service.cpp_compiler.process_results import (
+from compiler_server_service.services.cpp_compiler.process_results import (
     CodeExecutionResult,
     CompilationResult,
 )
@@ -17,7 +17,7 @@ class DoctestOutputParser:
     TEST_CASE_SEPERATOR = "==============================================================================="
     
     @classmethod
-    def parse(cls, doctest_result: Union[str, CodeExecutionResult, CompilationResult]):
+    def parse(cls, doctest_result: Union[CompilationResult, str, CodeExecutionResult]):
         parse_function = cls.parse_compilation_result if isinstance(doctest_result, CompilationResult) else cls.parse_execution_result
         return parse_function(doctest_result)
         
@@ -39,10 +39,15 @@ class DoctestOutputParser:
             footer = DoctestOutputFooter(test_result_blocks[-1])
             test_result_blocks = test_result_blocks[:-1]
         
-        if footer: overall_result = DoctestOverallResult(all_passed=False, total_number_tests_cases=footer.total_testcases, number_passing_test_cases=footer.passing_testcases, number_failing_test_cases=footer.failing_testcases)
-        if footer.success:
-            overall_result.set_all_passed__true()
-            return overall_result
+        if footer: 
+            overall_result = DoctestOverallResult(all_passed=False, total_number_tests_cases=footer.total_testcases, number_passing_test_cases=footer.passing_testcases, number_failing_test_cases=footer.failing_testcases)
+            if footer.success:
+                overall_result.set_all_passed__true()
+                return overall_result
+        else:
+            overall_result = DoctestOverallResult(all_passed=False, total_number_tests_cases=0, number_passing_test_cases=0, number_failing_test_cases=0)
+            
+        
             
         
         test_result_blocks = [block for block in test_result_blocks if block]
@@ -50,6 +55,7 @@ class DoctestOutputParser:
         
         failing_testcases = [DoctestTestCaseFailure(block) for block in test_result_blocks]
         overall_result.failing_test_cases = failing_testcases
+        if overall_result.number_failing_test_cases == 0: overall_result.number_failing_test_cases = len(failing_testcases)
         
         return overall_result
         
@@ -57,33 +63,20 @@ class DoctestOutputParser:
         
     @classmethod
     def parse_compilation_result(cls, result: CompilationResult):
-        return DoctestCompilationError(compilation_result=result)
+        return DoctestCompilationError(result)
 
 
 @dataclass
-class DoctestCompilationError:
+class DoctestCompilationError(CompilationResult):
     """Thin wrapper over CompilationResult as all the error parsing lives there"""
-    compilation_result: CompilationResult
     
+    def __init__(self, baseObject):
+        self.__class__ = type(baseObject.__class__.__name__,
+                              (self.__class__, baseObject.__class__),
+                              {})
+        self.__dict__ = baseObject.__dict__
+        
     
-
-@dataclass
-class DoctestOverallResult:
-    total_number_tests_cases: int
-    number_passing_test_cases: int
-    number_failing_test_cases: int
-    
-    all_passed: bool = False
-    failing_test_cases: tuple = ()
-    
-    def __bool__(self): return self.all_passed
-    
-    @property
-    def success(self): 
-        return bool(self)
-    
-    def __repr__(self) -> str: return f"DoctestOverallResult: All_passed: {self.all_passed} \nTotal_test_cases: {self.total_number_tests_cases} \nPassing_test_cases: {self.number_passing_test_cases} \nFailing_test_cases: {self.number_failing_test_cases}"
-    def set_all_passed__true(self): self.all_passed = True
 
 
 @dataclass
@@ -102,6 +95,27 @@ class DoctestTestCaseFailure:
     def __str__(self) -> str:
         return f"DoctestTestCaseFailure:\nTestcase: {self.testcase} | Subcase: {self.subcase} | Assertion: {self.assertion}"
         
+
+
+@dataclass
+class DoctestOverallResult:
+    total_number_tests_cases: int
+    number_passing_test_cases: int
+    number_failing_test_cases: int
+    
+    all_passed: bool = False
+    failing_test_cases: tuple[DoctestTestCaseFailure] = ()
+    
+    def __bool__(self): return self.all_passed
+    
+    @property
+    def success(self): 
+        return bool(self)
+    
+    def __repr__(self) -> str: return f"DoctestOverallResult: All_passed: {self.all_passed} \nTotal_test_cases: {self.total_number_tests_cases} \nPassing_test_cases: {self.number_passing_test_cases} \nFailing_test_cases: {self.number_failing_test_cases}"
+    def set_all_passed__true(self): self.all_passed = True
+    def get_failing_tests_as_str(self): return [str(i) for i in self.failing_test_cases]
+
 
 @dataclass
 class DoctestOutputHeader:

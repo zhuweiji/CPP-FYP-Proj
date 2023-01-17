@@ -26,7 +26,7 @@ const router = createBrowserRouter([
     path: "tutorials",
     element: <TutorialList/>,
   }, {
-    path: "tutorial/:tutorialId",
+    path: "tutorial/:topicId/:tutorialId",
     element: <TutorialPage />,
   }, {
     path: "games",

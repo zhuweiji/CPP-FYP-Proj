@@ -151,7 +151,7 @@ export default function TutorialList(props) {
                                     <Stack direction='row' alignItems="center" sx={{ width: '100%', }}>
                                         <ListItemButton 
                                         sx={{'&:hover':{background: 'transparent'}}}
-                                         href={`tutorial/${index}`}><ListItemText primary={`${index + 1}: ${tutorial}`} /></ListItemButton>
+                                         href={`tutorial/${topic.id}/${index+1}`}><ListItemText primary={`${index + 1}: ${tutorial}`} /></ListItemButton>
                                         <KeyboardArrowRightIcon id={`hiddenArrow${index}`} />
                                     </Stack>
                                 </ListItem>

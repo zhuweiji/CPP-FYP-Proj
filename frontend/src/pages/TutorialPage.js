@@ -28,14 +28,17 @@ function App(props) {
     const [leftPaneInstructions, setLeftPaneInstructions] = useState("");
 
     // get the path of this page (to get the tutorialId of the page)
-    const routeRegex = '/tutorial/(?<tutorialId>[0-9]+)'
+    const routeRegex = '/tutorial/(?<topicId>[0-9]+)/(?<tutorialId>[0-9]+)'
 
     let tutorialId = useLocation().pathname.match(routeRegex).groups['tutorialId']
     if (!tutorialId) console.error('tutorialId of this page could not be found!')
 
+    let topicId = useLocation().pathname.match(routeRegex).groups['topicId']
+    if (!topicId) console.error('topicId of this page could not be found!')
+
     useEffect(() => {
         async function IIFE() {
-            let leftPaneData = await TutorialDataFetch.getLeftbarTextInformation(tutorialId);
+            let leftPaneData = await TutorialDataFetch.getLeftbarTextInformation(topicId, tutorialId);
             leftPaneData = leftPaneData.replaceAll("\\n", "\n");
             leftPaneData = leftPaneData.replaceAll('"', "");
             setLeftPaneInstructions(leftPaneData);
@@ -65,7 +68,7 @@ function App(props) {
                 </Grid>
 
                 <Grid item xs={8}>
-                    <CodeEditor />
+                    <CodeEditor topicId={topicId} tutorialId={tutorialId}/>
                 </Grid>
 
             </Grid>

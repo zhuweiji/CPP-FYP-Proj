@@ -6,7 +6,7 @@ import tempfile
 from pathlib import Path
 from typing import Iterable, List, Union
 
-from compiler_server_service.cpp_compiler.process_results import (
+from compiler_server_service.services.cpp_compiler.process_results import (
     CodeExecutionResult,
     CompilationResult,
 )

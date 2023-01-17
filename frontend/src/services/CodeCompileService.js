@@ -25,6 +25,33 @@ class CodeCompileService {
         }
     }
 
+    static async grade_code(codeString, topicId, tutorialId) {
+        const data = {
+            'topicId': topicId,
+            'tutorialId': tutorialId,
+            'code': codeString,
+            
+        }
+
+        try {
+            let result = await fetch(`${this.HOST_URL}cpp/grade_code`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+            console.log(`result in service ${result.status}`)
+            console.log(result)
+            
+            return result;
+        } catch (error) {
+            console.log("Error when sending code for compilation")
+            console.error(error);
+        }
+    }
+
     static async check_connection() {
         try {
             let result = await fetch(`${this.HOST_URL}cpp/`,
