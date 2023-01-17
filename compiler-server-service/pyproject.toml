@@ -16,6 +16,7 @@ websockets = "^10.4"
 
 [tool.poetry.scripts]
 start       = "scripts:start"
+startreload       = "scripts:startreload"
 test        = "scripts:test"
 tests       = "scripts:test"
 healthcheck = "scripts:healthcheck"
