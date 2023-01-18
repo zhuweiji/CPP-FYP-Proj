@@ -1,6 +1,7 @@
 **/.vscode/
 **/tempCodeRunnerFile.py
 **/scratch.py
+*.bak
 
 # Byte-compiled / optimized / DLL files
 **/__pycache__
