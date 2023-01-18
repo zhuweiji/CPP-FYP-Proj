@@ -19,7 +19,7 @@ import TextSnippetTwoToneIcon from '@mui/icons-material/TextSnippetTwoTone';
 import CssBaseline from '@mui/material/CssBaseline';
 import IconButton from '@mui/material/IconButton';
 
-import {Toolbar, Button} from '@mui/material';
+import {Toolbar, Button, Chip} from '@mui/material';
 
 import { blueGrey } from '@mui/material/colors';
 import TutorialDataFetch from "../services/TutorialDataFetch";
@@ -27,11 +27,19 @@ import TutorialDataFetch from "../services/TutorialDataFetch";
 import { matchRoutes, useLocation } from "react-router-dom"
 import Overlay from "../components/Overlay";
 
+import { useNavigate } from 'react-router-dom';
+
 
 function App(props) {
 
     const [leftPaneInstructions, setLeftPaneInstructions] = useState("");
     const [gradingPassed, setGradingPassed] = useState(false);
+
+    const [previousTutorialHref, setPreviousTutorialHref] = useState("");
+    const [nextTutorialHref, setNextTutorialHref] = useState("");
+    const [previousTutorialDisabled, setPreviousTutorialDisabled] = useState(false);
+    const [nextTutorialDisabled, setNextTutorialDisabled] = useState(false);
+
 
     // get the path of this page (to get the tutorialId of the page)
     const routeRegex = '/tutorial/(?<topicId>[0-9]+)/(?<tutorialId>[0-9]+)'
@@ -42,12 +50,32 @@ function App(props) {
     let topicId = useLocation().pathname.match(routeRegex).groups['topicId']
     if (!topicId) console.error('topicId of this page could not be found!')
 
+    let tutorialData;
+
     useEffect(() => {
         async function IIFE() {
-            let leftPaneData = await TutorialDataFetch.getLeftbarTextInformation(topicId, tutorialId);
+            tutorialData = await TutorialDataFetch.getTutorialInformation(topicId, tutorialId);
+            console.log(tutorialData)
+            let leftPaneData = tutorialData['leftpane_instructions']
             leftPaneData = leftPaneData.replaceAll("\\n", "\n");
             leftPaneData = leftPaneData.replaceAll('"', "");
             setLeftPaneInstructions(leftPaneData);
+
+            let [prevTopicId, prevTutorialId] = tutorialData['previous_tutorial_topicid_tutid']
+            
+            if (!prevTopicId && !prevTutorialId){
+                setPreviousTutorialDisabled(true);
+            }else{
+                setPreviousTutorialHref(`/tutorial/${prevTopicId}/${prevTutorialId}`);
+            }
+
+            let [nextTopicId, nextTutorialId] = tutorialData['next_tutorial_topicid_tutid']
+
+            if (!nextTopicId && !nextTutorialId){
+                setNextTutorialDisabled(true);
+            }else{
+                setNextTutorialHref(`/tutorial/${nextTopicId}/${nextTutorialId}`);
+            }
         }
         
         IIFE();
@@ -55,17 +83,17 @@ function App(props) {
 
     const { windowWidth, windowHeight } = useWindowSize()
 
-    // TODO fill in
+    function getPreviousTutorialHref(){
+        return previousTutorialHref;
+    }
+
     function getNextTutorialHref(){
-        return `/tutorial/${topicId}/${Number(tutorialId) + 1}`;
+        return nextTutorialHref;
     }
 
     return (
         <div>
             <TopNavBar></TopNavBar>
-
-            {/* <Overlay /> */}
-            {gradingPassed && <Overlay/> }
 
             {/* single use whole-screen confetti display */}
             <Confetti
@@ -92,28 +120,25 @@ function App(props) {
                 </Grid>
 
                 <Grid item xs={8}>
-                    {!gradingPassed &&
-                        <CodeEditor topicId={topicId} tutorialId={tutorialId} updateGradingToPassed={() => { setGradingPassed(true); }} />
-                    }
-                    {gradingPassed &&
-
-                    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-                            <Button variant="contained" href={getNextTutorialHref()}>Next page</Button>
-                    </Box>
-                        
-                    }
-                    
+                    <CodeEditor topicId={topicId} tutorialId={tutorialId} updateGradingToPassed={() => { setGradingPassed(true); }} />
                 </Grid>
 
             </Grid>
 
-            <BottomAppBar></BottomAppBar>
+            <BottomAppBar
+                getPreviousTutorialHref={getPreviousTutorialHref}
+                getNextTutorialHref={getNextTutorialHref}
+                previousTutorialDisabled={previousTutorialDisabled}
+                nextTutorialDisabled={nextTutorialDisabled}
+            ></BottomAppBar>
 
         </div>
     );
 }
 
-function BottomAppBar() {
+function BottomAppBar(props) {
+
+    const navigate = useNavigate();
 
     function toggleMermaidDiagram() {
         let id = 'mermaidDiagramObj'
@@ -150,7 +175,7 @@ function BottomAppBar() {
         <React.Fragment>
             <CssBaseline />
 
-            <AppBar position="fixed" sx={{ top: 'auto', bottom: 0, height: '3rem', alignContent: 'center', backgroundColor: blueGrey[50] }}>
+            <AppBar position="fixed" sx={{ top: 'auto', bottom: 0, height: '3.5rem', alignContent: 'center', backgroundColor: blueGrey[50] }}>
                 <Toolbar>
                     <IconButton size='small' color="inherit" onClick={toggleMermaidDiagram}>
                         <SchemaTwoToneIcon sx={{ color: blueGrey[900] }} />
@@ -161,10 +186,33 @@ function BottomAppBar() {
                     </IconButton>
 
                     <Box sx={{ flexGrow: 1 }} />
+                    
+                    <Stack direction="row" spacing={2}>
+                        <IconButton size='small' color="inherit" disabled>
+                            <TerminalTwoToneIcon sx={{ color: blueGrey[900] }} />
+                        </IconButton>
 
-                    <IconButton size='small' color="inherit" disabled>
-                        <TerminalTwoToneIcon sx={{ color: blueGrey[900] }} />
-                    </IconButton>
+                        {
+                            !props.previousTutorialDisabled &&
+                            <Chip label="Previous Tutorial" variant="outlined" onClick={() => {
+                                navigate(props.getPreviousTutorialHref(), { replace: true });
+                                navigate(0);
+                            }
+                            } />
+                        }
+
+                        {
+                            !props.nextTutorialDisabled &&
+                            <Chip label="Next Tutorial" variant="outlined" onClick={() => {
+                                navigate(props.getNextTutorialHref(), { replace: true });
+                                navigate(0);
+                            }
+                            } />
+                        }
+                        
+                        
+                    </Stack>
+
                 </Toolbar>
             </AppBar>
         </React.Fragment>
