@@ -1,6 +1,6 @@
-from pathlib import Path
-import unittest
 import logging
+import unittest
+from pathlib import Path
 
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)

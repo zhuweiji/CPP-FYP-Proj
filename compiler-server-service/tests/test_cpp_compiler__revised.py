@@ -1,18 +1,51 @@
-from pathlib import Path
+import logging
+import subprocess
 import tempfile
 import unittest
-import subprocess
-from compiler_server_service.cpp_compiler.cpp_compiler_revised import CPP_Compiler, ProcessWrapper
+from pathlib import Path
+
+from compiler_server_service.services.cpp_compiler.cpp_compiler_revised import (
+    CPP_Compiler,
+    ProcessWrapper,
+)
+from compiler_server_service.services.cpp_compiler.doctest_output_parser import (
+    DoctestOutputParser,
+)
 from tests.utilities import *
 
-import logging
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
+
+
+class TestCompiledCodeGrader(unittest.TestCase): 
+    def test_grading__correct(self):
+        file_which_contains_actual_code = CPP_TEST_FILES_DIR_PATH / 'truck_for_test.cpp'
+        file_containing_tester_code     = CPP_TEST_FILES_DIR_PATH / 'testcases_for_truck.cpp'
+        
+        execution_result = CPP_Compiler.write_compile_run(code="", other_files=[file_which_contains_actual_code, file_containing_tester_code], add_custom_headers=True)
+        
+        log.warning(execution_result.stderr)
+        log.warning(execution_result.stdout)
+        
+        parsed_output = DoctestOutputParser.parse(execution_result)
+        log.warning(parsed_output)
+        
+        # cpp_code = """int main(){}"""
+        
+        
+        # result = CPP_Compiler.write_compile_run(code=cpp_code, other_files=[file_which_contains_actual_code, file_containing_tester_code], add_custom_headers=True)
+        # log.warning(result)
+        
 
 class TestCompiler(unittest.TestCase): 
     temp_output_filepath =  CPP_TEST_FILES_DIR_PATH / 'test_to_be_removed.exe'
     temp_output_filename2 = 'test_to_be_removed2.exe'
+    
+    def step_check_gpp_available(self):
+        assert ProcessWrapper.check_gpp_available()
+    
     def step_compile_cpp_file(self):
+        log.info(CPP_TEST_FILES_DIR_PATH)
         result = CPP_Compiler.compile_files(CPP_TEST_FILES_DIR_PATH / 'hello_world.cpp', out_filepath=self.temp_output_filepath)
         assert result.success, str(result.determine_failure_cause())
         
@@ -59,13 +92,13 @@ class TestCompiler(unittest.TestCase):
     #     else:
     #         self.fail('executable should have piped hello world! to stdout')
         
-    def _get_tests(self):
+    def _get_sequential_unit_tests(self):
         for name in dir(self): # dir() result is implicitly sorted
             if name.startswith("step"):
                 yield name, getattr(self, name) 
                 
-    def test_all_steps(self):
-        for test_number, (name, step) in enumerate(self._get_tests(), start=1):
+    def test_all_sequential_unit_test_steps(self):
+        for test_number, (name, step) in enumerate(self._get_sequential_unit_tests(), start=1):
             try:
                 step()
             except Exception as e:

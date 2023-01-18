@@ -13,9 +13,10 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import ErrorIcon from '@mui/icons-material/Error';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import OpacityIcon from '@mui/icons-material/Opacity';
+import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
 
 import './Editor.css';
-import CompilerService from "../services/CompilerBackend";
+import CompilerService from "../services/CodeCompileService";
 
 
 
@@ -42,7 +43,7 @@ const CompilerServerStatuses = Object.freeze({
     RECENLTY_THROTTLED: "Your connection has been throttled recently. Consider slowing down the rate of your compile requests.",
 })
 
-function CodeEditor() {
+function CodeEditor(props) {
     let TEST_CONNECTION = true;
 
     const monacoRef = useRef(null);
@@ -57,6 +58,7 @@ function CodeEditor() {
     const compilerServerProbeResults = [];
 
     const [theme, setTheme] = useState("light");
+
 
     let compilerServerProbeIntervalMS = 7000;
 
@@ -116,10 +118,17 @@ function CodeEditor() {
 
     }
 
-    async function handleCompileButton() {
+    async function handleCompilation(grade) {
         setIsEditorReady(false);
         let code = getEditorValue();
-        let result = await CompilerService.compile_and_run(code)
+        let result;
+        if (grade){
+            result = await CompilerService.grade_code(code, props.topicId, props.tutorialId);
+        }else{
+            console.log(props)
+            result = await CompilerService.compile_and_run(code);
+        }
+        
 
         if (result.status === 429) {
             setCompilerServerStatus(CompilerServerStatuses.THROTTLED);
@@ -158,6 +167,7 @@ function CodeEditor() {
 
 
             let result_data = await result.json()
+            console.log(result_data)
 
             let displayedOutput = result_data['result']
             setExecutionResults([...executionResults, displayedOutput]);
@@ -218,7 +228,11 @@ function CodeEditor() {
                 <br /><br />
 
                 <Stack direction="row" justifyContent="end" alignItems="center" spacing={2}>
-                    <Button variant="outlined" size="large" endIcon={<CodeIcon />} onClick={handleCompileButton} disabled={!isEditorReady} justify="flex-end">
+                    <Button color="success" variant="outlined" size="large" endIcon={<DoneAllRoundedIcon />} onClick={()=>handleCompilation(true)} disabled={!isEditorReady} justify="flex-end" >
+                        Grade
+                    </Button>
+
+                    <Button variant="outlined" size="large" endIcon={<CodeIcon />} onClick={() => handleCompilation(false)} disabled={!isEditorReady} justify="flex-end">
                         Compile
                     </Button>
                     {(!isEditorReady && (compilerServerStatus !== CompilerServerStatuses.UNCONTACTABLE)) ? <CircularProgress size='1rem' /> : null}

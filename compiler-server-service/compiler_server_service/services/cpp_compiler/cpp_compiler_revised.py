@@ -1,12 +1,16 @@
-import subprocess
-from typing import Union
-from compiler_server_service.cpp_compiler.process_results import CodeExecutionResult, CompilationResult
-from compiler_server_service.utilities import *
-
-from pathlib import Path
-import tempfile
 import logging
+import os
 import platform
+import subprocess
+import tempfile
+from pathlib import Path
+from typing import Iterable, List, Union
+
+from compiler_server_service.services.cpp_compiler.process_results import (
+    CodeExecutionResult,
+    CompilationResult,
+)
+from compiler_server_service.utilities import *
 
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -14,6 +18,7 @@ log = logging.getLogger(__name__)
 
 class ProcessWrapper:
     is_windows = platform.system() == 'Windows'
+    process_timeout_seconds = int(os.getenv('PROCESS_RUN_TIMEOUT_SECONDS', 15))
     
     @classmethod
     def shell_run__split_text(cls, str_command:str):
@@ -26,10 +31,10 @@ class ProcessWrapper:
     
     @classmethod
     def shell_run(cls, command, *args):
-        """Create a process to run some command using *WSL* <- should this be changed? """
+        """Create a process to run some command """
         
         # catch types of exceptions here and feed Enums to ProcessResult for their input
-        return subprocess.run([f"{command}", *args], capture_output=True)
+        return subprocess.run([f"{command}", *args], capture_output=True, timeout=cls.process_timeout_seconds)
     
     @classmethod
     def give_executable_permissions(cls, filepath: Path):
@@ -37,7 +42,7 @@ class ProcessWrapper:
         return cls.shell_run('chmod', '+x', filepath)
     
     @classmethod
-    def check_gcc_gpp(cls):
+    def check_gpp_available(cls):
         compile_result = CompilationResult(cls.shell_run('g++'))
         return 'fatal error: no input files' in compile_result.stderr
             
@@ -66,25 +71,31 @@ class CPP_Compiler:
                 
     """
     @classmethod
-    def write_compile_run(cls, code:str):
+    def write_compile_run(cls, code:str, other_files:List[Union[str, Path]]=(), add_custom_headers:bool=False):
         with tempfile.TemporaryDirectory(dir=USER_TEMP_FILES_DIR_PATH) as tmp_dir_path:
-            result = cls.write_and_compile(code=code, temp_dir_path=tmp_dir_path, executable_filepath='output.exe')
+            result = cls.write_and_compile(code=code, other_files=other_files, temp_dir_path=tmp_dir_path, executable_filepath='output.exe', add_custom_headers=add_custom_headers)
             if not result.success: return result
             return CPP_Compiler.run_cpp_executable(Path(tmp_dir_path)/"output.exe")
     
     @classmethod
-    def write_and_compile(cls, code: Union[str, bytes], temp_dir_path, executable_filepath:Union[Path,str]='output.exe'):
-        """Writes some C++ code into a temporary file, then compiles and runs it"""
+    def write_and_compile(cls, code: Union[str, bytes], temp_dir_path, other_files:List[Union[str, Path]]=(),
+                          executable_filepath:Union[Path,str]='output.exe', add_custom_headers:bool=False):
+        """Writes some C++ code into a temporary file, then compiles and runs it
+        Can include other files to be compiled together with the C++ code as well"""
+        
         if isinstance(code, str): code = code.encode('utf-8')
+        if not isinstance(other_files, Iterable): other_files = (other_files)
+        compile_function = cls.compile_files if not add_custom_headers else cls.compile_files_with_custom_headers
         
         with tempfile.NamedTemporaryFile(suffix='.cpp', dir=temp_dir_path, delete=False) as temp_file:
             temp_file.write(code)
         
         executable_filepath = Path(temp_dir_path) / executable_filepath
-        compile_result = cls.compile_files(temp_file.name, out_filepath=executable_filepath)
+        
+        compile_result = compile_function(temp_file.name, *other_files, out_filepath=executable_filepath) 
         
         return compile_result
-        
+    
     
     @classmethod
     def run_cpp_executable(cls, filepath:Union[str, Path], *args):

@@ -1,5 +1,7 @@
-class CompilerService {
-    static HOST_URL = "localhost:8080"
+import SETTINGS from "./settings"
+
+class CodeCompileService {
+    static HOST_URL = SETTINGS.HOST_URL;
 
     static async compile_and_run(codeString) {
         const data = {
@@ -7,7 +9,7 @@ class CompilerService {
         }
 
         try {
-            let result = await fetch('http://localhost:8080/cpp/compile_and_run',
+            let result = await fetch(`${this.HOST_URL}cpp/compile_and_run`,
                 {
                     method: 'POST',
                     headers: {
@@ -23,9 +25,36 @@ class CompilerService {
         }
     }
 
+    static async grade_code(codeString, topicId, tutorialId) {
+        const data = {
+            'topicId': topicId,
+            'tutorialId': tutorialId,
+            'code': codeString,
+            
+        }
+
+        try {
+            let result = await fetch(`${this.HOST_URL}cpp/grade_code`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+            console.log(`result in service ${result.status}`)
+            console.log(result)
+            
+            return result;
+        } catch (error) {
+            console.log("Error when sending code for compilation")
+            console.error(error);
+        }
+    }
+
     static async check_connection() {
         try {
-            let result = await fetch('http://localhost:8080/cpp/',
+            let result = await fetch(`${this.HOST_URL}cpp/`,
                 {
                     method: 'GET',
                 })
@@ -44,4 +73,4 @@ class CompilerService {
     }
 }
 
-export default CompilerService;
+export default CodeCompileService;

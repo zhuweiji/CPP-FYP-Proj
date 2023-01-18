@@ -15,9 +15,11 @@ websockets = "^10.4"
 [tool.poetry.dev-dependencies]
 
 [tool.poetry.scripts]
-start = "scripts:start"
-test = "scripts:test"
-tests = "scripts:test"
+start       = "scripts:start"
+startreload = "scripts:startreload"
+test        = "scripts:test"
+tests       = "scripts:test"
+healthcheck = "scripts:healthcheck"
 
 
 [build-system]
@@ -26,5 +28,5 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 log_cli = true
-log_cli_level = "WARNING"
+log_cli_level = "INFO"
 log_cli_format ='%(name)s-%(levelname)s|%(lineno)d:  %(message)s'
