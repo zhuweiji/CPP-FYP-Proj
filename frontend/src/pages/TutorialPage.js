@@ -5,6 +5,8 @@ import { AppBar, Box, Stack, Grid } from '@mui/material';
 import CodeEditor from "../components/Editor";
 import TopNavBar from "../components/Nav";
 // import BottomAppBar from "../components/EditorBottomAppBar";
+import Confetti from 'react-confetti'
+import useWindowSize from 'react-use/lib/useWindowSize' 
 
 import './TutorialPage.css';
 
@@ -16,16 +18,20 @@ import TerminalTwoToneIcon from '@mui/icons-material/TerminalTwoTone';
 import TextSnippetTwoToneIcon from '@mui/icons-material/TextSnippetTwoTone';
 import CssBaseline from '@mui/material/CssBaseline';
 import IconButton from '@mui/material/IconButton';
-import Toolbar from '@mui/material/Toolbar';
+
+import {Toolbar, Button} from '@mui/material';
 
 import { blueGrey } from '@mui/material/colors';
 import TutorialDataFetch from "../services/TutorialDataFetch";
 
 import { matchRoutes, useLocation } from "react-router-dom"
+import Overlay from "../components/Overlay";
+
 
 function App(props) {
 
     const [leftPaneInstructions, setLeftPaneInstructions] = useState("");
+    const [gradingPassed, setGradingPassed] = useState(false);
 
     // get the path of this page (to get the tutorialId of the page)
     const routeRegex = '/tutorial/(?<topicId>[0-9]+)/(?<tutorialId>[0-9]+)'
@@ -47,10 +53,28 @@ function App(props) {
         IIFE();
     }, [])
 
+    const { windowWidth, windowHeight } = useWindowSize()
+
+    // TODO fill in
+    function getNextTutorialHref(){
+        return `/tutorial/${topicId}/${Number(tutorialId) + 1}`;
+    }
 
     return (
         <div>
             <TopNavBar></TopNavBar>
+
+            {/* <Overlay /> */}
+            {gradingPassed && <Overlay/> }
+
+            {/* single use whole-screen confetti display */}
+            <Confetti
+                width={windowWidth}
+                height={windowHeight}
+                numberOfPieces={200}
+                recycle={false}
+                run={gradingPassed}
+            />
 
             <Grid container spacing={1} className='TutorialPage' >
                 <Grid item xs={4} id='leftGrid'>
@@ -68,7 +92,17 @@ function App(props) {
                 </Grid>
 
                 <Grid item xs={8}>
-                    <CodeEditor topicId={topicId} tutorialId={tutorialId}/>
+                    {!gradingPassed &&
+                        <CodeEditor topicId={topicId} tutorialId={tutorialId} updateGradingToPassed={() => { setGradingPassed(true); }} />
+                    }
+                    {gradingPassed &&
+
+                    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+                            <Button variant="contained" href={getNextTutorialHref()}>Next page</Button>
+                    </Box>
+                        
+                    }
+                    
                 </Grid>
 
             </Grid>

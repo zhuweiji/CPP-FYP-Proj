@@ -169,7 +169,12 @@ function CodeEditor(props) {
             let result_data = await result.json()
             console.log(result_data)
 
-            let displayedOutput = result_data['result']
+            let final_result = result_data['result'];
+            if (final_result == 'Correct!'){
+                props.updateGradingToPassed();
+            }
+
+            let displayedOutput = final_result
             setExecutionResults([...executionResults, displayedOutput]);
 
             setDisplayedExecutionResult(displayedOutput);
