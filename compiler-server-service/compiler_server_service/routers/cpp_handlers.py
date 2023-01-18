@@ -4,6 +4,7 @@ from compiler_server_service.services.cpp_compiler.cpp_compiler_revised import (
     CPP_Compiler,
 )
 from compiler_server_service.services.grader import Grader
+from compiler_server_service.services.tutorial_dataloader import TutorialDataNotFound
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
@@ -19,15 +20,13 @@ router = APIRouter(
 )
 
 
-
-class POST_BODY__CPP_CODE(BaseModel):
-    code: str
-
-
 @router.get('/')
 def root(request: Request):
     return {'message': "we're up"}
 
+
+class POST_BODY__CPP_CODE(BaseModel):
+    code: str
 
 @router.post('/compile_and_run')
 @limiterobj.limit('10/minute')
@@ -52,24 +51,33 @@ class POST_BODY__Compile_Grade_Request(BaseModel):
 @router.post('/grade_code')
 @limiterobj.limit('10/minute')
 def handle_compile_and_grade(request: Request, data: POST_BODY__Compile_Grade_Request):
+    """Grades a user's code - 
+        1. Checks console output if the user's code against provided model output
+        2. Runs code against provided doctests to check 
+    """
     result = {'result': False}
     
     try:
         log.info(f"GRADING... :\n{data.code}")
         
-        if not Grader.check_console_output(topicId=data.topicId, tutorialId=data.tutorialId, code=data.code):
-            result['result']= 'The console output did not match the answer'
+        console_check_output = Grader.check_console_output(topicId=data.topicId, tutorialId=data.tutorialId, code=data.code)
+        if console_check_output is not True:
+            result['result'] = console_check_output
             return result
-            
 
         doctest_output = Grader.check_doctest(topicId=data.topicId, tutorialId=data.tutorialId, code=data.code)
-        if doctest_output == True: 
-            result['result'] = 'Correct!'
-        else:
+        if doctest_output is not True: 
             result['result'] = doctest_output
+        else:
+            result['result'] = 'Correct!'
         
         return result
     
+    except TutorialDataNotFound as not_found_error:
+        log.exception(not_found_error)
+        result['result'] = 'Our tests have not been written for this tutorial yet! Check back again later 🥰'
+        return result
+        
     except Exception as E:
         log.exception(E)
         return HTTPException(status_code=500, detail='internal server error')

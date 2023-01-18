@@ -10,7 +10,9 @@
                     "id": 1,
                     "name": "Hello World!",
                     "leftPaneInstructions": "Hello!\n\nWelcome to Comprehend C++\n\nIn this section we will try to create log hello world into the console.\n\n\n\n=============================================================\nGrading Objectives: Log 'Hello CPP!' into the terminal",
-                    "expectedConsoleOutput": "Hello CPP!"
+                    "expectedConsoleOutput": "Hello CPP!",
+                    "prewritten_cpp_files": "",
+                    "prewritten_tests": ""
                 },
                 {
                     "id": 2,

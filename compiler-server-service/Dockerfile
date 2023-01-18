@@ -22,6 +22,7 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock /app/
 RUN poetry install
 
+# should ensure that empty directories are copied too - for the cpp-source-files directory
 COPY . /app
 
 HEALTHCHECK CMD poetry run healthcheck
