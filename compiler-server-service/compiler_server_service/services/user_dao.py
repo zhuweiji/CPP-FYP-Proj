@@ -45,5 +45,9 @@ class UserData:
     @classmethod
     def find_by_id(cls, id):
         return cls.__get_database().find_one({'id': id})
+    
+    @classmethod
+    def find_by_name(cls, name:str):
+        return cls.__get_database().find_one({'id': name})
         
     

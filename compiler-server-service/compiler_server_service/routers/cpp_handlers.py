@@ -25,12 +25,12 @@ def root(request: Request):
     return {'message': "we're up"}
 
 
-class POST_BODY__CPP_CODE(BaseModel):
+class POST__Compile_Run(BaseModel):
     code: str
 
 @router.post('/compile_and_run')
 @limiterobj.limit('10/minute')
-def handle_compile_and_run(request: Request, data: POST_BODY__CPP_CODE):
+def handle_compile_and_run(request: Request, data: POST__Compile_Run):
     try:
         log.info(f"COMPILING... :\n{data.code}")
         compile_result = CPP_Compiler.write_compile_run(data.code)
@@ -42,7 +42,7 @@ def handle_compile_and_run(request: Request, data: POST_BODY__CPP_CODE):
         return HTTPException(status_code=500, detail='internal server error')
     
 
-class POST_BODY__Compile_Grade_Request(BaseModel):
+class POST__Compile_Grade(BaseModel):
     code: str
     topicId:int
     tutorialId: int
@@ -50,7 +50,7 @@ class POST_BODY__Compile_Grade_Request(BaseModel):
 
 @router.post('/grade_code')
 @limiterobj.limit('10/minute')
-def handle_compile_and_grade(request: Request, data: POST_BODY__Compile_Grade_Request):
+def handle_compile_and_grade(request: Request, data: POST__Compile_Grade):
     """Grades a user's code - 
         1. Checks console output if the user's code against provided model output
         2. Runs code against provided doctests to check 
