@@ -17,7 +17,8 @@ CPP_SOURCE_FILES_DIR_PATH = COMPILER_SERVER_SERVICE_DIR_PATH / 'cpp_source_files
 GUIDED_TUTORIALS_DIR_PATH = CPP_SOURCE_FILES_DIR_PATH / 'guided_tutorials'
 CPP_HEADER_FILES_SOURCE_DIR = CPP_SOURCE_FILES_DIR_PATH / 'header_files'
 
-TUTORIAL_DATA_FILE_PATH = Path(CPP_MODULE_DIR_PATH / 'data' / 'tutorial_data.json')
+DATA_DIR_PATH = CPP_MODULE_DIR_PATH / 'data'
+TUTORIAL_DATA_FILE_PATH = DATA_DIR_PATH / 'tutorial_data.json'
 
 def create_directory_ifnotexist(path: Path):
     if not path.is_dir():
@@ -33,7 +34,7 @@ def check_path_exists(*args: Path, is_file=None, is_dir=None):
     for path in args:
         if not isinstance(path, Path): path = Path(str(path))
         if (is_dir and not path.is_dir()) or (is_file and not path.is_file()):
-            log.error(f"Checked for the existence of {pathtype} at {path} but {pathtype} does not exist at that path")
+            log.exception(f"Checked for the existence of {pathtype} at {path} but {pathtype} does not exist at that path")
             return False
 
     return True
