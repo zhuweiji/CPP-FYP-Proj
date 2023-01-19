@@ -57,8 +57,8 @@ class CPPCompiler:
                 return cls.run_a_doctest(output_binary, 
                                          testcases=testcases
                                          )
-            except Exception as E:
-                log.error(E)
+            except Exception:
+                log.exception("")
                 return False
             
 

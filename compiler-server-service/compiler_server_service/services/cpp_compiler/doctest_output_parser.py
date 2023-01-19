@@ -68,12 +68,13 @@ class DoctestOutputParser:
 
 @dataclass
 class DoctestCompilationError(CompilationResult):
-    """Thin wrapper over CompilationResult as all the error parsing lives there"""
+    """Thin wrapper over CompilationResult as all the error parsing lives there
+    This class will take an instance of CompilationResult during init, but act exactly the same - functions as just a rename of the CompilationResult object
+    """
+    
     
     def __init__(self, baseObject):
-        self.__class__ = type(baseObject.__class__.__name__,
-                              (self.__class__, baseObject.__class__),
-                              {})
+        self.__class__ = type(baseObject.__class__.__name__, (self.__class__, baseObject.__class__), {})
         self.__dict__ = baseObject.__dict__
         
     

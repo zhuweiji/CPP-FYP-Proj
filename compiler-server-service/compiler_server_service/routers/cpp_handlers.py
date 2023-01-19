@@ -37,8 +37,8 @@ def handle_compile_and_run(request: Request, data: POST_BODY__CPP_CODE):
     
         return {'result': compile_result.full_str()}
     
-    except Exception as E:
-        log.exception(E)
+    except Exception:
+        log.exception('')
         return HTTPException(status_code=500, detail='internal server error')
     
 
@@ -74,12 +74,12 @@ def handle_compile_and_grade(request: Request, data: POST_BODY__Compile_Grade_Re
         return result
     
     except TutorialDataNotFound as not_found_error:
-        log.exception(not_found_error)
+        log.exception("")
         result['result'] = 'Our tests have not been written for this tutorial yet! Check back again later 🥰'
         return result
         
-    except Exception as E:
-        log.exception(E)
+    except Exception:
+        log.exception("")
         return HTTPException(status_code=500, detail='internal server error')
     
     

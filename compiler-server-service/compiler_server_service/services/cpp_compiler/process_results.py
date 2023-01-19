@@ -56,7 +56,7 @@ class ProcessResult:
     def attempt_decode(value) -> Union[str, bytes, None]:   
         """Convert byte values to to string"""
         try: return value.decode()
-        except Exception as E: log.exception(f"tried to decode value but failed: {E}"); return value
+        except Exception: log.exception(f"tried to decode value but failed"); return value
         
     # @staticmethod
     # def custom_create():
