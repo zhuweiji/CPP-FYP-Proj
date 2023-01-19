@@ -21,7 +21,7 @@ router = APIRouter(
 
 
 @router.get('/')
-def root(request: Request):
+def compiler_status(request: Request):
     return {'message': "we're up"}
 
 

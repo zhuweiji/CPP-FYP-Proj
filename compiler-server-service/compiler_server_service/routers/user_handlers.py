@@ -23,10 +23,6 @@ router = APIRouter(
     prefix=ROUTE_PREFIX
 )
 
-@router.get('/')
-def root(request: Request):
-    return {'message': "we're up"}
-
 
 class POST__Login(BaseModel):
     username: str    
@@ -39,4 +35,13 @@ def login(request: Request, data: POST__Login):
     except Exception:
         log.exception('error handled while handling login request')
         return HTTPException(status_code=500, detail='internal server error')
-        
+
+
+@router.post('/create')
+def create_user(request: Request, data: POST__Login):
+    try:
+        raise NotImplementedError
+        return {}
+    except Exception:
+        log.exception('error handled while handling login request')
+        return HTTPException(status_code=500, detail='internal server error')

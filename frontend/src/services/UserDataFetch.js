@@ -25,6 +25,27 @@ export default class UserDataFetch {
         }
     }
 
+    static async create_account(username) {
+        const data = {
+            'username': username
+        }
+        try {
+            let result = await fetch(`${this.HOST_URL}users/create`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+
+            return result.json();
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     static async getUserInfo(userid) {
         try {
             let result = await fetch(`${this.HOST_URL}user/${userid}`,

@@ -1,7 +1,6 @@
-import './css/Login.css';
+import './css/CreateAccountPage.css'
 
 import { useEffect, useState, useRef } from "react";
-
 
 import IconButton from '@mui/material/IconButton';
 import Input from '@mui/material/Input';
@@ -30,20 +29,20 @@ export default function LoginPage(props) {
         event.preventDefault();
     };
 
-    function handleSubmit(){
+    function handleSubmit() {
         let userid = usernameRef.current.value
         let password = passwordRef.current.value
 
         console.log(userid);
-        UserDataFetch.login(userid)
+        UserDataFetch.create_account(userid)
     }
 
-    function loginIfKeydownEnter(e){
+    function submitIfKeydownEnter(e) {
         if (e.key === 'Enter') {
             handleSubmit();
         }
     }
-    
+
     const loginBgImg = require(`../static/login_marble.jpg`);
 
     return <>
@@ -55,22 +54,23 @@ export default function LoginPage(props) {
             direction="column"
             alignItems="center"
             justifyContent="center"
-            style={{ height: '92vh',
-            backgroundImage: `url(${loginBgImg}), linear-gradient(rgba(155, 155, 155, 0.3), rgba(155, 155, 155, 0.6))`,
-            overflowY:'clip',
-            backgroundPosition: 'center center',
-            backgroundSize: 'cover',
-            backgroundBlendMode: 'overlay',
+            style={{
+                height: '92vh',
+                backgroundImage: `url(${loginBgImg}), linear-gradient(rgba(155, 155, 155, 0.3), rgba(155, 155, 155, 0.6))`,
+                overflowY: 'clip',
+                backgroundPosition: 'center center',
+                backgroundSize: 'cover',
+                backgroundBlendMode: 'overlay',
             }}
         >
 
             <Grid item xs={3}>
-                <Typography variant="h2">Login</Typography>
+                <Typography variant="h2">Create Account</Typography>
 
 
                 <InputLabel htmlFor="username-input" sx={{ mt: '8%' }}>Username</InputLabel>
-                <Input id="username-input" inputRef={usernameRef}  size='medium' label="Username" color='secondary' sx={{ 'width': '50ch' }}
-                    onKeyDown={loginIfKeydownEnter} />
+                <Input id="username-input" inputRef={usernameRef} size='medium' label="Username" color='secondary' sx={{ 'width': '50ch' }}
+                    onKeyDown={submitIfKeydownEnter} />
 
                 <InputLabel htmlFor="standard-adornment-password" sx={{ mt: '8%' }}>Password (Not currently used)</InputLabel>
                 <Input
@@ -95,7 +95,7 @@ export default function LoginPage(props) {
                     disabled
                 />
 
-                    
+
 
 
 
@@ -105,9 +105,9 @@ export default function LoginPage(props) {
                     alignItems="flex-end"
                     sx={{ mt: '5%' }}
                 >
-                    <Button variant="contained" onClick={handleSubmit}>Login</Button>
+                    <Button variant="contained" onClick={handleSubmit}>Create Account</Button>
                 </Stack>
-                
+
                 <Divider sx={{ pb: '3rem' }} />
             </Grid>
 

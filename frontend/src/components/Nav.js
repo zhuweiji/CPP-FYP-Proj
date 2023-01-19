@@ -1,5 +1,4 @@
-import AdbIcon from '@mui/icons-material/Adb';
-import MenuIcon from '@mui/icons-material/Menu';
+
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -12,7 +11,12 @@ import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+
+import {Divider} from '@mui/material';
+
 import CodeIcon from '@mui/icons-material/Code';
+import AdbIcon from '@mui/icons-material/Adb';
+import MenuIcon from '@mui/icons-material/Menu';
 
 import React, { useState, useRef, useCallback } from "react";
 import { useNavigate } from 'react-router-dom';
@@ -187,6 +191,12 @@ const ResponsiveAppBar = () => {
                                 href={'/login'}
                             >
                                 Login
+                            </Button>
+                            <Button
+                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                href={'/create_account'}
+                            >
+                                Create Account
                             </Button>
                         </>
                     }

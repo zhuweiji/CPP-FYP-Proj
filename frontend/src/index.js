@@ -18,6 +18,7 @@ import IDEPage from './pages/OnlyIDEPage';
 import NotebookPage from './pages/OnlyNotebookPage';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/Login';
+import CreateAccountPage from './pages/CreateAccountPage';
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,9 @@ const router = createBrowserRouter([
   }, {
     path: 'login',
     element: <LoginPage />,
+  }, {
+    path: 'create_account',
+    element: <CreateAccountPage />,
   }
   
 ]);
