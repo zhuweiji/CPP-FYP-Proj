@@ -19,7 +19,8 @@ log = logging.getLogger(__name__)
 ROUTE_PREFIX = '/tutorials'
 
 router = APIRouter(
-    prefix=ROUTE_PREFIX
+    prefix=ROUTE_PREFIX,
+    tags=['Tutorials']
 )
 
 @router.get('/leftpane_instructions')

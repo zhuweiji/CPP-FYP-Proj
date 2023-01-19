@@ -16,7 +16,8 @@ from compiler_server_service.services.limiter.rate_limiter import limiterobj
 ROUTE_PREFIX = '/cpp'
 
 router = APIRouter(
-    prefix=ROUTE_PREFIX
+    prefix=ROUTE_PREFIX,
+    tags=['Compiler Service'],
 )
 
 

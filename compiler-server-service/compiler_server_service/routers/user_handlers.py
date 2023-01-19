@@ -20,7 +20,8 @@ log = logging.getLogger(__name__)
 ROUTE_PREFIX = '/users'
 
 router = APIRouter(
-    prefix=ROUTE_PREFIX
+    prefix=ROUTE_PREFIX,
+    tags=['Users'],
 )
 
 

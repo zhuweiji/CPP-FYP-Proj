@@ -16,8 +16,24 @@ from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
+tags_metadata = [
+    {
+        "name": "Compiler Service",
+        "description": "Operations involving C++ code, including the compilation and running of any C++ code.",
+    },
+    {
+        "name": "Tutorials",
+        "description": "Manages tutorials, such as providing and reading pre-written tutorial data.",
+    },
+    {
+        "name": "Users",
+        "description": "Handles all operations involving users, including user identity verification and account creations",
+    },
+]
+
 app = FastAPI(
-    title="CPP Compiler Backend"
+    title="CPP Compiler Backend",
+    openapi_tags=tags_metadata,
 )
 
 app.state.limiter = limiterobj
