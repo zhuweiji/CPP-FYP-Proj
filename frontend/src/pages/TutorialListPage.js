@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import ButtonAppBar from "../components/Nav";
+import TopNavBar from "../components/Nav";
 import LinearProgressWithLabel from "../components/LinearProgressBar__Labelled";
 
 
@@ -169,7 +169,7 @@ export default function TutorialList(props) {
 
 
     return (<div className="listPage">
-        <ButtonAppBar></ButtonAppBar>
+        <TopNavBar></TopNavBar>
 
         <Box sx={{ width: '90vw', margin: '5%' }}>
             <Typography variant="h2">Course Outline</Typography>

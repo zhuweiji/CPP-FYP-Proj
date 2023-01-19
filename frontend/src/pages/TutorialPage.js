@@ -41,6 +41,10 @@ function App(props) {
     const [nextTutorialDisabled, setNextTutorialDisabled] = useState(false);
 
 
+
+    // can try using this instead (might be more concise)
+    // https://stackoverflow.com/questions/35352638/how-to-get-parameter-value-from-query-string
+    
     // get the path of this page (to get the tutorialId of the page)
     const routeRegex = '/tutorial/(?<topicId>[0-9]+)/(?<tutorialId>[0-9]+)'
 

@@ -16,6 +16,8 @@ import ErrorPage from './pages/ErrorPage';
 import UnderConstruction from './pages/UnderConstruction';
 import IDEPage from './pages/OnlyIDEPage';
 import NotebookPage from './pages/OnlyNotebookPage';
+import UserPage from './pages/UserPage';
+import LoginPage from './pages/Login';
 
 const router = createBrowserRouter([
   {
@@ -40,6 +42,12 @@ const router = createBrowserRouter([
   }, {
     path: 'notebook',
     element: <NotebookPage/>,
+  }, {
+    path: 'my-page',
+    element: <UserPage />,
+  }, {
+    path: 'login',
+    element: <LoginPage />,
   }
   
 ]);
