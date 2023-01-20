@@ -14,8 +14,11 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import TopNavBar from "../components/Nav";
-import { Typography, Box, Grid, Container, Stack, Paper, Divider, TextField, Button } from '@mui/material';
-import UserDataFetch from '../services/UserDataFetch';
+import { Typography, Box, Grid, Container, Stack, Paper, Divider, TextField, Button, CircularProgress } from '@mui/material';
+import UserService from '../services/UserService';
+
+import { useNavigate } from 'react-router-dom';
+
 
 export default function LoginPage(props) {
     const [showPassword, setShowPassword] = useState(false);
@@ -23,18 +26,42 @@ export default function LoginPage(props) {
     const usernameRef = useRef();
     const passwordRef = useRef();
 
+    const [formDisabled, setFormDisabled] = useState(false);
+    const [createResultMessage, setCreateResultMessage] = useState('');
+
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
 
-    function handleSubmit() {
+    const navigate = useNavigate();
+
+
+    async function handleSubmit() {
         let userid = usernameRef.current.value
         let password = passwordRef.current.value
 
+        setFormDisabled(true);
+
         console.log(userid);
-        UserDataFetch.create_account(userid)
+        let result = await UserService.create_account(userid);
+        if (result){
+            if (result.error && result.error === 'username already exists'){
+                setCreateResultMessage('Sorry, this username already exists. Please try another.')
+            } else{
+                localStorage.setItem('userid', result['user_id']);
+                setCreateResultMessage('User created!');
+                setTimeout(()=>{
+                    navigate('/', { replace: true });
+                }, 1000);
+
+            } 
+        } else{
+            setCreateResultMessage('An error occured. Please try again.')
+
+        }
+        setFormDisabled(false);
     }
 
     function submitIfKeydownEnter(e) {
@@ -70,7 +97,9 @@ export default function LoginPage(props) {
 
                 <InputLabel htmlFor="username-input" sx={{ mt: '8%' }}>Username</InputLabel>
                 <Input id="username-input" inputRef={usernameRef} size='medium' label="Username" color='secondary' sx={{ 'width': '50ch' }}
-                    onKeyDown={submitIfKeydownEnter} />
+                    onKeyDown={submitIfKeydownEnter}
+                    disabled={formDisabled}
+                     />
 
                 <InputLabel htmlFor="standard-adornment-password" sx={{ mt: '8%' }}>Password (Not currently used)</InputLabel>
                 <Input
@@ -92,7 +121,7 @@ export default function LoginPage(props) {
                         </InputAdornment>
                     }
                     label="Password"
-                    disabled
+                    disabled={formDisabled || true}
                 />
 
 
@@ -100,12 +129,16 @@ export default function LoginPage(props) {
 
 
                 <Stack
-                    direction="column"
-                    justifyContent="center"
-                    alignItems="flex-end"
+                    direction="row"
+                    justifyContent="flex-end"
+                    alignItems="center"
                     sx={{ mt: '5%' }}
+                    spacing={5}
                 >
+                    <Typography variant='p'>{createResultMessage}</Typography>
+                    {formDisabled && <CircularProgress size='1rem' hidden/>}
                     <Button variant="contained" onClick={handleSubmit}>Create Account</Button>
+
                 </Stack>
 
                 <Divider sx={{ pb: '3rem' }} />

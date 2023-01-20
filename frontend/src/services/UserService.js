@@ -18,6 +18,9 @@ export default class UserDataFetch {
                     body: JSON.stringify(data)
                 })
 
+            if (result.status == 404){
+                return false;
+            }
             return result.json();
 
         } catch (error) {
@@ -39,7 +42,13 @@ export default class UserDataFetch {
                     body: JSON.stringify(data)
                 })
 
-            return result.json();
+            if (result.status == 201){
+                return result.json();
+            } else if (result.status == 409){
+                return {'error': 'username already exists'};
+            } else{
+                return false;
+            }
 
         } catch (error) {
             console.error(error);

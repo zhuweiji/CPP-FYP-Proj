@@ -7,6 +7,6 @@ class MockUserData(UserData):
     
     
     @classmethod
-    def __get_database(cls):
+    def get_collection(cls):
         return DB_DAO.get_database()[cls.table_name]
         

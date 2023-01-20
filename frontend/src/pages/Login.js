@@ -15,8 +15,11 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import TopNavBar from "../components/Nav";
-import { Typography, Box, Grid, Container, Stack, Paper, Divider, TextField, Button } from '@mui/material';
-import UserDataFetch from '../services/UserDataFetch';
+import { Typography, Box, Grid, Container, Stack, Paper, Divider, TextField, Button, CircularProgress } from '@mui/material';
+import UserService from '../services/UserService';
+
+import { useNavigate } from 'react-router-dom';
+
 
 export default function LoginPage(props) {
     const [showPassword, setShowPassword] = useState(false);
@@ -24,18 +27,39 @@ export default function LoginPage(props) {
     const usernameRef = useRef();
     const passwordRef = useRef();
 
+    const [formDisabled, setFormDisabled] = useState(false);
+    const [loginResultMessage, setLoginResultMessage] = useState('');
+
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
 
-    function handleSubmit(){
+    const navigate = useNavigate();
+
+
+    async function handleSubmit(){
         let userid = usernameRef.current.value
         let password = passwordRef.current.value
 
+        setFormDisabled(true);
+
         console.log(userid);
-        UserDataFetch.login(userid)
+        let result = await UserService.login(userid);
+        if (result) {
+            localStorage.setItem('userid', result['user_id']);
+            setTimeout(() => {
+                navigate('/', { replace: true });
+            }, 1000);
+        } else {
+            setLoginResultMessage('Your username was incorrect.')
+
+        }
+        setFormDisabled(false);
+
+        console.log(userid);
+
     }
 
     function loginIfKeydownEnter(e){
@@ -95,19 +119,22 @@ export default function LoginPage(props) {
                     disabled
                 />
 
-                    
-
-
-
-                <Stack
-                    direction="column"
-                    justifyContent="center"
-                    alignItems="flex-end"
-                    sx={{ mt: '5%' }}
-                >
-                    <Button variant="contained" onClick={handleSubmit}>Login</Button>
-                </Stack>
                 
+                <Stack
+                    direction="row"
+                    justifyContent="flex-end"
+                    alignItems="center"
+                    sx={{ mt: '5%' }}
+                    spacing={5}
+                >
+                    <Typography variant='p'>{loginResultMessage}</Typography>
+                    {formDisabled && <CircularProgress size='1rem' hidden />}
+                    <Button variant="contained" onClick={handleSubmit}>Login</Button>
+
+                </Stack>
+
+
+
                 <Divider sx={{ pb: '3rem' }} />
             </Grid>
 

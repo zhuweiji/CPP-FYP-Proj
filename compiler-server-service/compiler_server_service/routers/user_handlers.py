@@ -30,19 +30,22 @@ class POST__Login(BaseModel):
 
 @router.post('/login')
 def login(request: Request, data: POST__Login):
-    try:
-        log.info(UserData.find_by_name(data.username))
-        return {}
-    except Exception:
-        log.exception('error handled while handling login request')
-        return HTTPException(status_code=500, detail='internal server error')
+    if found_user := UserData.find_by_name(data.username):
+        log.info(found_user)
+        return {'user_id': found_user['id']}
+    else:
+        raise HTTPException(status_code=404, detail='user not found')
+            
 
 
-@router.post('/create')
-def create_user(request: Request, data: POST__Login):
-    try:
-        raise NotImplementedError
-        return {}
-    except Exception:
-        log.exception('error handled while handling login request')
-        return HTTPException(status_code=500, detail='internal server error')
+class POST_Create_User(BaseModel):
+    username: str
+
+@router.post('/create', status_code=201)
+def create_user(request: Request, data: POST_Create_User):
+    found_user = UserData.find_by_name(data.username)
+    if found_user:
+        raise HTTPException(status_code=409, detail='user already exists')
+    
+    new_user = UserData(name=data.username)
+    return {'user_id': data['id']}
