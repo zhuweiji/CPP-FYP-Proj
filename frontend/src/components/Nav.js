@@ -31,6 +31,7 @@ const ResponsiveAppBar = () => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
+    const [loginCompleted, setLoginCompleted] = React.useState(false);
     const [loggedIn, setLoggedIn] = React.useState(false);
     const [username, setUsername] = React.useState('');
 
@@ -40,6 +41,7 @@ const ResponsiveAppBar = () => {
     const redirectToGamesPage = useCallback(() => navigate('/games', { replace: false }), [navigate]);
 
     useEffect(()=>{
+        setLoginCompleted(true);
         setLoggedIn(UserService.getUserId() !== -1);
         setUsername(UserService.getUserName());
     }, []);
@@ -162,7 +164,7 @@ const ResponsiveAppBar = () => {
                     </Box>
 
 
-                    {loggedIn &&
+                    {loggedIn && loginCompleted && 
 
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Your profile">
@@ -198,7 +200,7 @@ const ResponsiveAppBar = () => {
                     }
 
                     {
-                        !loggedIn && 
+                        !loggedIn && loginCompleted &&
                         <>
                             <Button
                                 sx={{ my: 2, color: 'white', display: 'block' }}
