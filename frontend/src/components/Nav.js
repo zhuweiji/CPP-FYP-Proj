@@ -40,7 +40,7 @@ const ResponsiveAppBar = () => {
     const redirectToGamesPage = useCallback(() => navigate('/games', { replace: false }), [navigate]);
 
     useEffect(()=>{
-        setLoggedIn(!!UserService.getUserId());
+        setLoggedIn(UserService.getUserId() !== -1);
         setUsername(UserService.getUserName());
     }, []);
 
