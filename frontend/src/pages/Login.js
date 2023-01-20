@@ -47,14 +47,13 @@ export default function LoginPage(props) {
 
         console.log(userid);
         let result = await UserService.login(userid);
-        if (result) {
-            localStorage.setItem('userid', result['user_id']);
+        if (result.status == 200) {
+            localStorage.setItem('user_id', result['user_id']);
             setTimeout(() => {
                 navigate('/', { replace: true });
             }, 1000);
         } else {
             setLoginResultMessage('Your username was incorrect.')
-
         }
         setFormDisabled(false);
 

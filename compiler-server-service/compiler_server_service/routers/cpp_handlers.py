@@ -1,5 +1,6 @@
 import logging
 
+from compiler_server_service.routers.post_body_templates import POST_BODY
 from compiler_server_service.services.cpp_compiler.cpp_compiler_revised import (
     CPP_Compiler,
 )
@@ -26,7 +27,7 @@ def compiler_status(request: Request):
     return {'message': "we're up"}
 
 
-class POST__Compile_Run(BaseModel):
+class POST__Compile_Run(POST_BODY):
     code: str
 
 @router.post('/compile_and_run')
@@ -43,7 +44,7 @@ def handle_compile_and_run(request: Request, data: POST__Compile_Run):
         return HTTPException(status_code=500, detail='internal server error')
     
 
-class POST__Compile_Grade(BaseModel):
+class POST__Compile_Grade(POST_BODY):
     code: str
     topicId:int
     tutorialId: int

@@ -94,5 +94,9 @@ export default class UserDataFetch {
         }
     }
 
+    static getUserId(){
+        return localStorage.getItem('userid');
+    }
+
 
 }

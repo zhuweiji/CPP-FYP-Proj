@@ -1,11 +1,13 @@
 import SETTINGS from "./settings"
+import UserDataFetch from "./UserService";
 
 class CodeCompileService {
     static HOST_URL = SETTINGS.HOST_URL;
 
     static async compile_and_run(codeString) {
         const data = {
-            'code': codeString
+            'code': codeString,
+            'user_id': UserDataFetch.getUserId(),
         }
 
         try {
@@ -30,6 +32,7 @@ class CodeCompileService {
             'topicId': topicId,
             'tutorialId': tutorialId,
             'code': codeString,
+            'user_id': UserDataFetch.getUserId(),
             
         }
 

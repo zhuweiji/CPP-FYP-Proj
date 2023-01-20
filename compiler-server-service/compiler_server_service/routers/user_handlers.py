@@ -3,6 +3,7 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 
+from compiler_server_service.routers.post_body_templates import POST_BODY
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
 from compiler_server_service.services.tutorial_dataloader import (
     TopicData,
@@ -25,7 +26,7 @@ router = APIRouter(
 )
 
 
-class POST__Login(BaseModel):
+class POST__Login(POST_BODY):
     username: str    
 
 @router.post('/login')
@@ -38,7 +39,7 @@ def login(request: Request, data: POST__Login):
             
 
 
-class POST_Create_User(BaseModel):
+class POST_Create_User(POST_BODY):
     username: str
 
 @router.post('/create', status_code=201)

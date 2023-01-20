@@ -50,7 +50,7 @@ export default function LoginPage(props) {
             if (result.error && result.error === 'username already exists'){
                 setCreateResultMessage('Sorry, this username already exists. Please try another.')
             } else{
-                localStorage.setItem('userid', result['user_id']);
+                localStorage.setItem('user_id', result['user_id']);
                 setCreateResultMessage('User created!');
                 setTimeout(()=>{
                     navigate('/', { replace: true });
