@@ -40,15 +40,20 @@ export default function LoginPage(props) {
 
 
     async function handleSubmit(){
-        let userid = usernameRef.current.value
+        let username = usernameRef.current.value
         let password = passwordRef.current.value
 
         setFormDisabled(true);
 
-        console.log(userid);
-        let result = await UserService.login(userid);
-        if (result.status == 200) {
-            localStorage.setItem('user_id', result['user_id']);
+        console.log(username);
+        let result = await UserService.login(username);
+        console.log(result)
+        if (result && !result.error) {
+
+            UserService.setUserId(result['user_id'])
+            UserService.setUserName(result['username'])
+            setLoginResultMessage('')
+
             setTimeout(() => {
                 navigate('/', { replace: true });
             }, 1000);
@@ -57,7 +62,7 @@ export default function LoginPage(props) {
         }
         setFormDisabled(false);
 
-        console.log(userid);
+        console.log(username);
 
     }
 
@@ -128,7 +133,7 @@ export default function LoginPage(props) {
                 >
                     <Typography variant='p'>{loginResultMessage}</Typography>
                     {formDisabled && <CircularProgress size='1rem' hidden />}
-                    <Button variant="contained" onClick={handleSubmit}>Login</Button>
+                    <Button variant="contained" onClick={handleSubmit} disabled={formDisabled}>Login</Button>
 
                 </Stack>
 

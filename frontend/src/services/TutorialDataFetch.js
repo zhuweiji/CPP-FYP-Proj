@@ -9,10 +9,14 @@ export default class TutorialDataFetch{
     static async getTutorialInformation(topicId, tutorialId){
     // fetches the previous and next tutorials, user data (completed tutorial?), and possibly metrics 
 
+        let url = `${this.HOST_URL}tutorials/tutorial?topicId=${topicId}&tutorialId=${tutorialId}`
         let user_id = UserDataFetch.getUserId();
+        if (user_id){
+            url = url + `&user_id=${user_id}`
+        }
 
         try {
-            let result = await fetch(`${this.HOST_URL}tutorials/tutorial?topicId=${topicId}&tutorialId=${tutorialId}$user_id=${user_id}`,
+            let result = await fetch(`${url}`,
                 {
                     method: 'GET',
                     headers: {

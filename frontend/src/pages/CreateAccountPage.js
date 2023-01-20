@@ -50,7 +50,8 @@ export default function LoginPage(props) {
             if (result.error && result.error === 'username already exists'){
                 setCreateResultMessage('Sorry, this username already exists. Please try another.')
             } else{
-                localStorage.setItem('user_id', result['user_id']);
+                UserService.setUserId(result['user_id'])
+                UserService.setUserName(result['username'])
                 setCreateResultMessage('User created!');
                 setTimeout(()=>{
                     navigate('/', { replace: true });
@@ -137,7 +138,7 @@ export default function LoginPage(props) {
                 >
                     <Typography variant='p'>{createResultMessage}</Typography>
                     {formDisabled && <CircularProgress size='1rem' hidden/>}
-                    <Button variant="contained" onClick={handleSubmit}>Create Account</Button>
+                    <Button variant="contained" onClick={handleSubmit} disabled={formDisabled}>Create Account</Button>
 
                 </Stack>
 

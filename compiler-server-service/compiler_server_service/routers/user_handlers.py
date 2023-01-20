@@ -26,20 +26,20 @@ router = APIRouter(
 )
 
 
-class POST__Login(POST_BODY):
+class POST__Login(BaseModel):
     username: str    
 
 @router.post('/login')
 def login(request: Request, data: POST__Login):
     if found_user := UserData.find_by_name(data.username):
         log.info(found_user)
-        return {'user_id': found_user['id']}
+        return {'user_id': found_user['id'], 'username': found_user['name']}
     else:
         raise HTTPException(status_code=404, detail='user not found')
             
 
 
-class POST_Create_User(POST_BODY):
+class POST_Create_User(BaseModel):
     username: str
 
 @router.post('/create', status_code=201)
@@ -49,4 +49,4 @@ def create_user(request: Request, data: POST_Create_User):
         raise HTTPException(status_code=409, detail='user already exists')
     
     new_user = UserData(name=data.username)
-    return {'user_id': data['id']}
+    return {'user_id': new_user['id'], 'username':new_user['name']}

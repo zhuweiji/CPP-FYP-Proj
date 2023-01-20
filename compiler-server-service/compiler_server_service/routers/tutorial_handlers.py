@@ -2,6 +2,7 @@ import json
 import logging
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional, Union
 
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
 from compiler_server_service.services.tutorial_dataloader import (
@@ -23,12 +24,8 @@ router = APIRouter(
     tags=['Tutorials']
 )
 
-@router.get('/leftpane_instructions')
-def get_leftpane_instructions(topicId:int, tutorialId: int):
-    return TutorialDataLoader.find_tutorial(topicId=topicId, tutorialId=tutorialId).leftPaneInstructions or "Sorry! No instructions found for this tutorial"
-
 @router.get('/tutorial')
-def get_tutorial_information(topicId:int, tutorialId: int):
+def get_tutorial_information(topicId:int, tutorialId: int, user_id:Optional[int]=None):
     """returns relevant information about the tutorial"""
     
     @dataclass 

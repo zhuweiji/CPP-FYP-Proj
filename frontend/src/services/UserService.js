@@ -95,8 +95,26 @@ export default class UserDataFetch {
     }
 
     static getUserId(){
-        return localStorage.getItem('userid');
+        return localStorage.getItem('userid') || -1;
     }
 
+    static setUserId(value){
+        return localStorage.setItem('userid', value);
+
+    }
+
+    static getUserName() {
+        return localStorage.getItem('username') || '';
+    }
+
+    static setUserName(value){
+        return localStorage.setItem('username', value);
+
+    }
+
+    static logout(){
+        localStorage.removeItem('username');
+        localStorage.removeItem('userid');
+    }
 
 }

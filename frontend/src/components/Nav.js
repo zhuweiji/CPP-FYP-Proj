@@ -18,8 +18,11 @@ import CodeIcon from '@mui/icons-material/Code';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import UserService from '../services/UserService';
+
+
 
 const pages_and_links = [{ 'page': 'Tutorials', 'link': '/tutorials' }, { 'page': 'Instructions', 'link': '/instructions' }, { 'page': 'Interactive Games', 'link': '/games' }];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -29,11 +32,17 @@ const ResponsiveAppBar = () => {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
     const [loggedIn, setLoggedIn] = React.useState(false);
+    const [username, setUsername] = React.useState('');
 
     const navigate = useNavigate();
     const redirectToTutorialListPage = useCallback(() => navigate('/tutorials', { replace: false }), [navigate]);
     const redirectToInstructionsPage = useCallback(() => navigate('/instructions', { replace: false }), [navigate]);
     const redirectToGamesPage = useCallback(() => navigate('/games', { replace: false }), [navigate]);
+
+    useEffect(()=>{
+        setLoggedIn(!!UserService.getUserId());
+        setUsername(UserService.getUserName());
+    }, []);
 
 
     const handleOpenNavMenu = (event) => {
@@ -47,7 +56,11 @@ const ResponsiveAppBar = () => {
         setAnchorElNav(null);
     };
 
-    const handleCloseUserMenu = () => {
+    const handleCloseUserMenu = (setting) => {
+        if (setting === 'Logout'){
+            UserService.logout();
+            navigate(0);
+        }
         setAnchorElUser(null);
     };
 
@@ -152,9 +165,9 @@ const ResponsiveAppBar = () => {
                     {loggedIn &&
 
                         <Box sx={{ flexGrow: 0 }}>
-                            <Tooltip title="Open settings">
+                            <Tooltip title="Your profile">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                    <Avatar>{username.charAt(0).toUpperCase()}</Avatar>
                                 </IconButton>
                             </Tooltip>
                             <Menu
@@ -174,12 +187,13 @@ const ResponsiveAppBar = () => {
                                 onClose={handleCloseUserMenu}
                             >
                                 {settings.map((setting) => (
-                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                    <MenuItem key={setting} onClick={()=>handleCloseUserMenu(setting)}>
                                         <Typography textAlign="center">{setting}</Typography>
                                     </MenuItem>
                                 ))}
                             </Menu>
                         </Box>
+                        
 
                     }
 
