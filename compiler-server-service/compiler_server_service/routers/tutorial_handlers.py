@@ -1,6 +1,6 @@
 import json
 import logging
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Optional, Union
 
@@ -25,7 +25,7 @@ router = APIRouter(
 )
 
 @router.get('/tutorial')
-def get_tutorial_information(topicId:int, tutorialId: int, user_id:Optional[int]=None):
+def get_tutorial_information(topicId:int, tutorialId: int, user_id:Optional[str]=None):
     """returns relevant information about the tutorial"""
     
     @dataclass 
@@ -42,7 +42,7 @@ def get_tutorial_information(topicId:int, tutorialId: int, user_id:Optional[int]
     
     if not tutorial: 
         response.errors = 'tutorial not found'
-        return JSONResponse(status_code=404, content=response)
+        return JSONResponse(status_code=404, content=asdict(response))
         
     response.leftpane_instructions = tutorial.leftPaneInstructions or "Sorry! No instructions found for this tutorial"
     
