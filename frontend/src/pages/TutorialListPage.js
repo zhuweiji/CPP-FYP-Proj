@@ -85,7 +85,7 @@ let data = [topic1, topic2, topic3, capstone]
 export default function TutorialList(props) {
     let listItems = data.map(topic => {
         let image_url = topic['img_name'] || 'objects_on_table.jpg'
-        const blackCarImage = require(`../static/${image_url}`);
+        const imageObject = require(`../static/${image_url}`);
 
         return <div key={topic['id']}>
 
@@ -94,7 +94,7 @@ export default function TutorialList(props) {
                 color: 'whitesmoke',
                 pl: '1rem', pb: '2rem', pr: '10%',
                 minHeight: '15vh',
-                backgroundImage: `url(${blackCarImage}), linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8))`,
+                backgroundImage: `url(${imageObject}), linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8))`,
                 backgroundPosition: 'center center',
                 backgroundSize: 'cover',
                 backgroundBlendMode: 'overlay',
@@ -103,7 +103,7 @@ export default function TutorialList(props) {
                 },
                 '&:hover .hiddenRow': {
                     // transform: "translate(0%, 0)",
-                    transition: 'all 0.4s ease-in-out',
+                    transition: 'all 0.1 ease-in-out',
                     opacity: 100,
                     maxHeight: 1000
 
@@ -139,9 +139,13 @@ export default function TutorialList(props) {
             <List key={topic['id']} sx={{ mb: '1rem' }}>
                 <Divider />
                 {
-                    topic['tuts'].map((tutorial, index) =>
-                        <div key={index}>
-                            <Paper elevation={3} >
+                    topic['tuts'].map((tutorial, index) =>{
+                        let color = index < 4 ? '#f1fdf4 ' : 'white';
+                        return <div key={index}>
+                            <Paper elevation={3} sx={{
+                                backgroundColor: color,
+
+                            }}>
                                 <ListItem key={index} sx={{
                                     '&:hover': {
                                         boxShadow: 6,
@@ -149,15 +153,16 @@ export default function TutorialList(props) {
                                 }} >
 
                                     <Stack direction='row' alignItems="center" sx={{ width: '100%', }}>
-                                        <ListItemButton 
-                                        sx={{'&:hover':{background: 'transparent'}}}
-                                         href={`tutorial/${topic.id}/${index+1}`}><ListItemText primary={`${index + 1}: ${tutorial}`} /></ListItemButton>
+                                        <ListItemButton
+                                            sx={{ '&:hover': { background: 'transparent' } }}
+                                            href={`tutorial/${topic.id}/${index + 1}`}><ListItemText primary={`${index + 1}: ${tutorial}`} /></ListItemButton>
+                                        <DoneIcon color='success'></DoneIcon>
                                         <KeyboardArrowRightIcon id={`hiddenArrow${index}`} />
                                     </Stack>
                                 </ListItem>
                             </Paper>
                         </div>
-                    )
+                    })
                 }
             </List>
             <LinearProgressWithLabel value={0} />

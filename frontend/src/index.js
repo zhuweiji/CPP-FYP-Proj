@@ -67,3 +67,7 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+// collect good coding practices (code) / avoid bad ones 
+// choose one of two blocks of code, one that fulfils the condition and one that doesnt - some kind 
+// 
