@@ -49,4 +49,4 @@ def create_user(request: Request, data: POST_Create_User):
         raise HTTPException(status_code=409, detail='user already exists')
     
     new_user = UserData(name=data.username)
-    return {'user_id': new_user['id'], 'username':new_user['name']}
+    return {'user_id': new_user.id, 'username':new_user.name}
