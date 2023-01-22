@@ -19,6 +19,7 @@ import NotebookPage from './pages/OnlyNotebookPage';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/Login';
 import CreateAccountPage from './pages/CreateAccountPage';
+import SimpleGame from './pages/SimpleGame';
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,9 @@ const router = createBrowserRouter([
   }, {
     path: 'create_account',
     element: <CreateAccountPage />,
+  }, {
+    path: 'simple-game',
+    element: <SimpleGame />,
   }
   
 ]);

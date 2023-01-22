@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 
 /* https://www.npmjs.com/package/@monaco-editor/react */
+// https://microsoft.github.io/monaco-editor/playground.html
 import Editor, { useMonaco } from "@monaco-editor/react";
 
 import CodeIcon from '@mui/icons-material/Code';
