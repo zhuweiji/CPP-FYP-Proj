@@ -73,8 +73,9 @@ class CodeCompileService {
                     },
                     body: JSON.stringify(data)
                 })
-            backendResult = await backendResult.json();
-            result.message = backendResult.message;
+            let backendResultData = await backendResult.json();
+            result.message = backendResultData.message;
+
             if (backendResult.status === 200) {
                 result.status = CompileResultStatuses.SUCCESS
             } else if (backendResult.status === 429) {
@@ -82,7 +83,7 @@ class CodeCompileService {
             } else if (backendResult.status === 201) {
                 result.status = CompileResultStatuses.PASSED_GRADING;
             } else if (backendResult.status === 500) {
-                result.errors = backendResult.errors
+                result.errors = backendResultData.errors
             }
             return result;
 
