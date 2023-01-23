@@ -17,7 +17,11 @@ import OpacityIcon from '@mui/icons-material/Opacity';
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
 
 import './Editor.css';
-import CompilerService from "../services/CodeCompileService";
+import {
+    CodeCompileService,
+    CompileResultStatuses,
+    CompileResult
+} from "../services/CodeCompileService";
 
 
 
@@ -123,69 +127,49 @@ function CodeEditor(props) {
         setIsEditorReady(false);
         let code = getEditorValue();
         let result;
-        if (grade){
-            result = await CompilerService.grade_code(code, props.topicId, props.tutorialId);
-        }else{
-            console.log(props)
-            result = await CompilerService.compile_and_run(code);
+        if (grade) {
+            result = await CodeCompileService.grade_code(code, props.topicId, props.tutorialId);
+        } else {
+            result = await CodeCompileService.compile_and_run(code);
         }
-        
 
-        if (result.status === 429) {
+
+        if (result.status === CompileResultStatuses.THROTTLED) {
             setCompilerServerStatus(CompilerServerStatuses.THROTTLED);
             setWasThrottled(true);
 
             let msToNextMinute = (60 - new Date().getSeconds()) * 1000;
-            
-            setSecondsTillUnthrottled(msToNextMinute/1000);
-            let updateSecondsToThrottleIntervalId = setInterval(()=>{
-                setSecondsTillUnthrottled((prevState, props)=>prevState-1);
-                },1000);
+
+            setSecondsTillUnthrottled(msToNextMinute / 1000);
+            let updateSecondsToThrottleIntervalId = setInterval(() => {
+                setSecondsTillUnthrottled((prevState, props) => prevState - 1);
+            }, 1000);
 
             setTimeout(() => {
                 clearInterval(updateSecondsToThrottleIntervalId);
                 setWasThrottled(false);
                 setIsEditorReady(true);
             }, msToNextMinute);
+
         } else {
-
-            let defaultErrorMessage = "There was an error on the compiler server. Please wait and try again later."
-
-            // // TODO - this should be in a catch
-            // if (!result || !result.ok || result.status_code !== 200) {
-            //     if (compilerServerStatus == CompilerServerStatuses.READY || compilerServerStatus == CompilerServerStatuses.UNTESTED) {
-            //         setCompilerServerStatus(CompilerServerStatuses.INTERMITTENT);
-            //     }
-
-            //     console.log('error on request to compile')
-            //     console.error(result)
-            //     if (result){
-            //         console.error(result.json())
-            //     }
-            //     setExecutionResult(defaultErrorMessage);
-            //     return
-            // }
-
-
-            let result_data = await result.json()
-            console.log(result_data)
-
-            let final_result = result_data['result'];
-            if (final_result == 'Correct!'){
+            if (result.status === CompileResultStatuses.PASSED_GRADING){
                 props.updateGradingToPassed();
             }
 
-            let displayedOutput = final_result
+            if (result.error){
+                console.error(result.error)
+            }
+
+            let displayedOutput = result.message;
+
             setExecutionResults([...executionResults, displayedOutput]);
-
             setDisplayedExecutionResult(displayedOutput);
-
             setIsEditorReady(true);
         }
     }
 
     async function testConnectionToCompilerServer() {
-        let probeResults = await CompilerService.check_connection();
+        let probeResults = await CodeCompileService.check_connection();
 
         compilerServerProbeResults.push(probeResults); // append to front of list
 
@@ -193,9 +177,9 @@ function CodeEditor(props) {
             compilerServerProbeResults.shift()
         }
 
-        if (compilerServerProbeResults.every((value) => value === CompilerService.probeResponse.ok)) {
+        if (compilerServerProbeResults.every((value) => value === CodeCompileService.probeResponse.ok)) {
             setCompilerServerStatus(CompilerServerStatuses.READY);
-        } else if (compilerServerProbeResults.every((value) => value === CompilerService.probeResponse.error)) {
+        } else if (compilerServerProbeResults.every((value) => value === CodeCompileService.probeResponse.error)) {
             setCompilerServerStatus(CompilerServerStatuses.UNCONTACTABLE);
         } else {
             setCompilerServerStatus(CompilerServerStatuses.INTERMITTENT);
@@ -206,7 +190,7 @@ function CodeEditor(props) {
         // poll connection to compiler server backend
         if (TEST_CONNECTION) {
             testConnectionToCompilerServer();
-            
+
             const interval = setInterval(() => {
                 testConnectionToCompilerServer();
             }, compilerServerProbeIntervalMS);
@@ -234,7 +218,7 @@ function CodeEditor(props) {
                 <br /><br />
 
                 <Stack direction="row" justifyContent="end" alignItems="center" spacing={2}>
-                    <Button color="success" variant="outlined" size="large" endIcon={<DoneAllRoundedIcon />} onClick={()=>handleCompilation(true)} disabled={!isEditorReady} justify="flex-end" >
+                    <Button color="success" variant="outlined" size="large" endIcon={<DoneAllRoundedIcon />} onClick={() => handleCompilation(true)} disabled={!isEditorReady} justify="flex-end" >
                         Grade
                     </Button>
 

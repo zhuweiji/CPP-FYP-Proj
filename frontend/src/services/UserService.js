@@ -55,44 +55,44 @@ export default class UserDataFetch {
         }
     }
 
-    static async getUserInfo(userid) {
-        try {
-            let result = await fetch(`${this.HOST_URL}user/${userid}`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
+    // static async getUserInfo(userid) {
+    //     try {
+    //         let result = await fetch(`${this.HOST_URL}user/${userid}`,
+    //             {
+    //                 method: 'GET',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //             })
 
-            return result.json();
+    //         return result.json();
 
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
 
-    static async setUserInfo() {
-        const data = {
+    // static async setUserInfo() {
+    //     const data = {
 
-        }
-        try {
+    //     }
+    //     try {
 
-            let result = await fetch(`${this.HOST_URL}user`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                })
+    //         let result = await fetch(`${this.HOST_URL}user`,
+    //             {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify(data)
+    //             })
 
-            return result.json();
+    //         return result.json();
 
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
 
     static getUserId(){
         return localStorage.getItem('userid') || -1;

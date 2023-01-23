@@ -1,7 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import TopNavBar from "../components/Nav";
 import LinearProgressWithLabel from "../components/LinearProgressBar__Labelled";
 
+import {useEffectOnce} from 'react-use'
 
 import { red, blue, green, blueGrey, grey, teal, pink } from '@mui/material/colors';
 import { Typography, Box, Grid, Container, Stack, Paper } from '@mui/material';
@@ -23,16 +24,18 @@ import { useNavigate } from 'react-router-dom';
 
 
 import './TutorialListPage.css'
+import TutorialService from "../services/TutorialDataFetch";
 
 let topic1 = {
     id: 1,
     topic_name: 'Tutorial 1 - C++ Basics',
     description: 'Learn the basics of C++ - compiling and running your first hello world programs',
     img_name: 'first_steps.jpg',
-    tuts: [`Hello World!`,
-        "Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud.",
-        "Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip.",
-        "Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.",
+    tuts: [
+        {id: 1,name:`Hello World!`},
+        {id: 2,name:"Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud."},
+        {id: 3,name:"Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip."},
+        {id: 4,name:"Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."},
     ]
 }
 
@@ -41,10 +44,11 @@ let topic2 = {
     topic_name: 'Tutorial 2 - Object Oriented Design in C++',
     description: 'Implement the Object Oriented principles in C++ to make your understanding language agnostic',
     img_name: 'corgi_and_friend.jpg',
-    tuts: [`My First C++ Object`,
-        "Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud.",
-        "Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip.",
-        "Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.",
+    tuts: [
+        {id: 1, name:`My First C++ Object`},
+        {id: 2, name:"Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud."},
+        {id: 3, name:"Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip."},
+        {id: 4, name:"Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."},
     ]
 }
 
@@ -53,13 +57,14 @@ let topic3 = {
     topic_name: 'Tutorial 3 - Conceptual Representations to Code',
     description: 'Build familiarity by creating things in C++ using a specification',
     img_name: 'convoluted_diagram.jpg',
-    tuts: [`Class Diagrams? I Don't Go To Class.`,
-        "Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud.",
-        "Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip.",
-        "Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.",
-        "Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud.",
-        "Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip.",
-        "Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.",
+    tuts: [
+        {id: 1,name:`Class Diagrams? I Don't Go To Class.`},
+        {id: 2,name:"Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud."},
+        {id: 3,name:"Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip."},
+        {id: 4,name:"Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."},
+        {id: 5,name:"Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud."},
+        {id: 6,name:"Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip."},
+        {id: 7,name:"Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."},
     ]
 }
 
@@ -69,12 +74,12 @@ let capstone = {
     description: 'Solidify your understanding by building an entire project from start to end',
     img_name: 'mountain_peak.jpg',
     tuts: [
-        "Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud.",
-        "Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip.",
-        "Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.",
-        "Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud.",
-        "Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip.",
-        "Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.",
+        {id:1 ,name:"Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud."},
+        {id:2 ,name:"Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip."},
+        {id:3 ,name:"Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."},
+        {id:4 ,name:"Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud."},
+        {id:5 ,name:"Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip."},
+        {id:6 ,name:"Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."},
     ]
 }
 
@@ -83,6 +88,18 @@ let data = [topic1, topic2, topic3, capstone]
 
 
 export default function TutorialList(props) {
+    
+    const [tutorialsData, setTutorialsData] = useState({});
+
+    useEffectOnce(()=>{
+        async function fetchData(){
+            let v = await TutorialService.getTutorials()
+            setTutorialsData(v);
+            console.log(v);
+        }
+        fetchData();
+    })
+
     let listItems = data.map(topic => {
         let image_url = topic['img_name'] || 'objects_on_table.jpg'
         const imageObject = require(`../static/${image_url}`);
@@ -140,7 +157,16 @@ export default function TutorialList(props) {
                 <Divider />
                 {
                     topic['tuts'].map((tutorial, index) =>{
-                        let color = index < 4 ? '#f1fdf4 ' : 'white';
+
+                        let tutorialCompleted = false;
+                        if (tutorialsData && tutorialsData.tutorials_completed && 
+                            tutorialsData.tutorials_completed.some((i) => i.topic_id === topic.id && i.tutorial_id === tutorial.id)
+                            ){
+                            tutorialCompleted = true;
+                            
+                        }
+                        let color = tutorialCompleted ? '#f1fdf4' : "white";
+
                         return <div key={index}>
                             <Paper elevation={3} sx={{
                                 backgroundColor: color,
@@ -155,8 +181,8 @@ export default function TutorialList(props) {
                                     <Stack direction='row' alignItems="center" sx={{ width: '100%', }}>
                                         <ListItemButton
                                             sx={{ '&:hover': { background: 'transparent' } }}
-                                            href={`tutorial/${topic.id}/${index + 1}`}><ListItemText primary={`${index + 1}: ${tutorial}`} /></ListItemButton>
-                                        <DoneIcon color='success'></DoneIcon>
+                                            href={`tutorial/${topic.id}/${index + 1}`}><ListItemText primary={`${index + 1}: ${tutorial.name}`} /></ListItemButton>
+                                        {tutorialCompleted  && <DoneIcon color='success'></DoneIcon>}
                                         <KeyboardArrowRightIcon id={`hiddenArrow${index}`} />
                                     </Stack>
                                 </ListItem>

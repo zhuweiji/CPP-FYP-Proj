@@ -1,5 +1,7 @@
 import logging
 
+from compiler_server_service.routers.templates import BasicResponse
+
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
@@ -65,7 +67,7 @@ app.add_middleware(
 
 @app.get('/')
 def root():
-    return {'message': "we're up!"}
+    return BasicResponse(message="we're up!")
 
 
 

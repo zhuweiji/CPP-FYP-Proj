@@ -3,7 +3,7 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 
-from compiler_server_service.routers.post_body_templates import POST_BODY
+from compiler_server_service.routers.templates import POST_BODY, BasicResponse
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
 from compiler_server_service.services.tutorial_dataloader import (
     TopicData,
@@ -33,7 +33,7 @@ class POST__Login(BaseModel):
 def login(request: Request, data: POST__Login):
     if found_user := UserData.find_by_name(data.username):
         log.info(found_user)
-        return {'user_id': found_user['id'], 'username': found_user['name']}
+        return {'user_id': found_user.id, 'username': found_user.name}
     else:
         raise HTTPException(status_code=404, detail='user not found')
             
@@ -48,5 +48,5 @@ def create_user(request: Request, data: POST_Create_User):
     if found_user:
         raise HTTPException(status_code=409, detail='user already exists')
     
-    new_user = UserData(name=data.username)
+    new_user = UserData(name=data.username).create()
     return {'user_id': new_user.id, 'username':new_user.name}

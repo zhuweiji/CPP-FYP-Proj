@@ -1,6 +1,20 @@
 import SETTINGS from "./settings"
 import UserDataFetch from "./UserService";
 
+const CompileResultStatuses = {
+    THROTTLED: -1,
+    SUCCESS: 1,
+    PASSED_GRADING: 10,
+}
+
+class CompileResult {
+    constructor(status, message, errors) {
+        this.status = status;
+        this.message = message;
+        this.errors = errors;
+    }
+}
+
 class CodeCompileService {
     static HOST_URL = SETTINGS.HOST_URL;
 
@@ -10,8 +24,10 @@ class CodeCompileService {
             'user_id': UserDataFetch.getUserId(),
         }
 
+        let result = new CompileResult();
+
         try {
-            let result = await fetch(`${this.HOST_URL}cpp/compile_and_run`,
+            let backendResult = await fetch(`${this.HOST_URL}cpp/compile_and_run`,
                 {
                     method: 'POST',
                     headers: {
@@ -19,8 +35,18 @@ class CodeCompileService {
                     },
                     body: JSON.stringify(data)
                 })
-            console.log(`result in service ${result.status}`)
+            backendResult = await backendResult.json();
+            result.message = backendResult.message;
+            if (backendResult.status === 200){
+                result.status = CompileResultStatuses.SUCCESS
+            } else if (backendResult.status === 429) {
+                result.status = CompileResultStatuses.THROTTLED;
+            } else if (backendResult.status === 500){
+                result.errors = backendResult.errors
+            }
+
             return result;
+
         } catch (error) {
             console.log("Error when sending code for compilation")
             console.error(error);
@@ -36,8 +62,10 @@ class CodeCompileService {
             
         }
 
+        let result = new CompileResult();
+
         try {
-            let result = await fetch(`${this.HOST_URL}cpp/grade_code`,
+            let backendResult = await fetch(`${this.HOST_URL}cpp/grade_code`,
                 {
                     method: 'POST',
                     headers: {
@@ -45,10 +73,20 @@ class CodeCompileService {
                     },
                     body: JSON.stringify(data)
                 })
-            console.log(`result in service ${result.status}`)
-            console.log(result)
-            
+            backendResult = await backendResult.json();
+            result.message = backendResult.message;
+            if (backendResult.status === 200) {
+                result.status = CompileResultStatuses.SUCCESS
+            } else if (backendResult.status === 429) {
+                result.status = CompileResultStatuses.THROTTLED;
+            } else if (backendResult.status === 201) {
+                result.status = CompileResultStatuses.PASSED_GRADING;
+            } else if (backendResult.status === 500) {
+                result.errors = backendResult.errors
+            }
             return result;
+
+
         } catch (error) {
             console.log("Error when sending code for compilation")
             console.error(error);
@@ -76,4 +114,8 @@ class CodeCompileService {
     }
 }
 
-export default CodeCompileService;
+export {
+    CodeCompileService,
+    CompileResultStatuses,
+    CompileResult,
+} ;

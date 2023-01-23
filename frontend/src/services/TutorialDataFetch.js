@@ -1,6 +1,6 @@
 import SETTINGS from "./settings"
 
-import UserDataFetch from "./UserService";
+import UserService from "./UserService";
 
 export default class TutorialDataFetch{
     static HOST_URL = SETTINGS.HOST_URL;
@@ -10,7 +10,7 @@ export default class TutorialDataFetch{
     // fetches the previous and next tutorials, user data (completed tutorial?), and possibly metrics 
 
         let url = `${this.HOST_URL}tutorials/tutorial?topicId=${topicId}&tutorialId=${tutorialId}`
-        let user_id = UserDataFetch.getUserId();
+        let user_id = UserService.getUserId();
         if (user_id){
             url = url + `&user_id=${user_id}`
         }
@@ -32,6 +32,28 @@ export default class TutorialDataFetch{
             console.error(error);
         }
 
+    }
+
+    static async getTutorials(){
+        let url = `${this.HOST_URL}tutorials/tutorials`
+        let user_id = UserService.getUserId();
+        if (user_id) {
+            url = url + `?user_id=${user_id}`
+        }
+        try {
+            let result = await fetch(`${url}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+            return result.json();
+
+        } catch (error) {
+            console.log("Error when sending code for compilation")
+            console.error(error);
+        }
     }
 
 
