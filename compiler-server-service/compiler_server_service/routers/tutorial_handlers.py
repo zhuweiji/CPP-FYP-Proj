@@ -42,7 +42,7 @@ def get_tutorial_information(topicId:int, tutorialId: int, user_id:Optional[str]
     
     if not tutorial: 
         response.errors = 'tutorial not found'
-        return JSONResponse(status_code=404, content=asdict(response))
+        raise HTTPException(status_code=404, detail=response)
         
     response.leftpane_instructions = tutorial.leftPaneInstructions or "Sorry! No instructions found for this tutorial"
     
