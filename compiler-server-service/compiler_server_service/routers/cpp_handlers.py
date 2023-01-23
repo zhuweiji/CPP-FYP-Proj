@@ -75,7 +75,10 @@ def handle_compile_and_grade(request: Request, response: Response, data: POST__C
         else:
             result.message = 'Correct!'
             if data.user_id:
-                user = UserData.find_by_id(data.user_id)
+                if not (user := UserData.find_by_id(data.user_id)):
+                    response.status_code = status.HTTP_201_CREATED
+                    return result
+                
                 add_tutorial_result = user.add_completed_tutorial(CompletedTutorial__OnlyId(topic_id=data.topicId, tutorial_id=data.tutorialId))
                 if add_tutorial_result:
                     response.status_code = status.HTTP_201_CREATED
