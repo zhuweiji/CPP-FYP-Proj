@@ -24,10 +24,9 @@ import UserService from '../services/UserService';
 
 
 
-const pages_and_links = [{ 'page': 'Tutorials', 'link': '/tutorials' }, { 'page': 'Instructions', 'link': '/instructions' }, { 'page': 'Interactive Games', 'link': '/games' }];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-const ResponsiveAppBar = () => {
+const ResponsiveAppBar = (props) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -65,6 +64,11 @@ const ResponsiveAppBar = () => {
         }
         setAnchorElUser(null);
     };
+    const pages_and_links = !props.hideLinks ?
+        [{ 'page': 'Tutorials', 'link': '/tutorials' }, { 'page': 'Instructions', 'link': '/instructions' }, { 'page': 'Interactive Games', 'link': '/games' }]
+        : [];
+
+    
 
     return (
         <AppBar position='sticky' sx={{ bgcolor: indigo[900] }}>
@@ -124,7 +128,7 @@ const ResponsiveAppBar = () => {
                                 return (
                                     <MenuItem key={page} onClick={handleCloseNavMenu} href={link}>
                                         <Typography textAlign="center">{page}</Typography>
-                                    </MenuItem>
+                                    </MenuItem> 
                                 )
                             })}
                         </Menu>

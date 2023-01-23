@@ -17,7 +17,7 @@ export default function Homepage(props) {
 
     return (
         <Box component='div'>
-            <ButtonAppBar></ButtonAppBar>
+            <ButtonAppBar hideLinks={true}></ButtonAppBar>
             <Grid container spacing={1}  style={{ backgroundColor: blueGrey[900], height: '100vh', }}>
                 <Grid item md={4}>
                     <div className="columnOne" onClick={redirectToTutorialList}>
