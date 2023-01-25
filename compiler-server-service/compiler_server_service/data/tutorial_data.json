@@ -6,18 +6,155 @@
             "description": "Learn the basics of C++ - compiling and running your first hello world programs",
             "img_name": "first_steps.jpg",
             "tutorials": [
-                {
-                    "id": 1,
-                    "name": "Hello World!",
-                    "leftPaneInstructions": "Hello!\n\nWelcome to Comprehend C++\n\nIn this section we will try to create log hello world into the console.\n\n\n\n=============================================================\nGrading Objectives: Log 'Hello CPP!' into the terminal",
+                { 
+                    "id": 1, "name": "Hello World!", 
                     "expectedConsoleOutput": "Hello CPP!",
                     "prewritten_cpp_files": "",
-                    "prewritten_tests": ""
+                    "prewritten_tests": "",
+                    "leftPaneInstructions": "Hello!\n\nWelcome to Comprehend C++\n\nIn this section we will try to create log hello world into the console.\n\n\n\n=============================================================\nGrading Objectives: Log 'Hello CPP!' into the terminal"
                 },
-                {
-                    "id": 2,
-                    "name": "Writing a class",
+                { 
+                    "id": 2, "name": "Variable and List Instantialization",
+                    "expectedConsoleOutput": "",
+                    "prewritten_cpp_files": "",
+                    "prewritten_tests": "",
+                    "leftPaneInstructions":"Empty for now"
+                },
+                { 
+                    "id": 3, "name": "Preprocessor Directives (#)",
+                    "expectedConsoleOutput": "",
+                    "prewritten_cpp_files": "",
+                    "prewritten_tests": "",
                     "leftPaneInstructions": "Empty for now"
+                },
+                { 
+                    "id": 4, "name": "Forward Declarations And Header Files",
+                    "expectedConsoleOutput": "",
+                    "prewritten_cpp_files": "",
+                    "prewritten_tests": "",
+                    "leftPaneInstructions": "Empty for now"
+                },
+                { 
+                    "id": 5, "name": "Exercise: Use Predefined Code To Create A Calculator",
+                    "expectedConsoleOutput": "",
+                    "prewritten_cpp_files": "",
+                    "prewritten_tests": "",
+                    "leftPaneInstructions": "Empty for now"
+                },
+                { 
+                    "id": 6, "name": "Data Structures",
+                    "expectedConsoleOutput": "",
+                    "prewritten_cpp_files": "",
+                    "prewritten_tests": "",
+                    "leftPaneInstructions": "Empty for now"
+                },
+                { 
+                    "id": 7, "name": "Static Casting, Const Variables and Literals",
+                    "expectedConsoleOutput": "",
+                    "prewritten_cpp_files": "",
+                    "prewritten_tests": "",
+                    "leftPaneInstructions": "Empty for now"
+                },
+                { 
+                    "id": 8, "name": "Namespaces",
+                    "expectedConsoleOutput": "",
+                    "prewritten_cpp_files": "",
+                    "prewritten_tests": "",
+                    "leftPaneInstructions": "Empty for now"
+                }
+            ]
+        },{
+            "topicId": 2,
+            "topic_name": "Tutorial 2 - Object Oriented Design in C++",
+            "description": "Implement the Object Oriented principles in C++ to make your understanding of OOP language agnostic",
+            "img_name": "corgi_and_friend.jpg",
+            "tutorials": [
+                { "id": 1, "name": "My First C++ Object"
+                },
+                { "id": 2, "name": "Pariatur quis ex culpa officia magna velit consequat."
+                },
+                { "id": 3, "name": "Adipisicing laboris consequat consequat irure esse laboris do esse."
+                },
+                { "id": 4, "name": "Private or Public?", "description": "Encapsulation: Don't air your dirty laundry where others might see them."
+                },
+                { "id": 10, "name": "Inheritance vs Composition: Which to Choose?", "description": ""
+                },
+                { "id": 11, "name": "(SOLID) Single Responsibility Principle", "description": "Don't build anything that does everything."
+                },
+                { "id": 12, "name": "(SOLID) Open-Closed Principle (OCP)"
+                },
+                { "id": 13, "name": "(SOLID) Liskov Substitution Principle (LSP)"
+                },
+                { "id": 14, "name": "(SOLID) Interface Segregation Principle (ISP)"
+                },
+                { "id": 15, "name": "(SOLID) Dependency Injection Principle (DIP)"
+                },
+                { "id": 16, "name": ""
+                },
+                { "id": 17, "name": ""
+                }
+            ]
+        }, {
+            "topicId": 3,
+            "topic_name":"Tutorial 3 - Conceptual Representations to Code",
+            "description":"Build familiarity by creating things in C++ using a specification",
+            "img_name":"convoluted_diagram.jpg",
+            "tutorials": [
+                { "id": 1, "name": "Class Diagrams? I Don't Go To Class."
+                },
+                { "id": 2, "name": "UML Diagrams"
+                },
+                { "id": 3, "name": "Sit ad ullamco fugiat pariatur ea ex do non enim aliquip."
+                },
+                { "id": 4, "name": "Velit culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."
+                },
+                { "id": 5, "name": "Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud."
+                },
+                { "id": 6, "name": "Sit ad ullamco fugiat pariatur ea ex do non enim aliquip."
+                },
+                { "id": 7, "name": "Velit culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."
+                }
+            ]
+        }, {
+            "topicId": 4,
+            "topic_name":"Capstone Project - Building STARs, the Course Registration platform",
+            "description":"Solidify your understanding by building an entire project from start to end",
+            "img_name":"mountain_peak.jpg",
+            "tutorials": [
+                { "id": 1, "name": "Excepteur eu reprehenderit reprehenderit esse irure aliquip voluptate in."
+                },
+                { "id": 2, "name": "Sit ad ullamco fugiat pariatur ea ex do non enim aliquip."
+                },
+                { "id": 3, "name": "Velit culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."
+                },
+                { "id": 4, "name": "Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud."
+                },
+                { "id": 5, "name": "Sit ad ullamco fugiat pariatur ea ex do non enim aliquip."
+                },
+                { "id": 6, "name": "Velitculpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."
+                }
+            ]
+        }, {
+            "topicId": 5,
+            "topic_name":"(Advanced Tutorials) Common Design Patterns in Software Engineering",
+            "description":"Build everything with software! Explore the power of OOP by building different projects (maintainably and sustainably",
+            "img_name":"lens_mountain.jpg",
+            "tutorials": [
+                { "id": 1, "name": "User Analytics", "description":"Create multiple classes to store and manipulate data to ensure that different departments can get the data they need for user-analytics"
+                },
+                { "id": 2, "name": "Image Processing Pipeline", "description":"Use a pipeline pattern to implement a simple image editor. Image editors have to be able to undo unglamorous edits, so we will ensure our system can do so"
+                },
+                { "id": 3, "name": "Data Access Objects", "description":"Use the DAO pattern to read data from external sources, while ensuring that your code does not become reliant on data from only one provider"
+                },
+                { "id": 4, "name": "Data Manipulation and Cleaning", "description":"Use method chaining to make your data science notebooks readable, even after you return to the office after a long holiday"
+                },
+                { "id": 5, "name": "Hiding the Spaghetti", "description":"Create a Facade to minimise the complexity that others (or more likely, yourself in a few weeks time) will face when using your modules"
+                },
+                { "id": 6, "name": "Observers (Pub/Sub)", "description":"Write code to listen to the rise and fall of currency rates to ensure that you can exchange your SGD to USD at the most favourable rates"
+                },
+                { "id": 7, "name": "Unit Tests", "description":""
+                },
+                { "id": 8, "name": "Application Programming Interfaces (API)", "description":""
                 }
             ]
         }

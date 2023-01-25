@@ -51,15 +51,18 @@ let topic2 = {
     img_name: 'corgi_and_friend.jpg',
     tuts: [
         { id: 1, name: `My First C++ Object` },
-        { id: 2, name: "Private or Public?", description:"Encapsulation: Don't air your dirty laundry where others might see them."},
-        { id: 3, name: "Inheritance vs Composition: Which to Choose?", description: "A person can be coded differently in two different games - In one, a person will always have hands (in a peaceful farming game) and in the other, they may have detachable/replacable hands (in a sci-fi game)" },
-        { id: 4, name: "(SOLID) Single Responsibility Principle", description: "Don't build anything that does everything." },
-        { id: 5, name: "(SOLID) Open-Closed Principle (OCP)" },
-        { id: 6, name: "(SOLID) Liskov Substitution Principle (LSP)" },
-        { id: 7, name: "(SOLID) Interface Segregation Principle (ISP)" },
-        { id: 8, name: "(SOLID) Dependency Injection Principle (DIP)" },
-        { id: 9, name: "" },
-        { id: 10, name: "" },
+        { id: 2, name: `Pariatur quis ex culpa officia magna velit consequat.` },
+        { id: 3, name: `Adipisicing laboris consequat consequat irure esse laboris do esse.` },
+        { id: 4, name: "Private or Public?", description:"Encapsulation: Don't air your dirty laundry where others might see them."},
+        // Inheritance vs Composition: A person can be coded differently in two different games - In one, a person will always have hands (in a peaceful farming game) and in the other, they may have detachable/replacable hands (in a sci-fi game)
+        { id: 10, name: "Inheritance vs Composition: Which to Choose?", description: "" },
+        { id: 11, name: "(SOLID) Single Responsibility Principle", description: "Don't build anything that does everything." },
+        { id: 12, name: "(SOLID) Open-Closed Principle (OCP)" },
+        { id: 13, name: "(SOLID) Liskov Substitution Principle (LSP)" },
+        { id: 14, name: "(SOLID) Interface Segregation Principle (ISP)" },
+        { id: 15, name: "(SOLID) Dependency Injection Principle (DIP)" },
+        { id: 16, name: "" },
+        { id: 17, name: "" },
 
     ]
 }
@@ -97,18 +100,18 @@ let capstone = {
 
 let advanced = {
     id: 5,
-    topic_name: '(Advanced Tutorial) Common Design Patterns in Software Engineering',
+    topic_name: '(Advanced Tutorials) Common Design Patterns in Software Engineering',
     description: 'Build everything with software! Explore the power of OOP by building different projects (maintainably and sustainably)',
     img_name: 'lens_mountain.jpg',
     tuts: [
-        { id: 1, name: "Data Analytics", description: 'Create multiple classes to store and manipulate data to ensure that different departments can get the data they need for user-analytics' },
+        { id: 1, name: "User Analytics", description: 'Create multiple classes to store and manipulate data to ensure that different departments can get the data they need for user-analytics' },
         { id: 2, name: "Image Processing Pipeline", description: 'Use a pipeline pattern to implement a simple image editor. Image editors have to be able to undo unglamorous edits, so we will ensure our system can do so.' },
         { id: 3, name: "Data Access Objects", description: 'Use the DAO pattern to read data from external sources, while ensuring that your code does not become reliant on data from only one provider.' },
-        { id: 4, name: "", description: '' },
-        { id: 5, name: "", description: '' },
+        { id: 4, name: "Data Manipulation and Cleaning", description: 'Use method chaining to make your data science notebooks readable, even after you return to the office after a long holiday.' },
+        { id: 5, name: "Hiding the Spaghetti", description: 'Create a Facade to minimise the complexity that others (or more likely, yourself in a few weeks time) will face when using your modules.' },
         { id: 6, name: "Observers (Pub/Sub)", description: 'Write code to listen to the rise and fall of currency rates to ensure that you can exchange your SGD to USD at the most favourable rates.' },
-        { id: 7, name: "Application Programming Interfaces (API)", description: '' },
-        { id: 8, name: "", description: '' },
+        { id: 7, name: "Unit Tests", description: '' },
+        { id: 8, name: "Application Programming Interfaces (API)", description: '' },
     ]
 }
 
