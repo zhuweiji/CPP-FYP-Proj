@@ -55,6 +55,7 @@ function CodeEditor(props) {
     const [isEditorReady, setIsEditorReady] = useState(false);
     const [wasThrottled, setWasThrottled] = useState(false);
     const [secondsTillUnthrottled, setSecondsTillUnthrottled] = useState(0);
+    const [postCompileMessages, setPostCompileMessages] = useState('');
     const [compilerServerStatus, setCompilerServerStatus] = useState(TEST_CONNECTION ? CompilerServerStatuses.UNTESTED : CompilerServerStatuses.WILL_NOT_TEST);
 
     const [executionResults, setExecutionResults] = useState([]);
@@ -77,6 +78,47 @@ function CodeEditor(props) {
         // you can also store it in `useRef` for further usage
         setIsEditorReady(true);
         monacoRef.current = editor;
+
+        monacoRef.current.addAction({
+            // An unique identifier of the contributed action.
+            id: 'delete-left-shift-del',
+
+            // A label of the action that will be presented to the user.
+            label: 'Delete Left',
+
+            // An optional array of keybindings for the action.
+            keybindings: [
+                monaco.KeyMod.Shift | monaco.KeyCode.Delete,
+            ],
+
+            // A precondition for this action.
+            precondition: null,
+            // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
+            keybindingContext: null,
+            contextMenuOrder: 1.5,
+
+            // Method that will be executed when the action is triggered.
+            // @param editor The editor instance is passed in as a convenience
+            run: function (ed) {
+                ed._actions.deleteAllLeft.run();
+            }
+        })
+        // not currently working because cant find a good keybinding thats not taken up by either browser or monaco
+        monacoRef.current.addAction({
+            id: 'compile-code',
+            label: 'Compile Code',
+            keybindings: [
+                monaco.KeyMod.Ctrl | monaco.KeyMod.Shift | monaco.KeyCode.B,
+            ],
+            run: function (ed) {
+                console.log('hello!');
+                handleCompilation();
+            }
+        });
+
+        let actions = editor.getSupportedActions().filter((a) => a.id == 'vs.editor.ICodeEditor:1:compile-code');
+        console.log(actions);
+
     }
 
 
@@ -127,16 +169,26 @@ function CodeEditor(props) {
         setIsEditorReady(false);
         let code = getEditorValue();
         let result;
+
         if (grade) {
             result = await CodeCompileService.grade_code(code, props.topicId, props.tutorialId);
         } else {
             result = await CodeCompileService.compile_and_run(code);
         }
 
+        if (!result) {
+            setPostCompileMessages('There was an error compiling your code. ')
+            setIsEditorReady(true);
+            return
+        }
+
 
         if (result.status === CompileResultStatuses.THROTTLED) {
             setCompilerServerStatus(CompilerServerStatuses.THROTTLED);
             setWasThrottled(true);
+
+            setPostCompileMessages('Your requests are currently being throttled. Please wait before continuing.')
+
 
             let msToNextMinute = (60 - new Date().getSeconds()) * 1000;
 
@@ -152,12 +204,20 @@ function CodeEditor(props) {
             }, msToNextMinute);
 
         } else {
-            if (result.status === CompileResultStatuses.PASSED_GRADING){
-                props.updateGradingToPassed();
+            if (result.error) {
+                console.error(result.error)
             }
 
-            if (result.error){
-                console.error(result.error)
+            if (result.status === CompileResultStatuses.ERROR) {
+                setPostCompileMessages('There was an error compiling your code.')
+                setIsEditorReady(true);
+            } else {
+                setPostCompileMessages('')
+
+            }
+
+            if (result.status === CompileResultStatuses.PASSED_GRADING){
+                props.updateGradingToPassed();
             }
 
             let displayedOutput = result.message;
@@ -249,7 +309,11 @@ function CodeEditor(props) {
 
                 </div>
 
-                <Stack direction="row" alignItems="end">
+
+
+                <Stack direction="row" alignItems="center">
+                    <Typography style={{ fontFamily: "Inconsolata" }}>{postCompileMessages}</Typography>
+
                     {getThrottledIcon()}
                     {getCompilerStatusIcon()}
                 </Stack>

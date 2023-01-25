@@ -3,8 +3,10 @@ import UserDataFetch from "./UserService";
 
 const CompileResultStatuses = {
     THROTTLED: -1,
+    ERROR: 0,
     SUCCESS: 1,
     PASSED_GRADING: 10,
+
 }
 
 class CompileResult {
@@ -42,6 +44,7 @@ class CodeCompileService {
             } else if (backendResult.status === 429) {
                 result.status = CompileResultStatuses.THROTTLED;
             } else if (backendResult.status === 500){
+                result.status = CompileResultStatuses.ERROR;
                 result.errors = backendResult.errors
             }
 
