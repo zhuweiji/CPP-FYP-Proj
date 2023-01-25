@@ -72,7 +72,7 @@ class DoctestCompilationError(CompilationResult):
     This class will take an instance of CompilationResult during init, but act exactly the same - functions as just a rename of the CompilationResult object
     """
     
-    
+    # TODO can this be replaced by a super().__init__(baseObject?)
     def __init__(self, baseObject):
         self.__class__ = type(baseObject.__class__.__name__, (self.__class__, baseObject.__class__), {})
         self.__dict__ = baseObject.__dict__

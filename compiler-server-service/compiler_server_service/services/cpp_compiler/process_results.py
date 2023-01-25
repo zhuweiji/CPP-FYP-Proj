@@ -66,8 +66,9 @@ class ProcessResult:
 
 class CompilationResult(ProcessResult):
     """Result of the compilation of some C++ code, identifying common error types for a compilation failure"""
-    def __init__(self, process_handle: CompletedProcess) -> None:
+    def __init__(self, process_handle: CompletedProcess, compiled_directory:str='') -> None:
         super().__init__(process_handle)
+        self.compiled_directory = compiled_directory
         
     def determine_failure_cause(self):
         error_reason_dict = {
@@ -99,8 +100,22 @@ class CompilationResult(ProcessResult):
         
     def __str__(self) -> str:
         failure_reason = self.determine_failure_cause()
-        output = super().__str__()
-        if not self.success: output = f"{failure_reason}  {output}"
+        output = str(super())
+        
+        # strip filepaths from the compiler output for conciseness
+        output = output.replace(str(self.compiled_directory) + '\\', '')
+        
+        if not self.success: output = f"{failure_reason}\n\n{output}"
+        return output
+    
+    def full_str(self) -> str:
+        failure_reason = self.determine_failure_cause()
+        output = super().full_str()
+        
+        # strip filepaths from the compiler output for conciseness
+        output = output.replace(str(self.compiled_directory) + '\\', '')
+        
+        if not self.success: output = f"{failure_reason}\n\n{output}"
         return output
     
     def __bool__(self) -> bool:

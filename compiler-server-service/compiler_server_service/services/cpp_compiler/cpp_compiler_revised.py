@@ -16,6 +16,7 @@ logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', le
 log = logging.getLogger(__name__)
 
 
+# should probably be renamed
 class ProcessWrapper:
     is_windows = platform.system() == 'Windows'
     process_timeout_seconds = int(os.getenv('PROCESS_RUN_TIMEOUT_SECONDS', 15))
@@ -109,7 +110,7 @@ class CPP_Compiler:
         return cls.compile_files(*files_to_be_compiled, '-I', CPP_HEADER_FILES_SOURCE_DIR, out_filepath=out_filepath)
          
     @classmethod
-    def compile_files(cls, *files_to_be_compiled, out_filepath):
+    def compile_files(cls, *files_to_be_compiled, out_filepath: Path):
         """Compiles one or more C++ files together into a single binary"""
         # g++ tests-main.o car.cpp  test.cpp -o test; ./test -r compact
         
@@ -119,9 +120,9 @@ class CPP_Compiler:
         else:
             files_to_be_compiled = str(files_to_be_compiled) 
         
-        
         return CompilationResult(
-            ProcessWrapper.shell_run('g++', *files_to_be_compiled, '-o', out_filepath)
+            ProcessWrapper.shell_run('g++', *files_to_be_compiled, '-o', out_filepath, '-Wall', '-Weffc++', '-Wextra' ,"-Wsign-conversion"),
+            compiled_directory=out_filepath.parent
             )
         
     @classmethod
