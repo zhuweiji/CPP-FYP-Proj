@@ -12,12 +12,13 @@ log = logging.getLogger(__name__)
 class TestUsers(unittest.TestCase):
     def test_user_database(self):
         tom = MockUserData('Tom')
+        tom.create()
         assert MockUserData.find_by_id(tom.id)
         
         tom.name = 'Jerry'
         tom.update()
         entry_found = MockUserData.find_by_id(tom.id)
-        assert entry_found['name'] == 'Jerry'
+        assert entry_found.name == 'Jerry'
         
         
         
