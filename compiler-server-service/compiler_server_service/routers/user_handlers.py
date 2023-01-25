@@ -5,10 +5,7 @@ from pathlib import Path
 
 from compiler_server_service.routers.templates import POST_BODY, BasicResponse
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
-from compiler_server_service.services.tutorial_dataloader import (
-    TopicData,
-    TutorialDataLoader,
-)
+from compiler_server_service.services.tutorial_dao import TopicData, TutorialDAO
 from compiler_server_service.services.user_dao import UserData
 from compiler_server_service.utilities import safe_get
 from fastapi import APIRouter, HTTPException, Request

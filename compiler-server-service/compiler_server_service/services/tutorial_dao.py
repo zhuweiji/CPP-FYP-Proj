@@ -20,7 +20,8 @@ log = logging.getLogger(__name__)
 class TutorialData:
     id                    : int
     name                  : str
-    leftPaneInstructions  : str
+    description           : str = ""
+    leftPaneInstructions  : str = ""
     prewritten_cpp_files  : list = field(default_factory=lambda: [])
     prewritten_tests      : list = field(default_factory=lambda: [])
     expectedConsoleOutput : str = ""
@@ -34,7 +35,7 @@ class TopicData:
     tutorials  : list[TutorialData]
     
     
-class TutorialDataLoader:
+class TutorialDAO:
     topic_data_list: list[TopicData] = []
     all_topics_data: dict[int, TopicData] = {}
     
@@ -54,7 +55,7 @@ class TutorialDataLoader:
     
     @classmethod
     def find_topic(cls, topicId: int) -> Union[TopicData, None]:
-        return safe_get(TutorialDataLoader.all_topics_data, topicId)
+        return safe_get(TutorialDAO.all_topics_data, topicId)
     
     @classmethod
     def find_tutorial(cls, topicId: int, tutorialId: int) -> Union[TutorialData, None]:
@@ -98,7 +99,7 @@ class TutorialDataLoader:
         # get the previous tutorial by previous id
         if tutorialId != min(this_topic_tutorial_ids): 
             previous_tutorial_id = this_topic_tutorial_ids[this_topic_tutorial_ids.index(tutorialId)-1]
-            previous_tutorial = TutorialDataLoader.find_tutorial(topicId=topicId,tutorialId=previous_tutorial_id)
+            previous_tutorial = TutorialDAO.find_tutorial(topicId=topicId,tutorialId=previous_tutorial_id)
         
         # if the tutorial is the first of the topic,
         else:
@@ -108,7 +109,7 @@ class TutorialDataLoader:
             # there is a previous topic, get the last tutorial of that topic
             else:
                 previous_topic_id = cls.all_topic_ids[cls.all_topic_ids.index(topicId)-1]
-                previous_topic = TutorialDataLoader.all_topics_data[previous_topic_id]
+                previous_topic = TutorialDAO.all_topics_data[previous_topic_id]
                 previous_tutorial = previous_topic.tutorials[-1]
                 
         return previous_tutorial
@@ -123,7 +124,7 @@ class TutorialDataLoader:
         # get the next tutorial by the next id
         if tutorialId != max(this_topic_tutorial_ids): 
             next_tutorial_id = this_topic_tutorial_ids[this_topic_tutorial_ids.index(tutorialId)+1]
-            next_tutorial = TutorialDataLoader.find_tutorial(topicId=topicId,tutorialId=next_tutorial_id)
+            next_tutorial = TutorialDAO.find_tutorial(topicId=topicId,tutorialId=next_tutorial_id)
         
         # if the tutorial is the last of the topic,
         else:
@@ -133,7 +134,7 @@ class TutorialDataLoader:
             # there is a next topic, get the first tutorial of that topic
             else:
                 next_topic_id = cls.all_topic_ids[cls.all_topic_ids.index(topicId)+1]
-                next_topic = TutorialDataLoader.all_topics_data[next_topic_id]
+                next_topic = TutorialDAO.all_topics_data[next_topic_id]
                 next_tutorial = next_topic.tutorials[0]
                 
         return next_tutorial

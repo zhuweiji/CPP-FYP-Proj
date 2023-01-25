@@ -5,7 +5,7 @@ from compiler_server_service.services.cpp_compiler.cpp_compiler_revised import (
     CPP_Compiler,
 )
 from compiler_server_service.services.grader import Grader
-from compiler_server_service.services.tutorial_dataloader import TutorialDataNotFound
+from compiler_server_service.services.tutorial_dao import TutorialDataNotFound
 from compiler_server_service.services.user_dao import (
     CompletedTutorial__OnlyId,
     UserData,

@@ -6,10 +6,7 @@ from typing import Optional, Union
 
 from compiler_server_service.routers.templates import BasicResponse
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
-from compiler_server_service.services.tutorial_dataloader import (
-    TopicData,
-    TutorialDataLoader,
-)
+from compiler_server_service.services.tutorial_dao import TopicData, TutorialDAO
 from compiler_server_service.services.user_dao import (
     CompletedTutorial__OnlyId,
     UserData,
@@ -41,7 +38,7 @@ def get_tutorial_detail(topicId:int, tutorialId: int, user_id:Optional[str]=None
         
     result = Result()
     
-    tutorial = TutorialDataLoader.find_tutorial(topicId=topicId, tutorialId=tutorialId)
+    tutorial = TutorialDAO.find_tutorial(topicId=topicId, tutorialId=tutorialId)
     
     if not tutorial: 
         result.errors = 'tutorial not found'
@@ -49,13 +46,13 @@ def get_tutorial_detail(topicId:int, tutorialId: int, user_id:Optional[str]=None
         
     result.leftpane_instructions = tutorial.leftPaneInstructions or "Sorry! No instructions found for this tutorial"
     
-    previous_tutorial = TutorialDataLoader.get_previous_tutorial_of_tutorial(topicId=topicId, tutorialId=tutorialId)
+    previous_tutorial = TutorialDAO.get_previous_tutorial_of_tutorial(topicId=topicId, tutorialId=tutorialId)
     if previous_tutorial:
-        result.previous_tutorial_topicid_tutid = (TutorialDataLoader.get_topicId_of_tutorial(previous_tutorial), previous_tutorial.id)
+        result.previous_tutorial_topicid_tutid = (TutorialDAO.get_topicId_of_tutorial(previous_tutorial), previous_tutorial.id)
     
-    next_tutorial = TutorialDataLoader.get_next_tutorial_of_tutorial(topicId=topicId, tutorialId=tutorialId)
+    next_tutorial = TutorialDAO.get_next_tutorial_of_tutorial(topicId=topicId, tutorialId=tutorialId)
     if next_tutorial:
-        result.next_tutorial_topicid_tutid = (TutorialDataLoader.get_topicId_of_tutorial(next_tutorial), next_tutorial.id)
+        result.next_tutorial_topicid_tutid = (TutorialDAO.get_topicId_of_tutorial(next_tutorial), next_tutorial.id)
         
     return result
 
