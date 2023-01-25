@@ -46,4 +46,5 @@ def create_user(request: Request, data: POST_Create_User):
         raise HTTPException(status_code=409, detail='user already exists')
     
     new_user = UserData(name=data.username).create()
+    if not new_user: raise HTTPException(status_code=500, detail='error on user creation')
     return {'user_id': new_user.id, 'username':new_user.name}

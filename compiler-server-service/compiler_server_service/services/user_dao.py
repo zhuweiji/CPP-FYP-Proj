@@ -28,7 +28,7 @@ class UserData:
     def create(self):
         try:
             self.get_collection().insert_one(asdict(self))
-            return True
+            return self
         except Exception:
             # could try to create in db again at another time
             log.exception('error on writing new object to db')
