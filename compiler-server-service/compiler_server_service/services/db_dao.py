@@ -12,7 +12,7 @@ logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', le
 log = logging.getLogger(__name__)
 
 class MongoDAO:
-    __CONNECTION_STRING = os.environ['NF_MONGODB_EXTERNAL_SRV_ADMIN']
+    __CONNECTION_STRING = os.environ['NF_MONGODB_MONGO_SRV_ADMIN']
     assert __CONNECTION_STRING, "Mongo DB connection URI must be provided"
     
     @classmethod
