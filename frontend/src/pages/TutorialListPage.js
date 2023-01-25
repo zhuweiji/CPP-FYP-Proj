@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import TopNavBar from "../components/Nav";
 import LinearProgressWithLabel from "../components/LinearProgressBar__Labelled";
 
-import {useEffectOnce} from 'react-use'
+import { useEffectOnce } from 'react-use'
 
 import { red, blue, green, blueGrey, grey, teal, pink } from '@mui/material/colors';
 import { Typography, Box, Grid, Container, Stack, Paper } from '@mui/material';
@@ -32,23 +32,35 @@ let topic1 = {
     description: 'Learn the basics of C++ - compiling and running your first hello world programs',
     img_name: 'first_steps.jpg',
     tuts: [
-        {id: 1,name:`Hello World!`},
-        {id: 2,name:"Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud."},
-        {id: 3,name:"Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip."},
-        {id: 4,name:"Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."},
+        { id: 1, name: `Hello World! ` },
+        { id: 2, name: "Variable and List Instantialization" },
+        { id: 3, name: "Preprocessor Directives (#)" },
+        { id: 4, name: "Forward Declarations And Header Files" },
+        { id: 5, name: "Exercise: Use Predefined Code To Create A Calculator" },
+        { id: 6, name: "Data Structures" },
+        { id: 7, name: "Static Casting, Const Variables and Literals" },
+        { id: 8, name: "Namespaces" },
+
     ]
 }
 
 let topic2 = {
     id: 2,
     topic_name: 'Tutorial 2 - Object Oriented Design in C++',
-    description: 'Implement the Object Oriented principles in C++ to make your understanding language agnostic',
+    description: 'Implement the Object Oriented principles in C++ to make your understanding of OOP language agnostic',
     img_name: 'corgi_and_friend.jpg',
     tuts: [
-        {id: 1, name:`My First C++ Object`},
-        {id: 2, name:"Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud."},
-        {id: 3, name:"Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip."},
-        {id: 4, name:"Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."},
+        { id: 1, name: `My First C++ Object` },
+        { id: 2, name: "Private or Public?", description:"Encapsulation: Don't air your dirty laundry where others might see them."},
+        { id: 3, name: "Inheritance vs Composition: Which to Choose?", description: "A person can be coded differently in two different games - In one, a person will always have hands (in a peaceful farming game) and in the other, they may have detachable/replacable hands (in a sci-fi game)" },
+        { id: 4, name: "(SOLID) Single Responsibility Principle", description: "Don't build anything that does everything." },
+        { id: 5, name: "(SOLID) Open-Closed Principle (OCP)" },
+        { id: 6, name: "(SOLID) Liskov Substitution Principle (LSP)" },
+        { id: 7, name: "(SOLID) Interface Segregation Principle (ISP)" },
+        { id: 8, name: "(SOLID) Dependency Injection Principle (DIP)" },
+        { id: 9, name: "" },
+        { id: 10, name: "" },
+
     ]
 }
 
@@ -58,13 +70,13 @@ let topic3 = {
     description: 'Build familiarity by creating things in C++ using a specification',
     img_name: 'convoluted_diagram.jpg',
     tuts: [
-        {id: 1,name:`Class Diagrams? I Don't Go To Class.`},
-        {id: 2,name:"Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud."},
-        {id: 3,name:"Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip."},
-        {id: 4,name:"Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."},
-        {id: 5,name:"Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud."},
-        {id: 6,name:"Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip."},
-        {id: 7,name:"Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."},
+        { id: 1, name: `Class Diagrams? I Don't Go To Class.` },
+        { id: 2, name: "UML Diagrams" },
+        { id: 3, name: "Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip." },
+        { id: 4, name: "Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip." },
+        { id: 5, name: "Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud." },
+        { id: 6, name: "Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip." },
+        { id: 7, name: "Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip." },
     ]
 }
 
@@ -74,28 +86,44 @@ let capstone = {
     description: 'Solidify your understanding by building an entire project from start to end',
     img_name: 'mountain_peak.jpg',
     tuts: [
-        {id:1 ,name:"Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud."},
-        {id:2 ,name:"Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip."},
-        {id:3 ,name:"Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."},
-        {id:4 ,name:"Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud."},
-        {id:5 ,name:"Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip."},
-        {id:6 ,name:"Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip."},
+        { id: 1, name: "Excepteur eu reprehenderit reprehenderit esse irure aliquip voluptate in." },
+        { id: 2, name: "Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip." },
+        { id: 3, name: "Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip." },
+        { id: 4, name: "Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud." },
+        { id: 5, name: "Sit ad ullamco fugiat pariatur id id ea ex do non enim aliquip." },
+        { id: 6, name: "Velit id culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip." },
     ]
 }
 
-let data = [topic1, topic2, topic3, capstone]
+let advanced = {
+    id: 5,
+    topic_name: '(Advanced Tutorial) Common Design Patterns in Software Engineering',
+    description: 'Build everything with software! Explore the power of OOP by building different projects (maintainably and sustainably)',
+    img_name: 'lens_mountain.jpg',
+    tuts: [
+        { id: 1, name: "Data Analytics", description: 'Create multiple classes to store and manipulate data to ensure that different departments can get the data they need for user-analytics' },
+        { id: 2, name: "Image Processing Pipeline", description: 'Use a pipeline pattern to implement a simple image editor. Image editors have to be able to undo unglamorous edits, so we will ensure our system can do so.' },
+        { id: 3, name: "Data Access Objects", description: 'Use the DAO pattern to read data from external sources, while ensuring that your code does not become reliant on data from only one provider.' },
+        { id: 4, name: "", description: '' },
+        { id: 5, name: "", description: '' },
+        { id: 6, name: "Observers (Pub/Sub)", description: 'Write code to listen to the rise and fall of currency rates to ensure that you can exchange your SGD to USD at the most favourable rates.' },
+        { id: 7, name: "Application Programming Interfaces (API)", description: '' },
+        { id: 8, name: "", description: '' },
+    ]
+}
+
+let data = [topic1, topic2, topic3, capstone, advanced]
 
 
 
 export default function TutorialList(props) {
-    
+
     const [tutorialsData, setTutorialsData] = useState({});
 
-    useEffectOnce(()=>{
-        async function fetchData(){
+    useEffectOnce(() => {
+        async function fetchData() {
             let v = await TutorialService.getTutorials()
             setTutorialsData(v);
-            console.log(v);
         }
         fetchData();
     })
@@ -128,13 +156,13 @@ export default function TutorialList(props) {
             }}>
                 <Typography sx={{ mt: 4, mb: 2 }} variant="h4" component="div">{topic['topic_name']}</Typography>
                 <Typography sx={{ mt: 4, mb: 5 }} variant="p" component="div" className="tutorialBannerDescription"><i>{topic['description']}</i></Typography>
-                
-                <Stack direction='row' alignItems='center' className="hiddenRow" spacing={2} 
+
+                <Stack direction='row' alignItems='center' className="hiddenRow" spacing={2}
                     sx={{ transition: 'all 0.4s ease-in-out 0.5s', opacity: 0.0, maxHeight: 0 }}>
                     <Typography variant="h6" component="div" >
-                        Tutorial Completed: 
-                    </Typography> 
-                    {false ? <DoneIcon/> : <CloseIcon sx={{color:red[600]}}/>}
+                        Tutorial Completed:
+                    </Typography>
+                    {false ? <DoneIcon /> : <CloseIcon sx={{ color: red[600] }} />}
                 </Stack>
                 {/* <Stack className='hiddenRow' direction='row'
                     sx={{
@@ -156,14 +184,14 @@ export default function TutorialList(props) {
             <List key={topic['id']} sx={{ mb: '1rem' }}>
                 <Divider />
                 {
-                    topic['tuts'].map((tutorial, index) =>{
+                    topic['tuts'].map((tutorial, index) => {
 
                         let tutorialCompleted = false;
-                        if (tutorialsData && tutorialsData.tutorials_completed && 
+                        if (tutorialsData && tutorialsData.tutorials_completed &&
                             tutorialsData.tutorials_completed.some((i) => i.topic_id === topic.id && i.tutorial_id === tutorial.id)
-                            ){
+                        ) {
                             tutorialCompleted = true;
-                            
+
                         }
                         let color = tutorialCompleted ? '#f1fdf4' : "white";
 
@@ -181,8 +209,8 @@ export default function TutorialList(props) {
                                     <Stack direction='row' alignItems="center" sx={{ width: '100%', }}>
                                         <ListItemButton
                                             sx={{ '&:hover': { background: 'transparent' } }}
-                                            href={`tutorial/${topic.id}/${index + 1}`}><ListItemText primary={`${index + 1}: ${tutorial.name}`} /></ListItemButton>
-                                        {tutorialCompleted  && <DoneIcon color='success'></DoneIcon>}
+                                            href={`tutorial/${topic.id}/${index + 1}`}><ListItemText primary={`${index + 1}: ${tutorial.name}`} secondary={tutorial.description || ''} /></ListItemButton>
+                                        {tutorialCompleted && <DoneIcon color='success'></DoneIcon>}
                                         <KeyboardArrowRightIcon id={`hiddenArrow${index}`} />
                                     </Stack>
                                 </ListItem>
