@@ -102,7 +102,7 @@ class CPPCompiler:
         
         
         return CompilationResult(
-            cls.shell_run('g++', *files_to_be_compiled, '-o', out_filepath)
+            cls.shell_run('g++', *files_to_be_compiled, '-o', out_filepath, '-Wall', '-Weffc++', '-Wextra' ,"-Wsign-conversion")
             )
         
     @classmethod
