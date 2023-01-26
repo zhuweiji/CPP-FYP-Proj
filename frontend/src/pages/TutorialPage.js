@@ -54,9 +54,8 @@ function App(props) {
     let topicId = useLocation().pathname.match(routeRegex).groups['topicId']
     if (!topicId) console.error('topicId of this page could not be found!')
 
-    let tutorialData;
-
     useEffect(() => {
+        let tutorialData;
         async function IIFE() {
             tutorialData = await TutorialDataFetch.getTutorialInformation(topicId, tutorialId);
             let leftPaneData = tutorialData['leftpane_instructions']
@@ -82,7 +81,7 @@ function App(props) {
         }
         
         IIFE();
-    }, [])
+    }, [topicId, tutorialId])
 
     const { windowWidth, windowHeight } = useWindowSize()
 
@@ -123,7 +122,7 @@ function App(props) {
                 </Grid>
 
                 <Grid item xs={8}>
-                    <CodeEditor topicId={topicId} tutorialId={tutorialId} updateGradingToPassed={() => { setGradingPassed(true); }} />
+                    <CodeEditor topicId={topicId} tutorialId={tutorialId} includeGradeButton={true} updateGradingToPassed={() => { setGradingPassed(true); }} />
                 </Grid>
 
             </Grid>

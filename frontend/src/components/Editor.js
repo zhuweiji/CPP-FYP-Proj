@@ -274,9 +274,13 @@ function CodeEditor(props) {
                 <br /><br />
 
                 <Stack direction="row" justifyContent="end" alignItems="center" spacing={2}>
-                    <Button color="success" variant="outlined" size="large" endIcon={<DoneAllRoundedIcon />} onClick={() => handleCompilation(true)} disabled={!isEditorReady} justify="flex-end" >
-                        Grade
-                    </Button>
+                    {
+                        props.includeGradeButton &&
+                        <Button color="success" variant="outlined" size="large" endIcon={<DoneAllRoundedIcon />} onClick={() => handleCompilation(true)} disabled={!isEditorReady} justify="flex-end" >
+                            Grade
+                        </Button>
+                    }
+                    
 
                     <Button variant="outlined" size="large" endIcon={<CodeIcon />} onClick={() => handleCompilation(false)} disabled={!isEditorReady} justify="flex-end">
                         Compile
