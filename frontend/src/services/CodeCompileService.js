@@ -101,11 +101,13 @@ class CodeCompileService {
 
     static async check_connection(){
         const currentTimeInSeconds = () => new Date().getTime() / 1000;
+
         if (this.lastConnectionCheckTime && this.lastConnectionCheckResult &&
-            this.lastConnectionCheckTime - currentTimeInSeconds() < 5){
+            currentTimeInSeconds() - this.lastConnectionCheckTime < 5){
                 return this.lastConnectionCheckResult;
             }
         
+
         this.lastConnectionCheckResult = this.__check_connection();
         this.lastConnectionCheckTime = currentTimeInSeconds();
         return this.lastConnectionCheckResult;
