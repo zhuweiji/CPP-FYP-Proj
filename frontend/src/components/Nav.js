@@ -12,7 +12,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
-import {Divider} from '@mui/material';
+import { Divider } from '@mui/material';
 
 import CodeIcon from '@mui/icons-material/Code';
 import AdbIcon from '@mui/icons-material/Adb';
@@ -39,7 +39,7 @@ const ResponsiveAppBar = (props) => {
     const redirectToInstructionsPage = useCallback(() => navigate('/instructions', { replace: false }), [navigate]);
     const redirectToGamesPage = useCallback(() => navigate('/games', { replace: false }), [navigate]);
 
-    useEffect(()=>{
+    useEffect(() => {
         setLoginCompleted(true);
         setLoggedIn(UserService.getUserId() !== -1);
         setUsername(UserService.getUserName());
@@ -58,17 +58,21 @@ const ResponsiveAppBar = (props) => {
     };
 
     const handleCloseUserMenu = (setting) => {
-        if (setting === 'Logout'){
+        if (setting === 'Logout') {
             UserService.logout();
             navigate(0);
         }
         setAnchorElUser(null);
     };
     const pages_and_links = !props.hideLinks ?
-        [{ 'page': 'Tutorials', 'link': '/tutorials' }, { 'page': 'Instructions', 'link': '/instructions' }, { 'page': 'Interactive Games', 'link': '/games' }]
+            [
+                { 'page': 'Tutorials', 'link': '/tutorials' },
+                { 'page': 'Instructions', 'link': '/instructions' },
+                { 'page': 'Interactive Games', 'link': '/games' },
+                { 'page': 'Notebook', 'link': '/notebook' }]
         : [];
 
-    
+
 
     return (
         <AppBar position='sticky' sx={{ bgcolor: indigo[900] }}>
@@ -128,7 +132,7 @@ const ResponsiveAppBar = (props) => {
                                 return (
                                     <MenuItem key={page} onClick={handleCloseNavMenu} href={link}>
                                         <Typography textAlign="center">{page}</Typography>
-                                    </MenuItem> 
+                                    </MenuItem>
                                 )
                             })}
                         </Menu>
@@ -168,7 +172,7 @@ const ResponsiveAppBar = (props) => {
                     </Box>
 
 
-                    {loggedIn && loginCompleted && 
+                    {loggedIn && loginCompleted &&
 
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Your profile">
@@ -193,13 +197,13 @@ const ResponsiveAppBar = (props) => {
                                 onClose={handleCloseUserMenu}
                             >
                                 {settings.map((setting) => (
-                                    <MenuItem key={setting} onClick={()=>handleCloseUserMenu(setting)}>
+                                    <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
                                         <Typography textAlign="center">{setting}</Typography>
                                     </MenuItem>
                                 ))}
                             </Menu>
                         </Box>
-                        
+
 
                     }
 

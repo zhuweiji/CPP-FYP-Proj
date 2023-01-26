@@ -16,7 +16,6 @@ import AcUnitIcon from '@mui/icons-material/AcUnit';
 import OpacityIcon from '@mui/icons-material/Opacity';
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
 
-import './Editor.css';
 import {
     CodeCompileService,
     CompileResultStatuses,
@@ -34,8 +33,6 @@ int main() {
     return 0;
 }`
 
-let defaultTextInTerminal = `>> Hello! Compile something and view the results here
-`
 
 // TODO:  want to change this to proper enum so that storing the states wont be an array of a chunk of text: rn its ["we're testing ... ", "we're testing.."]
 const CompilerServerStatuses = Object.freeze({
@@ -60,11 +57,11 @@ function CodeEditor(props) {
 
     const [executionResults, setExecutionResults] = useState([]);
 
+    let defaultTextInTerminal = props.defaultTextInTerminal ?? `>> Hello! Compile something and view the results here`
     const [displayedExecutionResult, setDisplayedExecutionResult] = useState(defaultTextInTerminal);
     const compilerServerProbeResults = [];
 
     const [theme, setTheme] = useState("light");
-
 
     let compilerServerProbeIntervalMS = 7000;
 
@@ -117,7 +114,6 @@ function CodeEditor(props) {
         });
 
         let actions = editor.getSupportedActions().filter((a) => a.id == 'vs.editor.ICodeEditor:1:compile-code');
-        console.log(actions);
 
     }
 
@@ -216,7 +212,7 @@ function CodeEditor(props) {
 
             }
 
-            if (result.status === CompileResultStatuses.PASSED_GRADING){
+            if (result.status === CompileResultStatuses.PASSED_GRADING) {
                 props.updateGradingToPassed();
             }
 
@@ -264,9 +260,9 @@ function CodeEditor(props) {
 
     return (
         <>
-            <div id="editorDiv">
+            <Box id="editorDiv" sx={{ border: "1px solid #979797", padding: '2%', marginRight: '5px' }}>
                 <Editor
-                    height="50vh"
+                    height={props.codeEditorHeight || '45vh' }
                     defaultLanguage="cpp"
                     beforeMount={handleEditorWillMount}
                     onMount={handleEditorDidMount}
@@ -288,7 +284,7 @@ function CodeEditor(props) {
                     {(!isEditorReady && (compilerServerStatus !== CompilerServerStatuses.UNCONTACTABLE)) ? <CircularProgress size='1rem' /> : null}
 
                 </Stack>
-            </div>
+            </Box>
 
             <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="center"
                 sx={{
@@ -319,14 +315,20 @@ function CodeEditor(props) {
                 </Stack>
             </Stack>
 
-            <Box id="executionResultDisplay" sx={{
-                width: "100%",
-                height: "20em",
-                fontFamily: 'Inconsolata',
-                padding: "5%",
-                whiteSpace: "pre-line", // displays line breaks instead of keeping text on same line
-                overflowY: 'auto',
-            }}>
+            <Box id="executionResultDisplay"
+                height={props.executionResultHeight || "21vh"}
+                sx={{
+                    flexDirection: 'column',
+                    fontFamily: 'Inconsolata',
+                    padding: '1rem',
+                    pt: '2rem',
+                    pl: '3rem',
+                    // padding: "5%",
+                    whiteSpace: "pre-line", // displays line breaks instead of keeping text on same line
+                    overflowY: 'auto',
+                    color: '#9cd025',
+                    backgroundColor: '#333333',
+                }}>
                 {displayedExecutionResult}
             </Box>
         </>

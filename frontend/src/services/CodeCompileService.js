@@ -19,6 +19,8 @@ class CompileResult {
 
 class CodeCompileService {
     static HOST_URL = SETTINGS.HOST_URL;
+    static lastConnectionCheckTime;
+    static lastConnectionCheckResult;
 
     static async compile_and_run(codeString) {
         const data = {
@@ -97,7 +99,19 @@ class CodeCompileService {
         }
     }
 
-    static async check_connection() {
+    static async check_connection(){
+        const currentTimeInSeconds = () => new Date().getTime() / 1000;
+        if (this.lastConnectionCheckTime && this.lastConnectionCheckResult &&
+            this.lastConnectionCheckTime - currentTimeInSeconds() < 5){
+                return this.lastConnectionCheckResult;
+            }
+        
+        this.lastConnectionCheckResult = this.__check_connection();
+        this.lastConnectionCheckTime = currentTimeInSeconds();
+        return this.lastConnectionCheckResult;
+    }
+
+    static async __check_connection() {
         try {
             let result = await fetch(`${this.HOST_URL}cpp/`,
                 {

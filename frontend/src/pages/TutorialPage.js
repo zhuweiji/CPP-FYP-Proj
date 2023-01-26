@@ -59,7 +59,6 @@ function App(props) {
     useEffect(() => {
         async function IIFE() {
             tutorialData = await TutorialDataFetch.getTutorialInformation(topicId, tutorialId);
-            console.log(tutorialData)
             let leftPaneData = tutorialData['leftpane_instructions']
             leftPaneData = leftPaneData.replaceAll("\\n", "\n");
             leftPaneData = leftPaneData.replaceAll('"', "");
