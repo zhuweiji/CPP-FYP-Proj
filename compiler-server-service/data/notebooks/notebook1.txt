@@ -1,0 +1,38 @@
+# Hello there!
+
+Welcome to Comprehend C++. This is a notebook, where we will introduce new concepts and you can try them out yourself with the code editors provided.
+
+# Prerequisites
+
+This course assumes that you have some basic familiarity with programming. 
+The following knowledge is presumed:
+    1. Basic Data Structures (e.g. ints, bools, lists)
+    2. Loops and If Statements
+    3. Functions
+
+# Hello World
+
+When writing a C++ program, you must first write the `main()` function, which serves as the entry point to the program.
+This is where the C++ compiler will look to start your code. 
+
+This is similar to the `public static void main(string args)` method of Java.
+
+Below, we have a file with just a function, a(), but no main function. Try running it, and see what happens! You should get an error, telling you that main() was not defined.
+
+<Editor defaultvalue={
+
+int main() {
+    return 0;
+}}>
+
+Here we have another program with a main() function.  
+
+<Editor defaultvalue={
+
+int main() {
+    return 0;
+}}>
+
+
+# Library functions: std::cin and std:: cout
+

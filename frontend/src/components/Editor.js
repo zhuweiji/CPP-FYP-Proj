@@ -266,7 +266,7 @@ function CodeEditor(props) {
                     defaultLanguage="cpp"
                     beforeMount={handleEditorWillMount}
                     onMount={handleEditorDidMount}
-                    defaultValue={defaultTextInEditor}
+                    defaultValue={props.defaultValue || defaultTextInEditor}
                     theme={theme}
                 // theme="vs-dark"
                 />

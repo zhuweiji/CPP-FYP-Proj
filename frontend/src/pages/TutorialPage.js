@@ -18,6 +18,8 @@ import TerminalTwoToneIcon from '@mui/icons-material/TerminalTwoTone';
 import TextSnippetTwoToneIcon from '@mui/icons-material/TextSnippetTwoTone';
 import CssBaseline from '@mui/material/CssBaseline';
 import IconButton from '@mui/material/IconButton';
+import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
+
 
 import {Toolbar, Button, Chip} from '@mui/material';
 
@@ -132,6 +134,8 @@ function App(props) {
                 getNextTutorialHref={getNextTutorialHref}
                 previousTutorialDisabled={previousTutorialDisabled}
                 nextTutorialDisabled={nextTutorialDisabled}
+                tutorialId={tutorialId}
+                topicId={topicId}
             ></BottomAppBar>
 
         </div>
@@ -185,6 +189,13 @@ function BottomAppBar(props) {
 
                     <IconButton size='small' color="inherit" onClick={toggleLeftGrid} disabled>
                         <TextSnippetTwoToneIcon sx={{ color: blueGrey[900] }} />
+                    </IconButton>
+
+                    <IconButton size='small' color="inherit" onClick={() => {
+                        navigate(`/notebook/${props.tutorialId}/${props.topicId}`);
+                        navigate(0);
+                        }}>
+                        <FormatListNumberedIcon sx={{ color: blueGrey[900] }} />
                     </IconButton>
 
                     <Box sx={{ flexGrow: 1 }} />

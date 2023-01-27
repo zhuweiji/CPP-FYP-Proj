@@ -42,7 +42,7 @@ const router = createBrowserRouter([
     path: "instructions",
     element: <UnderConstruction />,
   }, {
-    path: 'notebook',
+    path: 'notebook/:topicId/:tutorialId',
     element: <NotebookPage/>,
   }, {
     path: 'my-page',
