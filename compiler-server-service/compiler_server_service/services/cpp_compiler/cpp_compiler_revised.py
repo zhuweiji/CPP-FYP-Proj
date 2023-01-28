@@ -72,15 +72,15 @@ class CPP_Compiler:
                 
     """
     @classmethod
-    def write_compile_run(cls, code:str, other_files:List[Union[str, Path]]=(), add_custom_headers:bool=False):
+    def write_compile_run(cls, code:str, other_files:List[Union[str, Path]]=(), add_custom_headers:bool=False, werrrors=True):
         with tempfile.TemporaryDirectory(dir=USER_TEMP_FILES_DIR_PATH) as tmp_dir_path:
-            result = cls.write_and_compile(code=code, other_files=other_files, temp_dir_path=tmp_dir_path, executable_filepath='output.exe', add_custom_headers=add_custom_headers)
+            result = cls.write_and_compile(code=code, other_files=other_files, temp_dir_path=tmp_dir_path, executable_filepath='output.exe', add_custom_headers=add_custom_headers, werrors=werrrors)
             if not result.success: return result
             return CPP_Compiler.run_cpp_executable(Path(tmp_dir_path)/"output.exe")
     
     @classmethod
     def write_and_compile(cls, code: Union[str, bytes], temp_dir_path, other_files:List[Union[str, Path]]=(),
-                          executable_filepath:Union[Path,str]='output.exe', add_custom_headers:bool=False):
+                          executable_filepath:Union[Path,str]='output.exe', add_custom_headers:bool=False, werrors=True):
         """Writes some C++ code into a temporary file, then compiles and runs it
         Can include other files to be compiled together with the C++ code as well"""
         
@@ -93,7 +93,7 @@ class CPP_Compiler:
         
         executable_filepath = Path(temp_dir_path) / executable_filepath
         
-        compile_result = compile_function(temp_file.name, *other_files, out_filepath=executable_filepath) 
+        compile_result = compile_function(temp_file.name, *other_files, out_filepath=executable_filepath, werrors=werrors) 
         
         return compile_result
     
@@ -106,11 +106,11 @@ class CPP_Compiler:
         return CodeExecutionResult(ProcessWrapper.shell_run(filepath, *args))
     
     @classmethod
-    def compile_files_with_custom_headers(cls, *files_to_be_compiled, out_filepath):
-        return cls.compile_files(*files_to_be_compiled, '-I', CPP_HEADER_FILES_SOURCE_DIR, out_filepath=out_filepath)
+    def compile_files_with_custom_headers(cls, *files_to_be_compiled, out_filepath, werrors=True):
+        return cls.compile_files(*files_to_be_compiled, '-I', CPP_HEADER_FILES_SOURCE_DIR, out_filepath=out_filepath, werrors=werrors)
          
     @classmethod
-    def compile_files(cls, *files_to_be_compiled, out_filepath: Path):
+    def compile_files(cls, *files_to_be_compiled, out_filepath: Path, werrors=True):
         """Compiles one or more C++ files together into a single binary"""
         # g++ tests-main.o car.cpp  test.cpp -o test; ./test -r compact
         
@@ -119,9 +119,11 @@ class CPP_Compiler:
             files_to_be_compiled = [str(file) for file in files_to_be_compiled]
         else:
             files_to_be_compiled = str(files_to_be_compiled) 
+            
+        error_options = ['-Wall', '-Weffc++', '-Wextra' ,"-Wsign-conversion"] if werrors else []
         
         return CompilationResult(
-            ProcessWrapper.shell_run('g++', *files_to_be_compiled, '-o', out_filepath, '-Wall', '-Weffc++', '-Wextra' ,"-Wsign-conversion"),
+            ProcessWrapper.shell_run('g++', *files_to_be_compiled, '-o', out_filepath, *error_options),
             compiled_directory=out_filepath.parent
             )
         

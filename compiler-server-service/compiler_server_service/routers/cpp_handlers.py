@@ -43,6 +43,13 @@ def handle_compile_and_run(request: Request, data: POST__Compile_Run):
 
     return BasicResponse(message=compile_result.full_str())
     
+@router.post('/compile_and_run_noerr')
+@limiterobj.limit('10/minute')
+def handle_compile_and_run(request: Request, data: POST__Compile_Run):
+    log.info(f"COMPILING... :\n{data.code}")
+    compile_result = CPP_Compiler.write_compile_run(data.code, werrrors=False)
+
+    return BasicResponse(message=compile_result.full_str())
 
 class POST__Compile_Grade(POST_BODY):
     topicId:int

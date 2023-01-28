@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import { indigo, blueGrey } from '@mui/material/colors';
 
-import { AppBar, Box, Stack, Grid, Typography, Paper } from '@mui/material';
+import { AppBar, Box, Stack, Grid, Typography, Paper, Divider } from '@mui/material';
 import TopNavBar from "../components/Nav";
 
 import './TutorialPage.css';
@@ -41,6 +41,7 @@ export default function NotebookPage() {
         // let lines = notebookData.split(/\r?\n/);
         let lines = notebookData.split(/\n\n/);
 
+
         let nonEmptyLines = lines.filter(i => i);
 
         let output = [];
@@ -49,7 +50,9 @@ export default function NotebookPage() {
         let parsingComponent = false;
         let componentData = {};
         let currentComponentName;
+        const replaceBackslashWithSpaceInFrontAndNoCharsBehind = (string) => string.replaceAll(/(.*)\s\\(?!\S)/g, '$1\n')
 
+        // TODO: refactor to html like braces (<Editor></Editor> otherwise too many issues with code)
         const startOfComponent = (text) => text.trim()[0] == "<";
         const endOfComponent = (text) => text.trim().search(">") !== -1;
         while (lineNumber < nonEmptyLines.length){
@@ -71,11 +74,13 @@ export default function NotebookPage() {
             } else if (parsingComponent){
                 componentData[currentComponentName].push(line)
 
-            } else if (line.trim()[0] == "#"){
-                outputLine = <Typography key={lineNumber} variant="h3" mt={5} mb={5} whiteSpace="pre-line">{line.replace('#', '')}</Typography> 
-            } else {
-                outputLine = <Paper elevation={1} sx={{ backgroundColor: '#f5f5f5'}}>
-                    <Typography key={lineNumber} padding={3} mb={2} whiteSpace="pre-line" >{line}</Typography>
+            } else if (line.trim().substring(0, 2) === "##") {
+                outputLine = <Box mt={lineNumber <= 2 ? 0 : 10} mb={5}><Divider ><Typography fontFamily='PT Serif' color='black' key={lineNumber} variant="h3" mt={5} mb={5} whiteSpace="pre-line">{line.replaceAll('#', '')}</Typography> </Divider></Box>
+            } else if (line.trim()[0] === "#") {
+                outputLine = <Box mt={lineNumber <= 2 ? 0 : 10} mb={5}><Typography fontFamily='Playfair Display' color='black' key={lineNumber} variant="h2" mt={5} mb={4} whiteSpace="pre-line">{line.replace('#', '')}</Typography><Divider></Divider></Box>
+            }  else {
+                outputLine = <Paper elevation={1} sx={{ backgroundColor: '#f5f5f5', mt:2, mb:2}}>
+                    <Typography fontFamily='PT Serif' color='black' key={lineNumber} padding={3} mb={2} whiteSpace="pre-line" >{replaceBackslashWithSpaceInFrontAndNoCharsBehind(line)}</Typography>
                 </Paper >
             }
             output.push(outputLine);
@@ -85,14 +90,28 @@ export default function NotebookPage() {
     }
 
     function parseComponent(data, componentName, lineNumber){
+        console.log(componentName);
+
+        console.log(data);
         data = data.join('\n')
         let component;
 
         if (componentName === 'Editor') {
-            const defaultValueRegex = /defaultvalue\s?={?(?<defaultvalue>[\s\S]+)}/
+            const defaultValueRegex = /defaultvalue\s?={(?<defaultvalue>[\s\S]+)}/
             let defaultValue = data.match(defaultValueRegex).groups.defaultvalue;
+
+            const errorOptionsRegex = /noerror(s)?\s?={(?<noErrors>[\s\S]+)} /
+
+            let errorOptionsMatch = data.match(errorOptionsRegex);
+            let noerror;
+            if (errorOptionsMatch){
+                noerror = errorOptionsMatch.groups.noErrors;
+            }
+
+            console.log(!noerror ?? true);
+
             component = <Box key={lineNumber} mb={15} mt={7}>
-                <CodeEditor codeEditorHeight='15vh' executionResultHeight='8vh' defaultValue={defaultValue ?? '>'}> </CodeEditor>
+                <CodeEditor codeEditorHeight='15vh' executionResultHeight='8vh' defaultValue={defaultValue ?? '>'} errorOptions={!noerror ?? true}> </CodeEditor>
             </Box>
         }
 
@@ -102,8 +121,8 @@ export default function NotebookPage() {
     return <>
         <TopNavBar></TopNavBar>
         
-        <Box sx={{ backgroundColor: '  #fbf9f6' }}>
-            <Stack direction='column' sx={{ ml: 10, mr: 10, mt: 2, mb: 1, }}>
+        <Box sx={{ backgroundColor: '  #fbf9f6' , pb:50, pt:2}}>
+            <Stack direction='column' sx={{ ml: 10, mr: 10, mt: 2, mb: 5, }}>
                 {parsedNotebook()}
             </Stack>
         </Box>

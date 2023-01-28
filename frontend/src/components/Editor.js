@@ -169,7 +169,7 @@ function CodeEditor(props) {
         if (grade) {
             result = await CodeCompileService.grade_code(code, props.topicId, props.tutorialId);
         } else {
-            result = await CodeCompileService.compile_and_run(code);
+            result = await CodeCompileService.compile_and_run(code, props.errorOptions ?? true);
         }
 
         if (!result) {

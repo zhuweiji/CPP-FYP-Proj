@@ -1,8 +1,18 @@
 # Hello there!
 
-Welcome to Comprehend C++. This is a notebook, where we will introduce new concepts and you can try them out yourself with the code editors provided.
+
+Welcome to Comprehend C++!!
+Here you will learn about programming in C++, especially OOP in C++.
+
+
+This is a notebook, where we will introduce new concepts and you can try them out yourself with the code editors provided.
+
 
 # Prerequisites
+
+
+This application was built for the OODP course in Nanyang Technological University.
+
 
 This course assumes that you have some basic familiarity with programming. 
 The following knowledge is presumed:
@@ -10,29 +20,120 @@ The following knowledge is presumed:
     2. Loops and If Statements
     3. Functions
 
-# Hello World
 
-When writing a C++ program, you must first write the `main()` function, which serves as the entry point to the program.
+## main()
+
+
+When writing a C++ program, you must first write the `main()` function. This function serves as the entry point to the program.
 This is where the C++ compiler will look to start your code. 
+
 
 This is similar to the `public static void main(string args)` method of Java.
 
+
 Below, we have a file with just a function, a(), but no main function. Try running it, and see what happens! You should get an error, telling you that main() was not defined.
 
+
+<Editor defaultvalue={
+
+int a() {
+    return 0;
+}}>
+
+
+Here, we have another program with a main() function.  
+This file runs well, and no errors are reported.
+
+
 <Editor defaultvalue={
 
 int main() {
     return 0;
 }}>
 
-Here we have another program with a main() function.  
+## std::cin and std::cout
 
-<Editor defaultvalue={
+
+Every program takes in some kind of input and returns some kind of output, whether the program is a basic calculator or a stock market prediction algorithm.
+The most basic way to provide input and output is through the terminal (or command line). You have already seen the terminal in action, as the display right below each editor.
+
+
+We can display some text ("Hello World!") on the terminal with the following code:
+
+
+<Editor defaultvalue={#include <iostream>
 
 int main() {
+    std::cout << "Hello World!";
     return 0;
 }}>
 
 
-# Library functions: std::cin and std:: cout
+Let's break down what we did here.
 
+
+As part of the C++ language, there is some pre-written functionality already included. 
+We call this the C++ standard library. \
+Part of this, is the input/output library (iostream) that deals with basic input and output. This allows us to read from and write to the terminal.
+
+
+We tell the compiler to add this functionality via the `#include <iostream>` statement.
+
+As part of the iostream library, there are the functions std::cin and std::cout. They are short for character in (cin) and character out (cout). \
+We use the insertion operator << to display the data on the right of the std::cout function. 
+
+If you squint your eyes and imagine that std::cout is your terminal, you can see that std::cout << "Hello World" \ is like moving "Hello World" into your terminal.
+
+
+The opposite is true for std::cin, which reads data from your terminal.
+std::cin >> yourVariable;
+
+<Editor defaultvalue={#include <iostream>
+int main() {
+    std::cout << "Enter a number:";
+
+    int x = 0; 
+
+    std::cin >> x;
+    std::cout << "Your number is " << x << "!";
+    return 0;
+}}>
+
+std::cin reads from the terminal input until it finds a whitespace character (ie ' '). \
+To get a whole line, using std::getline()
+
+## Newlines: std::endl vs \n
+
+If you imagine your terminal as a typewriter printing a series of characters (a-z) onto paper, you have to press a button to make the typewriter go to a new line. When typing an essay, typically you will use the enter key.
+The terminal is the same, and it moves on to a new line when it sees a special character \n.
+
+The code below does not have the \n newline character, so the output is a little mangled.
+
+<Editor defaultvalue={#include <iostream>
+int main() {
+    std::cout << "Mary: 'Good Morning!'";
+    std::cout << "John: 'How was your day?'";
+    std::cout << "Mary: 'It was great!'";
+    std::cout << "Mary: 'I had a big breakfast!'";
+
+    return 0;
+}}>
+
+We can fix this by using the newline character. 
+
+<Editor defaultvalue={#include <iostream>
+int main() {
+    std::cout << "Mary: 'Good Morning!'\n";
+    std::cout << "John: 'How was your day?'\n";
+    std::cout << "Mary: 'It was great!'\n";
+    std::cout << "Mary: 'I had a big breakfast!'\n";
+
+    return 0;
+}}>
+
+You may see some people using the std::endl function instead
+`std::cout << "Mary: 'Good Morning!'" << std::endl;`
+This is also acceptable, but may be (very slightly) slower if you are doing a lot of printing to the console.
+
+[Extra Info]
+For more information, check out the discussion about std::endl buffering here: https://www.learncpp.com/cpp-tutorial/introduction-to-iostream-cout-cin-and-endl/

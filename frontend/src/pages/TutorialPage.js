@@ -192,7 +192,7 @@ function BottomAppBar(props) {
                     </IconButton>
 
                     <IconButton size='small' color="inherit" onClick={() => {
-                        navigate(`/notebook/${props.tutorialId}/${props.topicId}`);
+                        navigate(`/notebook/${props.topicId}/${props.tutorialId}`);
                         navigate(0);
                         }}>
                         <FormatListNumberedIcon sx={{ color: blueGrey[900] }} />

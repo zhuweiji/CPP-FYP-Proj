@@ -22,7 +22,7 @@ class CodeCompileService {
     static lastConnectionCheckTime;
     static lastConnectionCheckResult;
 
-    static async compile_and_run(codeString) {
+    static async compile_and_run(codeString, errorOptions=true) {
         const data = {
             'code': codeString,
             'user_id': UserDataFetch.getUserId(),
@@ -30,8 +30,10 @@ class CodeCompileService {
 
         let result = new CompileResult();
 
+        let url = errorOptions ? `${this.HOST_URL}cpp/compile_and_run` : `${this.HOST_URL}cpp/compile_and_run_noerr`
+
         try {
-            let backendResult = await fetch(`${this.HOST_URL}cpp/compile_and_run`,
+            let backendResult = await fetch(url,
                 {
                     method: 'POST',
                     headers: {
