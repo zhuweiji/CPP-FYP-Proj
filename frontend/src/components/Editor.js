@@ -2,24 +2,22 @@ import React, { useState, useRef, useEffect } from "react";
 
 /* https://www.npmjs.com/package/@monaco-editor/react */
 // https://microsoft.github.io/monaco-editor/playground.html
-import Editor, { useMonaco } from "@monaco-editor/react";
+import Editor from "@monaco-editor/react";
 
 import CodeIcon from '@mui/icons-material/Code';
 
 
-import { Container, Stack, Box, Button, ButtonGroup, Chip, Tooltip, Typography, Divider, IconButton, Pagination, CircularProgress } from '@mui/material';
+import { Stack, Box, Button, Tooltip, Typography, IconButton, Pagination, CircularProgress, TextField, FormControl } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import ErrorIcon from '@mui/icons-material/Error';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
-import OpacityIcon from '@mui/icons-material/Opacity';
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
 
 import {
     CodeCompileService,
-    CompileResultStatuses,
-    CompileResult
+    CompileResultStatuses
 } from "../services/CodeCompileService";
 
 
@@ -48,9 +46,19 @@ const CompilerServerStatuses = Object.freeze({
 function CodeEditor(props) {
     let TEST_CONNECTION = true;
 
-    const monacoRef = useRef(null);
+    const editorRef = useRef(null);
+    const newFilenameRef = useRef(null);
+
     const [isEditorReady, setIsEditorReady] = useState(false);
     const [wasThrottled, setWasThrottled] = useState(false);
+    const [newEditorFilename, setnewEditorFilename] = useState('');
+
+    const [showFilenameError, setShowFilenameError] = useState(false);
+    const [currentEditorFilename, setCurrentEditorFilename] = useState('main.cpp');
+    const [editorFile, setEditorFile] = useState({
+        'main.cpp': `${defaultTextInEditor}`
+    });
+
     const [secondsTillUnthrottled, setSecondsTillUnthrottled] = useState(0);
     const [postCompileMessages, setPostCompileMessages] = useState('');
     const [compilerServerStatus, setCompilerServerStatus] = useState(TEST_CONNECTION ? CompilerServerStatuses.UNTESTED : CompilerServerStatuses.WILL_NOT_TEST);
@@ -65,8 +73,28 @@ function CodeEditor(props) {
 
     let compilerServerProbeIntervalMS = 7000;
 
+    useEffect(() => {
+        editorRef.current?.focus();
+    }, [editorFile]);
+
+
+    useEffect(() => {
+        // poll connection to compiler server backend
+        if (TEST_CONNECTION) {
+            testConnectionToCompilerServer();
+
+            const interval = setInterval(() => {
+                testConnectionToCompilerServer();
+            }, compilerServerProbeIntervalMS);
+
+            return () => clearInterval(interval);
+        } else {
+
+        }
+    }, [])
+
+
     function handleEditorWillMount(monaco) {
-        // here is the monaco instance
         // do something before editor is mounted
     }
 
@@ -74,34 +102,22 @@ function CodeEditor(props) {
         // here is another way to get monaco instance
         // you can also store it in `useRef` for further usage
         setIsEditorReady(true);
-        monacoRef.current = editor;
+        editorRef.current = editor;
 
-        monacoRef.current.addAction({
-            // An unique identifier of the contributed action.
+        editorRef.current.addAction({
             id: 'delete-left-shift-del',
-
-            // A label of the action that will be presented to the user.
             label: 'Delete Left',
-
-            // An optional array of keybindings for the action.
             keybindings: [
                 monaco.KeyMod.Shift | monaco.KeyCode.Delete,
             ],
-
-            // A precondition for this action.
-            precondition: null,
-            // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
-            keybindingContext: null,
-            contextMenuOrder: 1.5,
-
-            // Method that will be executed when the action is triggered.
             // @param editor The editor instance is passed in as a convenience
             run: function (ed) {
                 ed._actions.deleteAllLeft.run();
             }
         })
+
         // not currently working because cant find a good keybinding thats not taken up by either browser or monaco
-        monacoRef.current.addAction({
+        editorRef.current.addAction({
             id: 'compile-code',
             label: 'Compile Code',
             keybindings: [
@@ -113,6 +129,7 @@ function CodeEditor(props) {
             }
         });
 
+
         let actions = editor.getSupportedActions().filter((a) => a.id == 'vs.editor.ICodeEditor:1:compile-code');
 
     }
@@ -123,7 +140,7 @@ function CodeEditor(props) {
     }
 
     function getEditorValue() {
-        return monacoRef.current.getValue();
+        return editorRef.current.getValue();
     }
 
     function getThrottledIcon() {
@@ -209,7 +226,6 @@ function CodeEditor(props) {
                 setIsEditorReady(true);
             } else {
                 setPostCompileMessages('')
-
             }
 
             if (result.status === CompileResultStatuses.PASSED_GRADING) {
@@ -242,31 +258,69 @@ function CodeEditor(props) {
         }
     }
 
-    useEffect(() => {
-        // poll connection to compiler server backend
-        if (TEST_CONNECTION) {
-            testConnectionToCompilerServer();
 
-            const interval = setInterval(() => {
-                testConnectionToCompilerServer();
-            }, compilerServerProbeIntervalMS);
+    const displayFilenameError = () => {
+        return newEditorFilename.length !== 0 && (
+            newEditorFilename.split('.').length !== 2
+            || !(newEditorFilename.split('.')[1] === 'cpp' || newEditorFilename.split('.')[1] === 'h')
+        )
+    }
 
-            return () => clearInterval(interval);
+    const createNewFile = () => {
+        if (displayFilenameError() || newEditorFilename.length === 0) {
+            setShowFilenameError(true);
+            return;
         } else {
+            setShowFilenameError(false);
 
+            let newfile = {}
+            newfile[newEditorFilename] = ''
+
+            setEditorFile({ ...editorFile, ...newfile });
+            setCurrentEditorFilename(newEditorFilename);
+            setnewEditorFilename('');
         }
-    }, [])
-
+    }
 
     return (
         <>
             <Box id="editorDiv" sx={{ border: "1px solid #979797", padding: '2%', marginRight: '5px' }}>
+                <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} mb={2}>
+                    <Box>
+                        {Object.entries(editorFile).map(([filename, fileobject], index) => {
+                            return <Button key={`file${index}`} onClick={() => setCurrentEditorFilename(filename)}>{filename}</Button>
+                        }
+                        )}
+                    </Box>
+
+                    <FormControl>
+                        <TextField id="newFileNameTextField" label="File Name" variant="standard" sx={{ width: '10ch' }}
+                            onChange={(e) => setnewEditorFilename(e.target.value)} value={newEditorFilename}
+                            error={showFilenameError}
+                            helperText={showFilenameError ? "File extension must either be '.cpp' or '.h'" : ''}
+                            onKeyPress={(event) => {
+                                if (event.key === 'Enter') createNewFile();
+                            }}
+                        />
+                        <Button onClick={createNewFile}>Create New File</Button>
+                    </FormControl>
+                </Stack>
+
+
+
                 <Editor
-                    height={props.codeEditorHeight || '45vh' }
+                    height={props.codeEditorHeight || '45vh'}
                     defaultLanguage="cpp"
+
                     beforeMount={handleEditorWillMount}
                     onMount={handleEditorDidMount}
-                    defaultValue={props.defaultValue || defaultTextInEditor}
+
+                    // why are new files undefined?
+                    defaultValue={props.defaultValue || (editorFile[currentEditorFilename] ?? "")}
+
+
+                    path={currentEditorFilename}
+
                     theme={theme}
                 // theme="vs-dark"
                 />
@@ -280,7 +334,7 @@ function CodeEditor(props) {
                             Grade
                         </Button>
                     }
-                    
+
 
                     <Button variant="outlined" size="large" endIcon={<CodeIcon />} onClick={() => handleCompilation(false)} disabled={!isEditorReady} justify="flex-end">
                         Compile
