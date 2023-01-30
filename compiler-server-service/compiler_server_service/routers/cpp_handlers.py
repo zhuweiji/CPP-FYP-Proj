@@ -3,6 +3,7 @@ import logging
 from compiler_server_service.routers.templates import POST_BODY, BasicResponse
 from compiler_server_service.services.cpp_compiler.cpp_compiler_revised import (
     CPP_Compiler,
+    LogicalCodeFile,
 )
 from compiler_server_service.services.grader import Grader
 from compiler_server_service.services.tutorial_dao import TutorialDataNotFound
@@ -26,22 +27,37 @@ router = APIRouter(
 )
 
 
+def parse_incoming_codegroup(code_data: dict):
+    try:
+        all_code = [LogicalCodeFile(filename=k, code=v) for k,v in code_data.items()]
+        return all_code
+        
+    except Exception as E:
+        log.exception('error trying to parse incoming code for compiling')
+        raise HTTPException(status_code=400, detail=str(E))
+
+
+
 @router.get('/')
 def compiler_status(request: Request):
     return BasicResponse(message="we're up!")
 
 
-class POST__Compile_Run(BaseModel):
-    code: str
-    user_id: str
+class POST__Compile_Run_Multiple(BaseModel):
+    all_code: dict
 
 @router.post('/compile_and_run')
 @limiterobj.limit('10/minute')
-def handle_compile_and_run(request: Request, data: POST__Compile_Run):
-    log.info(f"COMPILING... :\n{data.code}")
-    compile_result = CPP_Compiler.write_compile_run(data.code)
+def handle_compile_and_run_multiple(request: Request, data: POST__Compile_Run_Multiple):
+    all_code = parse_incoming_codegroup(data.all_code)
+    compile_result = CPP_Compiler.write_compile_run(all_code=all_code)
 
     return BasicResponse(message=compile_result.full_str())
+
+
+class POST__Compile_Run(BaseModel):
+    code: str
+    user_id: str
     
 @router.post('/compile_and_run_noerr')
 @limiterobj.limit('10/minute')
@@ -51,10 +67,11 @@ def handle_compile_and_run(request: Request, data: POST__Compile_Run):
 
     return BasicResponse(message=compile_result.full_str())
 
+
 class POST__Compile_Grade(POST_BODY):
     topicId:int
     tutorialId: int
-    code: str
+    all_code: dict
 
 @router.post('/grade_code', status_code=status.HTTP_200_OK)
 @limiterobj.limit('10/minute')
@@ -69,14 +86,14 @@ def handle_compile_and_grade(request: Request, response: Response, data: POST__C
     result = BasicResponse()
     
     try:
-        log.info(f"GRADING... :\n{data.code}")
+        all_code = parse_incoming_codegroup(data.all_code)
         
-        console_check_output = Grader.check_console_output(topicId=data.topicId, tutorialId=data.tutorialId, code=data.code)
+        console_check_output = Grader.check_console_output(topicId=data.topicId, tutorialId=data.tutorialId, code=all_code)
         if console_check_output is not True:
             result.message = console_check_output
             return result
 
-        doctest_output = Grader.check_doctest(topicId=data.topicId, tutorialId=data.tutorialId, code=data.code)
+        doctest_output = Grader.check_doctest(topicId=data.topicId, tutorialId=data.tutorialId, code=all_code)
         if doctest_output is not True: 
             result.message = doctest_output
         else:

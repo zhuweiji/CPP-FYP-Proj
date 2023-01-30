@@ -3,6 +3,8 @@ import os
 import platform
 import subprocess
 import tempfile
+from dataclasses import dataclass, field
+from msilib import type_binary
 from pathlib import Path
 from typing import Iterable, List, Union
 
@@ -46,9 +48,23 @@ class ProcessWrapper:
     def check_gpp_available(cls):
         compile_result = CompilationResult(cls.shell_run('g++'))
         return 'fatal error: no input files' in compile_result.stderr
+          
             
-
-
+@dataclass
+class LogicalCodeFile:
+    code: str
+    filename: str = None
+    code_bytes: bytes = field(init=False, repr=False, default=None)
+    
+    @property
+    def code(self) -> str:
+        return self.code_bytes.decode('utf-8')
+    
+    @code.setter
+    def code(self, v: Union[str, bytes]):
+        if isinstance(v, str):
+            v = v.encode('utf-8')
+        self.code_bytes = v
 
 class CPP_Compiler:
     """ Class should implement the following
@@ -71,29 +87,51 @@ class CPP_Compiler:
     2. be able to run pre-written unit tests on the code
                 
     """
+    
+    
     @classmethod
-    def write_compile_run(cls, code:str, other_files:List[Union[str, Path]]=(), add_custom_headers:bool=False, werrrors=True):
+    def write_compile_run(cls, all_code:Union[str, LogicalCodeFile, list[LogicalCodeFile]], other_files:List[Union[str, Path]]=(), add_custom_headers:bool=False, werrrors=True):
+        """takes some code, creates a temporary directory to store the compilation output in and tries to run it"""
+        if isinstance(all_code,str): all_code = [LogicalCodeFile(code=all_code, filename=None)]
+        elif isinstance(all_code, LogicalCodeFile): all_code = [all_code]
+        elif isinstance(all_code, list): 
+            if all(isinstance(a, LogicalCodeFile) for a in all_code): pass
+            elif all(isinstance(a, str) for a in all_code): [LogicalCodeFile(code=i, filename=None) for i in all_code]
+        
+        else: raise ValueError(type(all_code))
+        
         with tempfile.TemporaryDirectory(dir=USER_TEMP_FILES_DIR_PATH) as tmp_dir_path:
-            result = cls.write_and_compile(code=code, other_files=other_files, temp_dir_path=tmp_dir_path, executable_filepath='output.exe', add_custom_headers=add_custom_headers, werrors=werrrors)
+            result = cls.write_and_compile(code_files=all_code, other_files=other_files, temp_dir_path=tmp_dir_path, executable_filepath='output.exe', add_custom_headers=add_custom_headers, werrors=werrrors)
             if not result.success: return result
             return CPP_Compiler.run_cpp_executable(Path(tmp_dir_path)/"output.exe")
     
     @classmethod
-    def write_and_compile(cls, code: Union[str, bytes], temp_dir_path, other_files:List[Union[str, Path]]=(),
+    def write_and_compile(cls, code_files: Union[str, LogicalCodeFile, list[LogicalCodeFile]], temp_dir_path, other_files:List[Union[str, Path]]=(),
                           executable_filepath:Union[Path,str]='output.exe', add_custom_headers:bool=False, werrors=True):
         """Writes some C++ code into a temporary file, then compiles and runs it
         Can include other files to be compiled together with the C++ code as well"""
         
-        if isinstance(code, str): code = code.encode('utf-8')
+        if isinstance(code_files,str): code_files = [LogicalCodeFile(code=code_files, filename=None)]
+        elif isinstance(code_files, LogicalCodeFile): code_files = [code_files]
+        elif isinstance(code_files, list): 
+            if all(isinstance(a, LogicalCodeFile) for a in code_files): pass
+            elif all(isinstance(a, str) for a in code_files): [LogicalCodeFile(code=i, filename=None) for i in code_files]
+        
+        else: raise ValueError(type(code_files))
+        
         if not isinstance(other_files, Iterable): other_files = (other_files)
         compile_function = cls.compile_files if not add_custom_headers else cls.compile_files_with_custom_headers
         
-        with tempfile.NamedTemporaryFile(suffix='.cpp', dir=temp_dir_path, delete=False) as temp_file:
-            temp_file.write(code)
+        temp_files = []
+        
+        for file in code_files:
+            with tempfile.NamedTemporaryFile(suffix='.cpp', prefix=file.filename or '',  dir=temp_dir_path, delete=False) as temp_file:
+                temp_file.write(file.code_bytes)
+                temp_files.append(temp_file.name)
         
         executable_filepath = Path(temp_dir_path) / executable_filepath
         
-        compile_result = compile_function(temp_file.name, *other_files, out_filepath=executable_filepath, werrors=werrors) 
+        compile_result = compile_function(*temp_files, *other_files, out_filepath=executable_filepath, werrors=werrors) 
         
         return compile_result
     

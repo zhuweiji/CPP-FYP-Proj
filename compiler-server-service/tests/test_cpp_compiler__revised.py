@@ -22,7 +22,7 @@ class TestCompiledCodeGrader(unittest.TestCase):
         file_which_contains_actual_code = CPP_TEST_FILES_DIR_PATH / 'truck_for_test.cpp'
         file_containing_tester_code     = CPP_TEST_FILES_DIR_PATH / 'testcases_for_truck.cpp'
         
-        execution_result = CPP_Compiler.write_compile_run(code="", other_files=[file_which_contains_actual_code, file_containing_tester_code], add_custom_headers=True)
+        execution_result = CPP_Compiler.write_compile_run(all_code="", other_files=[file_which_contains_actual_code, file_containing_tester_code], add_custom_headers=True)
         
         log.warning(execution_result.stderr)
         log.warning(execution_result.stdout)
@@ -70,7 +70,7 @@ class TestCompiler(unittest.TestCase):
                 return 0;
             }"""
             
-            result = CPP_Compiler.write_and_compile(code=cpp_code, temp_dir_path=tmp_dir_path, executable_filepath=self.temp_output_filename2)
+            result = CPP_Compiler.write_and_compile(code_files=cpp_code, temp_dir_path=tmp_dir_path, executable_filepath=self.temp_output_filename2)
             assert result.success
             
     def step_write_compile_run(self):
