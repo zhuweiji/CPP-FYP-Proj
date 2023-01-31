@@ -6,6 +6,7 @@ from pathlib import Path
 
 from compiler_server_service.services.cpp_compiler.cpp_compiler_revised import (
     CPP_Compiler,
+    LogicalCodeFile,
     ProcessWrapper,
 )
 from compiler_server_service.services.cpp_compiler.doctest_output_parser import (
@@ -61,7 +62,7 @@ class TestCompiler(unittest.TestCase):
         else:
             self.fail('executable should have piped hello world! to stdout')
         
-    def step_write_compile(self):
+    def step_write_compile__single_str(self):
         # could split this into write_compile and run_tests
         with tempfile.TemporaryDirectory(dir=CPP_TEST_FILES_DIR_PATH) as tmp_dir_path:
             cpp_code = """#include <iostream>
@@ -72,6 +73,37 @@ class TestCompiler(unittest.TestCase):
             
             result = CPP_Compiler.write_and_compile(code_files=cpp_code, temp_dir_path=tmp_dir_path, executable_filepath=self.temp_output_filename2)
             assert result.success
+            
+    def step_write_compile__single_file(self):
+        cpp_code = """#include <iostream>
+            int main(){
+                std::cout << "hello world!" << std::endl;
+                return 0;
+            }"""
+            
+        code = LogicalCodeFile(code=cpp_code, filename=None)
+        with tempfile.TemporaryDirectory(dir=CPP_TEST_FILES_DIR_PATH) as tmp_dir_path:
+            result = CPP_Compiler.write_and_compile(code_files=code, temp_dir_path=tmp_dir_path, executable_filepath=self.temp_output_filename2)
+            assert result.success
+            
+    def step_write_compile__multiple_files(self):
+        main_cpp = """#include <iostream>
+        #include "foo.h"
+        int main(){
+            std::cout << "hello world!" << std::endl;
+            return 0;
+        }"""
+        
+        foo_h = """void a(){};"""
+        
+        code = [
+            LogicalCodeFile(code=main_cpp, filename='main.cpp'),
+            LogicalCodeFile(code=foo_h, filename='foo.h'),
+        ]
+        
+        with tempfile.TemporaryDirectory(dir=CPP_TEST_FILES_DIR_PATH) as tmp_dir_path:
+            result = CPP_Compiler.write_and_compile(code_files=code, temp_dir_path=tmp_dir_path, executable_filepath=self.temp_output_filename2)
+            assert result.success, result.full_str()
             
     def step_write_compile_run(self):
         cpp_code = """#include <iostream>

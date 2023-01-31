@@ -32,7 +32,7 @@ class Grader:
         if not (expected_output := tutorial_data.expectedConsoleOutput): return True # if no console output is explicitly written in the data, then the code is always right
         
         prewritten_files = TutorialDAO.get_prewritten_cpp_files(topicId=topicId, tutorialId=tutorialId)
-        compile_result = CPP_Compiler.write_compile_run(code_files=code, add_custom_headers=False, other_files=prewritten_files)
+        compile_result = CPP_Compiler.write_compile_run(all_code=code, add_custom_headers=False, other_files=prewritten_files)
         
         return True if compile_result.stdout.strip() == expected_output.strip() else f'Your console output: <{compile_result.stdout.strip()}> does not match <{expected_output.strip()}>'
         

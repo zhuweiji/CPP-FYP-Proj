@@ -47,7 +47,7 @@ function CodeEditor(props) {
     let TEST_CONNECTION = true;
 
     const editorRef = useRef(null);
-    const newFilenameRef = useRef(null);
+    const monacoRef = useRef(null);
 
     const [isEditorReady, setIsEditorReady] = useState(false);
     const [wasThrottled, setWasThrottled] = useState(false);
@@ -104,6 +104,7 @@ function CodeEditor(props) {
         // you can also store it in `useRef` for further usage
         setIsEditorReady(true);
         editorRef.current = editor;
+        monacoRef.current = monaco;
 
         editorRef.current.addAction({
             id: 'delete-left-shift-del',
@@ -116,6 +117,7 @@ function CodeEditor(props) {
                 ed._actions.deleteAllLeft.run();
             }
         })
+
 
         // not currently working because cant find a good keybinding thats not taken up by either browser or monaco
         editorRef.current.addAction({
@@ -133,6 +135,22 @@ function CodeEditor(props) {
 
         let actions = editor.getSupportedActions().filter((a) => a.id == 'vs.editor.ICodeEditor:1:compile-code');
 
+    }
+
+    function getAllEditorValues(){
+        let monacoEditor = monacoRef.current.editor;
+        if (!monacoEditor) return false;
+
+        let result = {}
+        const replaceTopLevelBackslash = (str) => str.replace('/','')
+
+        monacoEditor.getModels().map(model => {
+            let filenameOfModel = model._associatedResource.path;
+            filenameOfModel = replaceTopLevelBackslash(filenameOfModel)
+            result[filenameOfModel] = model.getValue();
+            });
+
+        return result;
     }
 
 
@@ -181,13 +199,13 @@ function CodeEditor(props) {
 
     async function handleCompilation(grade) {
         setIsEditorReady(false);
-        let code = getEditorValue();
         let result;
+        let all_code = getAllEditorValues();
 
         if (grade) {
-            result = await CodeCompileService.grade_code(code, props.topicId, props.tutorialId);
+            result = await CodeCompileService.grade_code(all_code, props.topicId, props.tutorialId);
         } else {
-            result = await CodeCompileService.compile_and_run(code, props.errorOptions ?? true);
+            result = await CodeCompileService.compile_and_run(all_code, props.errorOptions ?? true);
         }
 
         if (!result) {

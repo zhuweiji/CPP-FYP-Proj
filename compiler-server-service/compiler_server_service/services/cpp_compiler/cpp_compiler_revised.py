@@ -106,7 +106,7 @@ class CPP_Compiler:
             return CPP_Compiler.run_cpp_executable(Path(tmp_dir_path)/"output.exe")
     
     @classmethod
-    def write_and_compile(cls, code_files: Union[str, LogicalCodeFile, list[LogicalCodeFile]], temp_dir_path, other_files:List[Union[str, Path]]=(),
+    def write_and_compile(cls, code_files: Union[str, LogicalCodeFile, list[LogicalCodeFile]], temp_dir_path: str, other_files:List[Union[str, Path]]=(),
                           executable_filepath:Union[Path,str]='output.exe', add_custom_headers:bool=False, werrors=True):
         """Writes some C++ code into a temporary file, then compiles and runs it
         Can include other files to be compiled together with the C++ code as well"""
@@ -125,9 +125,15 @@ class CPP_Compiler:
         temp_files = []
         
         for file in code_files:
-            with tempfile.NamedTemporaryFile(suffix='.cpp', prefix=file.filename or '',  dir=temp_dir_path, delete=False) as temp_file:
-                temp_file.write(file.code_bytes)
-                temp_files.append(temp_file.name)
+            if file.filename:
+                new_filepath = str(Path(temp_dir_path)/file.filename)
+                with open(file=new_filepath, mode='w+') as f:
+                    f.write(file.code)
+                    temp_files.append(new_filepath)
+            else:
+                with tempfile.NamedTemporaryFile(suffix='.cpp', prefix=file.filename or '',  dir=temp_dir_path, delete=False) as temp_file:
+                    temp_file.write(file.code_bytes)
+                    temp_files.append(temp_file.name)
         
         executable_filepath = Path(temp_dir_path) / executable_filepath
         

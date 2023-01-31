@@ -56,14 +56,14 @@ def handle_compile_and_run_multiple(request: Request, data: POST__Compile_Run_Mu
 
 
 class POST__Compile_Run(BaseModel):
-    code: str
+    all_code: dict
     user_id: str
     
 @router.post('/compile_and_run_noerr')
 @limiterobj.limit('10/minute')
 def handle_compile_and_run(request: Request, data: POST__Compile_Run):
-    log.info(f"COMPILING... :\n{data.code}")
-    compile_result = CPP_Compiler.write_compile_run(data.code, werrrors=False)
+    all_code = parse_incoming_codegroup(data.all_code)
+    compile_result = CPP_Compiler.write_compile_run(all_code=all_code, werrrors=False)
 
     return BasicResponse(message=compile_result.full_str())
 

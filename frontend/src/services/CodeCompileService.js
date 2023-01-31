@@ -22,9 +22,9 @@ class CodeCompileService {
     static lastConnectionCheckTime;
     static lastConnectionCheckResult;
 
-    static async compile_and_run(codeString, errorOptions=true) {
+    static async compile_and_run(allCode, errorOptions=true) {
         const data = {
-            'code': codeString,
+            'all_code': allCode,
             'user_id': UserDataFetch.getUserId(),
         }
 
@@ -60,11 +60,11 @@ class CodeCompileService {
         }
     }
 
-    static async grade_code(codeString, topicId, tutorialId) {
+    static async grade_code(allCode, topicId, tutorialId) {
         const data = {
             'topicId': topicId,
             'tutorialId': tutorialId,
-            'code': codeString,
+            'all_code': allCode,
             'user_id': UserDataFetch.getUserId(),
             
         }
