@@ -4,7 +4,6 @@ import platform
 import subprocess
 import tempfile
 from dataclasses import dataclass, field
-from msilib import type_binary
 from pathlib import Path
 from typing import Iterable, List, Union
 
