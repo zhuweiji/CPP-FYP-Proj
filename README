@@ -1,3 +1,10 @@
+This is a web-application to help students in Nanyang Technological University learn Object-Oriented Programming in C++
+
+This was developed as part of the Final Year Project SCSE22-0467-1, Interactive Learning in C++ 
+The website is currently hosted here: https://cpp-fyp-proj.vercel.app/
+
+
+
 DEV README
 
 1. run compiler service module via poetry 
