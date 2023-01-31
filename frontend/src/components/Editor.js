@@ -137,18 +137,18 @@ function CodeEditor(props) {
 
     }
 
-    function getAllEditorValues(){
+    function getAllEditorValues() {
         let monacoEditor = monacoRef.current.editor;
         if (!monacoEditor) return false;
 
         let result = {}
-        const replaceTopLevelBackslash = (str) => str.replace('/','')
+        const replaceTopLevelBackslash = (str) => str.replace('/', '')
 
         monacoEditor.getModels().map(model => {
             let filenameOfModel = model._associatedResource.path;
             filenameOfModel = replaceTopLevelBackslash(filenameOfModel)
             result[filenameOfModel] = model.getValue();
-            });
+        });
 
         return result;
     }
@@ -301,17 +301,17 @@ function CodeEditor(props) {
         }
     }
 
-    
 
-    function deleteCurrentFile(){
+
+    function deleteCurrentFile() {
         if (currentEditorFilename === 'main.cpp') {
             setShowDeleteError(true);
-            setTimeout(()=>{
+            setTimeout(() => {
                 setShowDeleteError(false);
-            },1500)
-            
+            }, 1500)
+
             return;
-            }
+        }
         setShowDeleteError(false);
         let { [currentEditorFilename]: _, ...rest } = editorFile;
         setEditorFile(rest);
@@ -320,36 +320,40 @@ function CodeEditor(props) {
 
     return (
         <>
-            <Box id="editorDiv" sx={{ border: "1px solid #979797", padding: '2%', marginRight: '5px' }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} mb={2}>
-                    <Stack direction='column'>
-                        <Button onClick={deleteCurrentFile}>Delete Current File</Button>
-                        <Typography variant='small' color='#d32f2f'>{showDeleteError?"Cannot delete main.cpp":""}</Typography>
+            <Box id="editorDiv" sx={{ border: "1px solid #979797", pt: 1, pl: 5, pr: 5, pb:5, marginRight: '5px' }}>
+
+                {
+                    !(props.noFiles ?? false) &&
+
+                    <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} mb={2}>
+                        <Stack direction='column'>
+                            <Button onClick={deleteCurrentFile}>Delete Current File</Button>
+                            <Typography variant='small' color='#d32f2f'>{showDeleteError ? "Cannot delete main.cpp" : ""}</Typography>
+                        </Stack>
+
+                        <Box>
+                            {Object.entries(editorFile).map(([filename, fileobject], index) => {
+                                return <Button variant={currentEditorFilename === filename ? 'outlined' : 'text'} key={`file${index}`} onClick={() => setCurrentEditorFilename(filename)}>{filename}</Button>
+                            }
+                            )}
+                        </Box>
+
+                        <Box>
+                            <FormControl>
+                                <TextField id="newFileNameTextField" label="File Name" variant="standard" sx={{ width: '10ch' }}
+                                    onChange={(e) => setnewEditorFilename(e.target.value)} value={newEditorFilename}
+                                    error={showFilenameError}
+                                    helperText={showFilenameError ? "File extension must either be '.cpp' or '.h'" : ''}
+                                    onKeyPress={(event) => {
+                                        if (event.key === 'Enter') createNewFile();
+                                    }}
+                                />
+                                <Button onClick={createNewFile}>Create New File</Button>
+                            </FormControl>
+                        </Box>
+
                     </Stack>
-
-                    <Box>
-                        {Object.entries(editorFile).map(([filename, fileobject], index) => {
-                            return <Button variant={currentEditorFilename === filename ? 'outlined': 'text'} key={`file${index}`} onClick={() => setCurrentEditorFilename(filename)}>{filename}</Button>
-                        }
-                        )}
-                    </Box>
-
-                    <Box>
-                        <FormControl>
-                            <TextField id="newFileNameTextField" label="File Name" variant="standard" sx={{ width: '10ch' }}
-                                onChange={(e) => setnewEditorFilename(e.target.value)} value={newEditorFilename}
-                                error={showFilenameError}
-                                helperText={showFilenameError ? "File extension must either be '.cpp' or '.h'" : ''}
-                                onKeyPress={(event) => {
-                                    if (event.key === 'Enter') createNewFile();
-                                }}
-                            />
-                            <Button onClick={createNewFile}>Create New File</Button>
-                        </FormControl>
-                    </Box>
-
-
-                </Stack>
+                }
 
 
 

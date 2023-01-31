@@ -14,6 +14,31 @@ import CodeEditor from "../components/Editor";
 import { matchRoutes, useLocation } from "react-router-dom"
 import { useNavigate } from 'react-router-dom';
 
+const NotebookTextBlock = (text, key) => {
+    const replaceBackslashWithSpaceInFrontAndNoCharsBehind = (string) => string.replaceAll(/(.*)\s\\(?!\S)/g, '$1\n')
+
+    return <Paper elevation={1} sx={{ backgroundColor: '#f5f5f5', mt: 2, mb: 2 }}>
+        <Typography fontFamily='PT Serif' color='black' key={key} padding={3} mb={2} whiteSpace="pre-line" >{replaceBackslashWithSpaceInFrontAndNoCharsBehind(text)}</Typography>
+    </Paper >
+}
+
+const NotebookCodeHeader = (text, key) => {
+    // dont add margin if one of the few items on the page - otherwise there is too much whitespace on top
+    return <Box mt={key <= 2 ? 0 : 10} mb={5}> 
+        <Typography fontFamily='Playfair Display' color='black' key={key} variant="h2" mt={5} mb={4} whiteSpace="pre-line">{text}</Typography>
+            <Divider></Divider>
+        </Box>
+}
+
+const NotebookHeader = (text, key) => {
+    // dont add margin if one of the few items on the page - otherwise there is too much whitespace on top
+    return <Box mt={key <= 2 ? 0 : 10} mb={5}>
+            <Divider >
+            <Typography fontFamily='PT Serif' color='black' key={key} variant="h3" mt={5} mb={5} whiteSpace="pre-line">{text}</Typography>
+            </Divider>
+        </Box>
+}
+
 export default function NotebookPage() {
 
     const [notebookData, setNotebookData] = useState('');
@@ -50,7 +75,6 @@ export default function NotebookPage() {
         let parsingComponent = false;
         let componentData = {};
         let currentComponentName;
-        const replaceBackslashWithSpaceInFrontAndNoCharsBehind = (string) => string.replaceAll(/(.*)\s\\(?!\S)/g, '$1\n')
 
         // TODO: refactor to html like braces (<Editor></Editor> otherwise too many issues with code)
         const startOfComponent = (text) => text.trim()[0] == "<";
@@ -75,13 +99,13 @@ export default function NotebookPage() {
                 componentData[currentComponentName].push(line)
 
             } else if (line.trim().substring(0, 2) === "##") {
-                outputLine = <Box mt={lineNumber <= 2 ? 0 : 10} mb={5}><Divider ><Typography fontFamily='PT Serif' color='black' key={lineNumber} variant="h3" mt={5} mb={5} whiteSpace="pre-line">{line.replaceAll('#', '')}</Typography> </Divider></Box>
+                line = line.replaceAll('#', '')
+                outputLine = NotebookHeader(line, lineNumber)
             } else if (line.trim()[0] === "#") {
-                outputLine = <Box mt={lineNumber <= 2 ? 0 : 10} mb={5}><Typography fontFamily='Playfair Display' color='black' key={lineNumber} variant="h2" mt={5} mb={4} whiteSpace="pre-line">{line.replace('#', '')}</Typography><Divider></Divider></Box>
+                line = line.replace('#', '')
+                outputLine = NotebookCodeHeader(line, lineNumber)
             }  else {
-                outputLine = <Paper elevation={1} sx={{ backgroundColor: '#f5f5f5', mt:2, mb:2}}>
-                    <Typography fontFamily='PT Serif' color='black' key={lineNumber} padding={3} mb={2} whiteSpace="pre-line" >{replaceBackslashWithSpaceInFrontAndNoCharsBehind(line)}</Typography>
-                </Paper >
+                outputLine = NotebookTextBlock(line, lineNumber)
             }
             output.push(outputLine);
             lineNumber = lineNumber + 1
@@ -90,9 +114,6 @@ export default function NotebookPage() {
     }
 
     function parseComponent(data, componentName, lineNumber){
-        console.log(componentName);
-
-        console.log(data);
         data = data.join('\n')
         let component;
 
@@ -101,17 +122,21 @@ export default function NotebookPage() {
             let defaultValue = data.match(defaultValueRegex).groups.defaultvalue;
 
             const errorOptionsRegex = /noerror(s)?\s?={(?<noErrors>[\s\S]+)} /
-
             let errorOptionsMatch = data.match(errorOptionsRegex);
             let noerror;
             if (errorOptionsMatch){
                 noerror = errorOptionsMatch.groups.noErrors;
             }
 
-            console.log(!noerror ?? true);
+            const noFilesRegex = /nofile(s)?\s?={(?<noFiles>[\s\S]+)}/
+            let noFiles = data.match(noFilesRegex)?.groups.noFiles ?? false;
 
-            component = <Box key={lineNumber} mb={15} mt={7}>
-                <CodeEditor codeEditorHeight='15vh' executionResultHeight='8vh' defaultValue={defaultValue ?? '>'} errorOptions={!noerror ?? true}> </CodeEditor>
+            console.log(data)
+            console.log(data.match(noFilesRegex));
+
+
+            component = <Box key={lineNumber} mb={15} mt={5}>
+                <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' defaultValue={defaultValue ?? '>'} errorOptions={!noerror ?? true} noFiles={noFiles}> </CodeEditor>
             </Box>
         }
 
