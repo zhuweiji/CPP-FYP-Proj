@@ -1,0 +1,88 @@
+# Forward Declarations 
+
+Try running the following code:
+
+<Editor defaultvalue={int main(){
+    add(1,2);
+}
+
+int add(int v1, int v2){return v1+v2;}
+
+} Editor>
+
+
+The code doesn't run because the function add() was not defined at the time that it was called in main().
+
+To solve this, we can either write the definition of add() above main()
+
+<Code value={int add(int v1, int v2){return v1+v2;}
+int main(){
+    add(1,2);
+}
+} Code>
+
+Or we could add a function declaration for add() before main()
+
+<Code value={
+int add(int v1, int v2);
+
+int main(){
+    add(1,2);
+}
+int add(int v1, int v2){return v1+v2;}
+
+} Code>
+
+As you can see, a function declaration contains only the function name, return type, and parameters of the function. This is also called the function's signature. It serves to tell the compiler that the function add() exists and not to freak out if it encounters it.
+The actual code (the function definition) can be written below or in another file.
+
+# Header files
+
+In C++, it is standard practice to write the function declarations (only the function signature) in a header file (with the .h extension or in some cases, .hpp ), and the function definitions (the actual code) in .cpp files. The .h and .cpp should have the same name for consistency.
+
+Lets try writing one now.
+
+There are two parts to a header file: \
+1. The header guard
+2. The function declarations
+
+We will go through why we need to have header guards in the next section.
+
+In the add.h file:
+
+<Code value={
+    //header guards
+    #ifndef ADD_H
+    #define ADD_H 
+
+    //function declarations
+    int add(int v1, int v2);
+    #endif
+} Code>
+
+In the add.cpp file:
+
+<Code value={#include "add.h"
+    int add(int v1, int v2){return v1+v2;}
+} Code>
+
+It is standard practice to have the .cpp code file #include the header file.
+Take note that we use #include "add.h" instead of <add> as we are including a user-defined file.
+
+
+# Header Guards
+
+A function or variable can only be declared once. 
+
+<Editor defaultvalue={
+int add();
+int add();
+int main() {
+}} Editor>
+
+When we have files that we will #include, there is a chance that it may be #included twice, causing a duplicate definition error.
+
+Therefore, we use header guards to only include header files once, so that this will not happen.
+
+
+

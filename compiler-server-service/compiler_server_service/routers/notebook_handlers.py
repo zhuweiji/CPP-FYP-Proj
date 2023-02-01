@@ -23,6 +23,5 @@ def compiler_status(request: Request, notebook_id:str):
     notebook_name = notebook_id 
     notebook_data = NotebookDAO.get_notebook_by_name(notebook_name)
     
-    log.info(BasicResponse(message=notebook_data))
     if not notebook_data: raise HTTPException(status_code=404, detail='notebook not found')
     return BasicResponse(message=notebook_data)

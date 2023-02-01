@@ -1,6 +1,6 @@
 # Value and List Instantialization 
 
-There are several initialize (create) a variable.
+There are several ways to initialize (create) a variable.
 
 
 <Editor defaultvalue={#include <iostream>
@@ -16,12 +16,58 @@ int main() {
 
 
     return 0;
-}}>
+}} Editor>
+
+
+[Best Practice]
+Try to initialize variables with a value if possible.
+
+
+## Copy Initialization 
+
+<Code value={int b = 5;
+} Code>
+
+This is the format that is most like other programming languages you may have seen.
+
+The value of 5 is copied into b after the variable is created. 
+
+
+## Brace Initialization 
+
+<Code value={int c{5};
+} Code>
+
+This is similar to the above, except that it also disallows narrowing conversions. \
+Narrowing conversions are when data is converted to another type (such as float to int) and a loss in information occurs.
+
+If you try to initialize a variable with a value that the variable cannot safely hold, a compiler error results.
+
+
+
+<Editor noerror={true} defaultvalue={#include <iostream>
+int main() {
+    int yourMoney__millions { 1.5 };  
+    std::cout << yourMoney__millions;
+
+    return 0;
+}} Editor>
+
+
+
+
+<Editor noerror={true} defaultvalue={#include <iostream>
+int main() {
+    int yourMoney__millions = 1.5;  
+    std::cout << yourMoney__millions;
+    
+    return 0;
+}} Editor>
+
 
 
 ## Default Initialization
 
-`int a;`
 This creates a variable with no value.
 
 If forget to assign this value before using it, then your program will exhibit undefined behavior.
@@ -35,47 +81,10 @@ Your program crashes, either immediately or later.
 Your program works on some compilers but not others.
 Your program works until you change some other seemingly unrelated code.
 
-With the compiler we are using, the value is zero-initialized, although the behavior may change depending on the compiler.
-
-[Best Practice]
-To avoid this, prefer initializing your variables with a value, such as 0 for ints.
-
-## Other forms of Initialization 
-
-Copy Initialization \
-`int b = 5;`
-This is the format that is most like other programming languages you may have seen.
-
-The value of 5 is copied into b after the variable is created. 
-
-
-List Initialization \
-`int c{5]};`
-This is similar to the above, except that it also disallows narrowing conversions.
-
-If you try to initialize a variable with a value that the variable cannot safely hold, a compiler error results.
-
-
-<Editor noerror={true} defaultvalue={#include <iostream>
-int main() {
-    int yourMoney__millions { 1.5 };  
-    std::cout << yourMoney__millions;
-
-    return 0;
-}}>
-
-
-Compare that with this code, where there is no error, but would probably ruin your day if this was the code handling your money.
-
-
-<Editor noerror={true} defaultvalue={#include <iostream>
-int main() {
-    int yourMoney__millions = 1.5;  
-    std::cout << yourMoney__millions;
-    
-    return 0;
-}}>
+With the compiler we are using, the value is zero-initialized (it will have a default value of 0), although the behavior may change depending on the compiler.
 
 
 
-Hwllo!
+
+
+

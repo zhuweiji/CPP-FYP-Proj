@@ -1,0 +1,146 @@
+# Preprocessor Directives
+
+Preprocessor directives are statements such as 
+
+<Code value={#include <iostream>
+} Code>
+
+<Code value={#include "car.h"
+} Code>
+
+<Code value={#ifndef MYFILE_H
+} Code>
+
+These are statements that are run before the rest of the code is compiled.
+
+There are several types of preprocessor directives that are important to us.
+
+
+## Include
+
+The #include directive is the one you will be using most often.
+
+There are two forms of #include: 
+The one with angle brackets (<>) \ 
+These are used for files from the standard library, such as iostream 
+
+
+<Code value={#include <iostream>
+} Code>
+
+
+
+There are also the ones with quotes (") \
+These are used for user-written files, such as the files you create
+
+<Code value={#include "Car.h"
+} Code>
+
+
+## Macro Defines
+
+The #define directive tells the preprocessor to replace a value with another
+
+For example, the following directive will replace all occurences of `SECRET_KEY` in the code
+
+<Code value={#define SECRET_KEY password123
+
+bool loginToDatabase(){
+    database.login_using_key(SECRET_KEY);
+}
+} Code>
+
+It is preferred to avoid this usage of #define, and use const variables instead. However, we introduce this concept as you may encounter this in older code.
+
+
+
+
+You can also use the #define directive without a value to replace with, in which case `SECRET_KEY` would just be removed from the code. \
+
+<Code value={#define SECRET_KEY
+} Code>
+
+
+## Conditional Compilation
+
+<Code value={#ifdef SECRET_KEY
+// your code here
+#endif
+} Code>
+
+The #ifdef (if defined) directive tells the preprocessor to compile the code only if the identifier (ie SECRET_KEY) has already been #defined.
+
+
+<Code value={#include <iostream>
+#define PRINT_JOE
+
+int main()
+{
+#ifdef PRINT_JOE
+    std::cout << "Joe\n"; // will be compiled since PRINT_JOE is defined
+#endif
+
+#ifdef PRINT_BOB
+    std::cout << "Bob\n"; // will be excluded since PRINT_BOB is not defined
+#endif
+
+    return 0;
+}
+} Code>
+
+The #ifndef (if not defined) is the opposite of #ifdef, checking if the identifier has not been defined. 
+
+
+## Additional Information
+
+The preprocessor does not handle directives like C++ code. It processes the entire file for directives before any C++ code is compiled, and only compiles the C++ code after. 
+
+Think of the preprocessor as a person who will go through your code and modify it without looking at the C++ code itself.
+
+<Code value={if (false){
+    #define MY_NAME "Alex"
+}
+} Code>
+
+Any code above and below the #define does not affect it as it is processed before any code is compiled. 
+The program functions the same as if the #define was written outside of the if statement.
+
+[Best Practice]
+You should write any #define statements outside functions and conditional statements to avoid confusion.
+
+The preprocessor modifies code on a file-by-file basis.
+This means that #defines in one file will not affect another. 
+
+Consider the following code: 
+
+<Code value={#include <iostream>
+
+void doSomething()
+{
+#ifdef PRINT
+    std::cout << "Printing!\n";
+#endif
+#ifndef PRINT
+    std::cout << "Not printing!\n";
+#endif
+}
+} Code>
+
+<Code value={void doSomething(); // forward declaration for function doSomething()
+
+#define PRINT
+
+int main()
+{
+    doSomething();
+
+    return 0;
+}
+} Code>
+
+The above program will print:
+
+<Code value={Not printing!
+} Code>
+
+Attribution: Some of the code here was taken from https://www.learncpp.com/cpp-tutorial/introduction-to-the-preprocessor/, which has a more detailed write-up if you are interested.

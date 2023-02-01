@@ -364,15 +364,12 @@ function CodeEditor(props) {
                     beforeMount={handleEditorWillMount}
                     onMount={handleEditorDidMount}
 
-                    // why are new files undefined?
                     defaultValue={props.defaultValue || (editorFile[currentEditorFilename] ?? "")}
-
-
                     path={currentEditorFilename}
-
                     theme={theme}
                 // theme="vs-dark"
                 />
+
 
                 <br /><br />
 
@@ -393,51 +390,58 @@ function CodeEditor(props) {
                 </Stack>
             </Box>
 
-            <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="center"
-                sx={{
-                    "paddingLeft": "1rem",
-                    "paddingTop": "0.5rem",
-                    "paddingBottom": "0.5rem",
-                    "paddingRight": "0.5rem",
-                }}>
+            {
+                !(props.noCompile ?? false) && <>
+                    <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="center"
+                        sx={{
+                            "paddingLeft": "1rem",
+                            "paddingTop": "0.5rem",
+                            "paddingBottom": "0.5rem",
+                            "paddingRight": "0.5rem",
+                        }}>
 
-                <div>
-                    <Stack direction="row" alignItems="center">
-                        <Typography style={{ fontFamily: "Inconsolata" }}> View results from execution: </Typography>
-                        <Pagination count={executionResults.length} onChange={(event, value) => {
-                            let index = value - 1; // onChange value starts from 1
-                            setDisplayedExecutionResult(executionResults[index]);
-                        }}></Pagination>
+                        <div>
+                            <Stack direction="row" alignItems="center">
+                                <Typography style={{ fontFamily: "Inconsolata" }}> View results from execution: </Typography>
+                                <Pagination count={executionResults.length} onChange={(event, value) => {
+                                    let index = value - 1; // onChange value starts from 1
+                                    setDisplayedExecutionResult(executionResults[index]);
+                                }}></Pagination>
+                            </Stack>
+
+                        </div>
+
+
+
+                        <Stack direction="row" alignItems="center">
+                            <Typography style={{ fontFamily: "Inconsolata" }}>{postCompileMessages}</Typography>
+
+                            {getThrottledIcon()}
+                            {getCompilerStatusIcon()}
+                        </Stack>
                     </Stack>
 
-                </div>
+                    <Box id="executionResultDisplay"
+                        height={props.executionResultHeight || "21vh"}
+                        sx={{
+                            flexDirection: 'column',
+                            fontFamily: 'Inconsolata',
+                            padding: '1rem',
+                            pt: '2rem',
+                            pl: '3rem',
+                            // padding: "5%",
+                            whiteSpace: "pre-line", // displays line breaks instead of keeping text on same line
+                            overflowY: 'auto',
+                            color: '#9cd025',
+                            backgroundColor: '#333333',
+                        }}>
+                        {displayedExecutionResult}
+                    </Box>
+                </>
+                    
+                }
 
-
-
-                <Stack direction="row" alignItems="center">
-                    <Typography style={{ fontFamily: "Inconsolata" }}>{postCompileMessages}</Typography>
-
-                    {getThrottledIcon()}
-                    {getCompilerStatusIcon()}
-                </Stack>
-            </Stack>
-
-            <Box id="executionResultDisplay"
-                height={props.executionResultHeight || "21vh"}
-                sx={{
-                    flexDirection: 'column',
-                    fontFamily: 'Inconsolata',
-                    padding: '1rem',
-                    pt: '2rem',
-                    pl: '3rem',
-                    // padding: "5%",
-                    whiteSpace: "pre-line", // displays line breaks instead of keeping text on same line
-                    overflowY: 'auto',
-                    color: '#9cd025',
-                    backgroundColor: '#333333',
-                }}>
-                {displayedExecutionResult}
-            </Box>
+  
         </>
 
     )

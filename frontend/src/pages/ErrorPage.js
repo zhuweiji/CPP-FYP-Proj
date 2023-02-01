@@ -2,7 +2,7 @@ import { useRouteError } from "react-router-dom";
 import { Typography, Container, Grid } from '@mui/material';
 
 
-export default function ErrorPage() {
+export default function ErrorPage(props) {
     const error = useRouteError();
     console.error(error);
 

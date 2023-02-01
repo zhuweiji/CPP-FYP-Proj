@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import { indigo, blueGrey } from '@mui/material/colors';
 
-import { AppBar, Box, Stack, Grid, Typography, Paper, Divider } from '@mui/material';
+import { AppBar, Box, Stack, Grid, Typography, Paper, Divider, Container } from '@mui/material';
 import TopNavBar from "../components/Nav";
 
 import './TutorialPage.css';
@@ -13,6 +13,7 @@ import CodeEditor from "../components/Editor";
 
 import { matchRoutes, useLocation } from "react-router-dom"
 import { useNavigate } from 'react-router-dom';
+import ErrorPage from "./ErrorPage";
 
 const NotebookTextBlock = (text, key) => {
     const replaceBackslashWithSpaceInFrontAndNoCharsBehind = (string) => string.replaceAll(/(.*)\s\\(?!\S)/g, '$1\n')
@@ -24,24 +25,40 @@ const NotebookTextBlock = (text, key) => {
 
 const NotebookCodeHeader = (text, key) => {
     // dont add margin if one of the few items on the page - otherwise there is too much whitespace on top
-    return <Box mt={key <= 2 ? 0 : 10} mb={5}> 
+    return <Box mt={key <= 2 ? 0 : 10} mb={5}>
         <Typography fontFamily='Playfair Display' color='black' key={key} variant="h2" mt={5} mb={4} whiteSpace="pre-line">{text}</Typography>
-            <Divider></Divider>
-        </Box>
+        <Divider></Divider>
+    </Box>
 }
 
 const NotebookHeader = (text, key) => {
     // dont add margin if one of the few items on the page - otherwise there is too much whitespace on top
     return <Box mt={key <= 2 ? 0 : 10} mb={5}>
-            <Divider >
+        <Divider >
             <Typography fontFamily='PT Serif' color='black' key={key} variant="h3" mt={5} mb={5} whiteSpace="pre-line">{text}</Typography>
-            </Divider>
-        </Box>
+        </Divider>
+    </Box>
+}
+
+const NotebookCodeBlock = (text, key) => {
+    const replaceBackticks = (t) => t.replaceAll('`', '')
+
+    return <Paper elevation={1} sx={{ backgroundColor: '#333333', mt: 2, mb: 2 }}>
+        <Typography  key={key} sx={{
+            ml: 5,
+            pt: 1, pb: 1,
+            fontFamily: "Inconsolata", 
+            whiteSpace: "pre-line",
+            overflowY: 'auto',
+            color: '#9cd025',
+        }}>{replaceBackticks(text)}</Typography>
+    </Paper >
 }
 
 export default function NotebookPage() {
 
     const [notebookData, setNotebookData] = useState('');
+    const [showErrorMessage, setShowErrorMessage] = useState(false);
 
     // get the path of this page (to get the tutorialId of the page)
     const routeRegex = '/notebook/(?<topicId>[0-9]+)/(?<tutorialId>[0-9]+)'
@@ -54,15 +71,19 @@ export default function NotebookPage() {
 
     useEffect(() => {
         async function getData() {
-            let data = await NotebookService.getNotebook(`notebook${tutorialId}`);
-            setNotebookData(data);
+            try {
+                let data = await NotebookService.getNotebook(`notebook${tutorialId}`);
+                setNotebookData(data);
+            } catch (E) {
+                setShowErrorMessage(true);
+            }
         }
 
         getData();
     }, [])
 
 
-    const parsedNotebook = () =>{
+    const parsedNotebook = () => {
         // let lines = notebookData.split(/\r?\n/);
         let lines = notebookData.split(/\n\n/);
 
@@ -78,24 +99,32 @@ export default function NotebookPage() {
 
         // TODO: refactor to html like braces (<Editor></Editor> otherwise too many issues with code)
         const startOfComponent = (text) => text.trim()[0] == "<";
-        const endOfComponent = (text) => text.trim().search(">") !== -1;
-        while (lineNumber < nonEmptyLines.length){
+        const endOfComponent = (text, componentName) => text.match(RegExp(`${componentName}>`))
+
+
+        while (lineNumber < nonEmptyLines.length) {
             let line = nonEmptyLines[lineNumber];
             let outputLine;
 
-            if (startOfComponent(line)){
+            if (startOfComponent(line)) {
                 parsingComponent = true;
                 const componentNameRegex = /<\s*(?<name>[a-zA-Z]+)/;
-                currentComponentName = line.match(componentNameRegex).groups.name 
+                currentComponentName = line.match(componentNameRegex).groups.name
                 componentData[currentComponentName] = [line]
 
-            } else if (parsingComponent && endOfComponent(line) ){
+                if (endOfComponent(line, currentComponentName)) {
+                    parsingComponent = false;
+                    let component = parseComponent(componentData[currentComponentName], currentComponentName, lineNumber)
+                    output.push(component)
+                }
+
+            } else if (parsingComponent && endOfComponent(line, currentComponentName)) {
                 parsingComponent = false;
                 componentData[currentComponentName].push(line)
                 let component = parseComponent(componentData[currentComponentName], currentComponentName, lineNumber)
                 output.push(component)
 
-            } else if (parsingComponent){
+            } else if (parsingComponent) {
                 componentData[currentComponentName].push(line)
 
             } else if (line.trim().substring(0, 2) === "##") {
@@ -104,7 +133,7 @@ export default function NotebookPage() {
             } else if (line.trim()[0] === "#") {
                 line = line.replace('#', '')
                 outputLine = NotebookCodeHeader(line, lineNumber)
-            }  else {
+            } else {
                 outputLine = NotebookTextBlock(line, lineNumber)
             }
             output.push(outputLine);
@@ -113,31 +142,31 @@ export default function NotebookPage() {
         return output
     }
 
-    function parseComponent(data, componentName, lineNumber){
+    function parseComponent(data, componentName, lineNumber) {
         data = data.join('\n')
         let component;
 
         if (componentName === 'Editor') {
             const defaultValueRegex = /defaultvalue\s?={(?<defaultvalue>[\s\S]+)}/
-            let defaultValue = data.match(defaultValueRegex).groups.defaultvalue;
+            let defaultValue = data.match(defaultValueRegex)?.groups.defaultvalue;
 
             const errorOptionsRegex = /noerror(s)?\s?={(?<noErrors>[\s\S]+)} /
             let errorOptionsMatch = data.match(errorOptionsRegex);
             let noerror;
-            if (errorOptionsMatch){
+            if (errorOptionsMatch) {
                 noerror = errorOptionsMatch.groups.noErrors;
             }
 
             const noFilesRegex = /nofile(s)?\s?={(?<noFiles>[\s\S]+)}/
             let noFiles = data.match(noFilesRegex)?.groups.noFiles ?? false;
 
-            console.log(data)
-            console.log(data.match(noFilesRegex));
-
-
             component = <Box key={lineNumber} mb={15} mt={5}>
                 <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' defaultValue={defaultValue ?? '>'} errorOptions={!noerror ?? true} noFiles={noFiles}> </CodeEditor>
             </Box>
+        } else if (componentName === 'Code') {
+            const valueRegex = /value(s)?\s?={(?<value>[\s\S]+)}/
+            let value = data.match(valueRegex)?.groups.value ?? '';
+            component = NotebookCodeBlock(value, lineNumber)
         }
 
         return component;
@@ -145,11 +174,38 @@ export default function NotebookPage() {
 
     return <>
         <TopNavBar></TopNavBar>
-        
-        <Box sx={{ backgroundColor: '  #fbf9f6' , pb:50, pt:2}}>
-            <Stack direction='column' sx={{ ml: 10, mr: 10, mt: 2, mb: 5, }}>
-                {parsedNotebook()}
-            </Stack>
+
+        <Box sx={{ backgroundColor: '#fbf9f6', pb: 50, pt: 2 }}>
+            {
+                showErrorMessage ?
+                    <Grid
+                        container
+                        spacing={0}
+                        direction="column"
+                        alignItems="center"
+                        justifyContent="center"
+                        style={{ minHeight: '80vh' }}
+                    >
+
+                        <Grid item xs={3}>
+                            <div id="error-page">
+                                <Container>
+                                    <Typography variant="h2">Oops!</Typography>
+                                    <p>Sorry, an unexpected error has occurred.</p>
+                                    <p>
+                                        <i>We were unable to load the notebook</i>
+                                    </p>
+                                </Container>
+                            </div>
+                        </Grid>
+
+                    </Grid>
+                    :
+                    <Stack direction='column' sx={{ ml: 10, mr: 10, mt: 2, mb: 5, }}>
+                        {parsedNotebook()}
+                    </Stack>
+            }
+
         </Box>
 
     </>
