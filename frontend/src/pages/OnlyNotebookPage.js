@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import { indigo, blueGrey } from '@mui/material/colors';
 
-import { AppBar, Box, Stack, Grid, Typography, Paper, Divider, Container } from '@mui/material';
+import { AppBar, Box, Stack, Grid, Typography, Paper, Divider, Container, Link, Button } from '@mui/material';
 import TopNavBar from "../components/Nav";
 
 import './TutorialPage.css';
@@ -68,6 +68,9 @@ export default function NotebookPage() {
 
     let topicId = useLocation().pathname.match(routeRegex).groups['topicId']
     if (!topicId) console.error('topicId of this page could not be found!')
+
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         async function getData() {
@@ -203,6 +206,9 @@ export default function NotebookPage() {
                     :
                     <Stack direction='column' sx={{ ml: 10, mr: 10, mt: 2, mb: 5, }}>
                         {parsedNotebook()}
+
+                        <Button variant="contained" sx={{ p: 5, mt: 10 }} onClick={() => navigate(`/tutorial/${topicId}/${tutorialId}`)}>To the Tutorial!</Button>
+
                     </Stack>
             }
 

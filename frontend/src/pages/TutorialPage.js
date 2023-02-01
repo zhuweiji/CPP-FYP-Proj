@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { AppBar, Box, Stack, Grid } from '@mui/material';
+import { AppBar, Box, Stack, Grid, Typography } from '@mui/material';
 
 import CodeEditor from "../components/Editor";
 import TopNavBar from "../components/Nav";
@@ -183,6 +183,14 @@ function BottomAppBar(props) {
 
             <AppBar position="fixed" sx={{ top: 'auto', bottom: 0, height: '3.5rem', alignContent: 'center', backgroundColor: blueGrey[50] }}>
                 <Toolbar>
+                    <IconButton size='small' color="inherit" onClick={() => {
+                        navigate(`/notebook/${props.topicId}/${props.tutorialId}`);
+                        navigate(0);
+                    }}>
+                        <FormatListNumberedIcon sx={{ color: blueGrey[900] }} />
+                        <Typography sx={{ color: 'black' }}>Notebook</Typography>
+                    </IconButton>
+                    
                     <IconButton size='small' color="inherit" onClick={toggleMermaidDiagram}>
                         <SchemaTwoToneIcon sx={{ color: blueGrey[900] }} />
                     </IconButton>
@@ -191,12 +199,7 @@ function BottomAppBar(props) {
                         <TextSnippetTwoToneIcon sx={{ color: blueGrey[900] }} />
                     </IconButton>
 
-                    <IconButton size='small' color="inherit" onClick={() => {
-                        navigate(`/notebook/${props.topicId}/${props.tutorialId}`);
-                        navigate(0);
-                        }}>
-                        <FormatListNumberedIcon sx={{ color: blueGrey[900] }} />
-                    </IconButton>
+                    
 
                     <Box sx={{ flexGrow: 1 }} />
                     
