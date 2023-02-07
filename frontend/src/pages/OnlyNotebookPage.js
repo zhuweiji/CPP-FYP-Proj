@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { indigo, blueGrey } from '@mui/material/colors';
 
 import { styled } from '@mui/material/styles';
-import { AppBar, Box, Stack, Grid, Typography, Paper, Divider, Container, Link, Button, Tooltip } from '@mui/material';
+import { AppBar, Box, Stack, Grid, Typography, Paper, Divider, Container, Link, Button, Tooltip, Skeleton } from '@mui/material';
 import { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import TopNavBar from "../components/Nav";
 
@@ -64,16 +64,16 @@ const NotebookCodeBlock = (inlineCodeBlock) => {
 
 const InlineCodeBlock = (text) => {
     const replaceBackticks = (t) => t.replaceAll('`', '')
-    
+
     text = text.replaceAll(/\\n/g, '\n')
-    
+
     return <Box key={reactComponentKey()} >
         <Typography key={reactComponentKey()} display='inline' sx={{
-            
+
             backgroundColor: '#333333',
-            display:'inline-block',
+            display: 'inline-block',
             ml: 5,
-            p:2,
+            p: 2,
             fontFamily: "Inconsolata",
             whiteSpace: "pre-wrap",
             overflowY: 'auto',
@@ -103,16 +103,16 @@ const HtmlTooltip = styled(({ className, ...props }) => (
 const NotebookTooltip = (text, tooltipText) => {
     return <HtmlTooltip key={reactComponentKey()} mt={5} title={
         <>
-            <Typography  fontFamily='Open Sans' fontSize='.8rem' color='black' width='50rem' 
+            <Typography fontFamily='Open Sans' fontSize='.8rem' color='black' width='50rem'
                 key={reactComponentKey()} whiteSpace="pre-line">
                 {tooltipText}</Typography>
         </>
-        } placement="bottom-start" fontSize='3rem'>
-        <Typography display='inline-block' fontFamily='Open Sans' fontSize='1.2rem' color='#00695c' 
-                key={reactComponentKey()} whiteSpace="pre-line"
-            >
-                {text}</Typography>
-        
+    } placement="bottom-start" fontSize='3rem'>
+        <Typography display='inline-block' fontFamily='Open Sans' fontSize='1.2rem' color='#00695c'
+            key={reactComponentKey()} whiteSpace="pre-line"
+        >
+            {text}</Typography>
+
     </HtmlTooltip>
 }
 
@@ -160,15 +160,16 @@ const NotebookTextBlock = (text) => {
 
 
 
-    return <Paper key={reactComponentKey()} elevation={1} sx={{ textRendering: 'optimizeLegibility', backgroundColor: '#fffffb', 
-    mt: 2, mb: 2
-     }}>
+    return <Paper key={reactComponentKey()} elevation={1} sx={{
+        textRendering: 'optimizeLegibility', backgroundColor: '#fffffb',
+        mt: 2, mb: 2
+    }}>
         {data}
     </Paper >
 
     function Text(text) {
-        return <Typography color='black' display='inline-block' fontFamily='Open Sans' fontSize='1.1rem' 
-            key={reactComponentKey()} padding={3} mb={2} whiteSpace="pre-line" 
+        return <Typography color='black' display='inline-block' fontFamily='Open Sans' fontSize='1.1rem'
+            key={reactComponentKey()} padding={3} mb={2} whiteSpace="pre-line"
         >
 
             {text.replaceAll(/\\n/g, '\n')}
@@ -229,7 +230,7 @@ export default function NotebookPage() {
 
 
         for (let line of lines) {
-            
+
             if (line.match(componentStartTagRegex) && !parsingComponent) {
                 parsingComponent = true;
 
@@ -246,7 +247,7 @@ export default function NotebookPage() {
                     output.push(parseComponent2(currentComponentName, currentComponentData, lineNumber));
                     currentComponentData = {};
                     parsingComponent = false;
-                } else{
+                } else {
                     currentComponentData['data'] = [lineComponentData];
 
                 }
@@ -265,7 +266,7 @@ export default function NotebookPage() {
             } else {
 
                 const startOfLineRegex = (reg) => new RegExp('^' + reg.source)
-                
+
                 switch (true) {
                     case titleRegex.test(line):
                         line = line.replace(/#/, '')
@@ -282,10 +283,10 @@ export default function NotebookPage() {
                     case !!line.match(startOfLineRegex(codeRegex)):
                         output.push(NotebookCodeBlock((InlineCodeBlock(line))));
                         break;
-                    case  !!line.match(startOfLineRegex(linkRegex)):
+                    case !!line.match(startOfLineRegex(linkRegex)):
                         let groups = Array.from(line.matchAll(linkRegex)).map(i => i.groups)[0]
                         output.push(NotebookLink(groups.content, groups.linkhref))
-                        
+
 
                         break;
                     case !!line.match(startOfLineRegex(tooltipRegex)):
@@ -449,7 +450,16 @@ export default function NotebookPage() {
                     </Grid>
                     :
                     <Stack direction='column' sx={{ ml: 10, mr: 10, mt: 2, mb: 5, }}>
-                        {parseNotebook2()}
+                        {notebookData ? parseNotebook2()
+                            :
+                            <Stack spacing={2} p={10}>
+                                <Skeleton variant="rounded" width='80vw' height='5vh'/>
+                                <Skeleton variant="rectangular" width='80vw' height='15vh' mb={2} />
+                                <Skeleton variant="rectangular" width='80vw' height='20vh' mb={2} />
+                                <Skeleton variant="rectangular" width='80vw' height='10vh' mb={2} />
+                                <Skeleton variant="rectangular" width='80vw' height='15vh' mb={2} />
+                            </Stack>
+                        }
                         <Button variant="contained" sx={{ p: 5, mt: 10 }} onClick={() => navigate(`/tutorial/${topicId}/${tutorialId}`)}>To the Tutorial!</Button>
 
                         {/* <Stack direction='column' sx={{ ml: 10, mr: 10, mt: 2, mb: 1 }}>
