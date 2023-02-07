@@ -2,47 +2,53 @@
 
 Try running the following code:
 
-<Editor defaultvalue={int main(){
+<Editor nofiles=false, noerrors=false, nocompile=false >int main(){
     add(1,2);
 }
 
-int add(int v1, int v2){return v1+v2;}
+int add(int v1, int v2){
+    return v1+v2;
+    }
+} </Editor>
 
-} Editor>
 
+The code doesn't run because the function add() was not defined at the time that it was called in main(). \n
+To solve this, we can either write the definition of add() above main():
 
-The code doesn't run because the function add() was not defined at the time that it was called in main().
+<Editor nofiles=false, noerrors=false, nocompile=false >int add(int v1, int v2){
+    return v1+v2;
+}
 
-To solve this, we can either write the definition of add() above main()
-
-<Code value={int add(int v1, int v2){return v1+v2;}
 int main(){
     add(1,2);
-}
-} Code>
+} </Editor>
 
 Or we could add a function declaration for add() before main()
 
-<Code value={
-int add(int v1, int v2);
+<Editor nofiles=false, noerrors=false, nocompile=false >int add(int v1, int v2);
 
 int main(){
     add(1,2);
 }
-int add(int v1, int v2){return v1+v2;}
 
-} Code>
+int add(int v1, int v2){
+    return v1+v2;
+    }
+} </Editor>
 
-As you can see, a function declaration contains only the function name, return type, and parameters of the function. This is also called the function's signature. It serves to tell the compiler that the function add() exists and not to freak out if it encounters it.
+As you can see, a function declaration contains only the function name, return type, and parameters of the function. \n
+This is also called the function's signature.
+
+It serves to tell the compiler that the function add() exists and is declared elsewhere. \n
 The actual code (the function definition) can be written below or in another file.
 
-# Header files
+## Header files
 
-In C++, it is standard practice to write the function declarations (only the function signature) in a header file (with the .h extension or in some cases, .hpp ), and the function definitions (the actual code) in .cpp files. The .h and .cpp should have the same name for consistency.
+In C++, it is standard practice to write the function declarations (only the function signature) in a header file (with the .h extension or in some cases, .hpp ),\nand the function definitions (the actual code) in .cpp files. The .h and .cpp should have the same name for consistency.
 
 Lets try writing one now.
 
-There are two parts to a header file: \
+There are two parts to a header file: \n
 1. The header guard
 2. The function declarations
 
@@ -50,21 +56,20 @@ We will go through why we need to have header guards in the next section.
 
 In the add.h file:
 
-<Code value={
-    //header guards
+<Editor nofiles=false, noerrors=false, nocompile=false >//header guards
     #ifndef ADD_H
     #define ADD_H 
 
     //function declarations
     int add(int v1, int v2);
     #endif
-} Code>
+    } </Editor>
 
 In the add.cpp file:
 
-<Code value={#include "add.h"
+<Editor nofiles=false, noerrors=false, nocompile=false >#include "add.h"
     int add(int v1, int v2){return v1+v2;}
-} Code>
+} </Editor>
 
 It is standard practice to have the .cpp code file #include the header file.
 Take note that we use #include "add.h" instead of <add> as we are including a user-defined file.
@@ -72,17 +77,14 @@ Take note that we use #include "add.h" instead of <add> as we are including a us
 
 # Header Guards
 
-A function or variable can only be declared once. 
+A function or variable can only be defined once. 
 
-<Editor defaultvalue={
-int add();
-int add();
+<Editor nofiles=true, noerrors=false, nocompile=false >void add(){};
+void add(){};
 int main() {
-}} Editor>
+    add();
+} </Editor>
 
 When we have files that we will #include, there is a chance that it may be #included twice, causing a duplicate definition error.
 
 Therefore, we use header guards to only include header files once, so that this will not happen.
-
-
-

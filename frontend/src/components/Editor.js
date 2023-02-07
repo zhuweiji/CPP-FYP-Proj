@@ -55,9 +55,12 @@ function CodeEditor(props) {
 
     const [showDeleteError, setShowDeleteError] = useState(false);
     const [showFilenameError, setShowFilenameError] = useState(false);
-    const [currentEditorFilename, setCurrentEditorFilename] = useState('main.cpp');
+
+    const relDir = props.dir ?? ''
+    const firstFile = 'main.cpp'
+    const [currentEditorFilename, setCurrentEditorFilename] = useState(relDir + firstFile);
     const [editorFile, setEditorFile] = useState({
-        'main.cpp': `${defaultTextInEditor}`
+        [relDir + firstFile]: `${defaultTextInEditor}`
     });
 
     const [secondsTillUnthrottled, setSecondsTillUnthrottled] = useState(0);
@@ -72,8 +75,10 @@ function CodeEditor(props) {
 
     const [theme, setTheme] = useState("light");
 
-    let compilerServerProbeIntervalMS = 7000;
+    let compilerServerProbeIntervalMS = 7000; // time between polling of server to check if it is up
 
+
+    // put the editor back in focus when the current selected file in the editor is changed
     useEffect(() => {
         editorRef.current?.focus();
     }, [editorFile]);
@@ -150,7 +155,11 @@ function CodeEditor(props) {
             result[filenameOfModel] = model.getValue();
         });
 
-        return result;
+        let resultObj = {}
+        // filter out files that are not in this editor component (they are in other editor components, but monaco keeps a global store of all files)
+        Object.keys(result).filter(k => k.includes(relDir)).map(k => resultObj[k.replace(relDir, '')] = result[k])
+        return resultObj
+
     }
 
 
@@ -158,9 +167,6 @@ function CodeEditor(props) {
         setTheme(theme === "light" ? "vs-dark" : "light");
     }
 
-    function getEditorValue() {
-        return editorRef.current.getValue();
-    }
 
     function getThrottledIcon() {
         if (wasThrottled === true) {
@@ -278,7 +284,9 @@ function CodeEditor(props) {
     }
 
 
-    const displayFilenameError = () => {
+    const displayFilenameCreationError = () => {
+        if (newEditorFilename.includes('/')) return true;
+
         return newEditorFilename.length !== 0 && (
             newEditorFilename.split('.').length !== 2
             || !(newEditorFilename.split('.')[1] === 'cpp' || newEditorFilename.split('.')[1] === 'h')
@@ -286,17 +294,17 @@ function CodeEditor(props) {
     }
 
     const createNewFile = () => {
-        if (displayFilenameError() || newEditorFilename.length === 0) {
+        if (displayFilenameCreationError() || newEditorFilename.length === 0) {
             setShowFilenameError(true);
             return;
         } else {
             setShowFilenameError(false);
 
             let newfile = {}
-            newfile[newEditorFilename] = ''
+            newfile[relDir+newEditorFilename] = ''
 
             setEditorFile({ ...editorFile, ...newfile });
-            setCurrentEditorFilename(newEditorFilename);
+            setCurrentEditorFilename(relDir + newEditorFilename);
             setnewEditorFilename('');
         }
     }
@@ -304,7 +312,7 @@ function CodeEditor(props) {
 
 
     function deleteCurrentFile() {
-        if (currentEditorFilename === 'main.cpp') {
+        if (currentEditorFilename === firstFile) {
             setShowDeleteError(true);
             setTimeout(() => {
                 setShowDeleteError(false);
@@ -313,9 +321,9 @@ function CodeEditor(props) {
             return;
         }
         setShowDeleteError(false);
-        let { [currentEditorFilename]: _, ...rest } = editorFile;
+        let { [relDir + currentEditorFilename]: _, ...rest } = editorFile;
         setEditorFile(rest);
-        setCurrentEditorFilename('main.cpp');
+        setCurrentEditorFilename(firstFile);
     }
 
     return (
@@ -333,7 +341,7 @@ function CodeEditor(props) {
 
                         <Box>
                             {Object.entries(editorFile).map(([filename, fileobject], index) => {
-                                return <Button variant={currentEditorFilename === filename ? 'outlined' : 'text'} key={`file${index}`} onClick={() => setCurrentEditorFilename(filename)}>{filename}</Button>
+                                return <Button variant={currentEditorFilename === filename ? 'outlined' : 'text'} key={`file${index}`} onClick={() => setCurrentEditorFilename(filename)}>{filename.replace(/\w+\//,'')}</Button>
                             }
                             )}
                         </Box>
@@ -372,22 +380,25 @@ function CodeEditor(props) {
 
 
                 <br /><br />
+                {!(props.noCompile ?? false) && 
+                    <Stack direction="row" justifyContent="end" alignItems="center" spacing={2}>
+                        {
+                            props.includeGradeButton &&
+                            <Button color="success" variant="outlined" size="large" endIcon={<DoneAllRoundedIcon />} onClick={() => handleCompilation(true)} disabled={!isEditorReady} justify="flex-end" >
+                                Grade
+                            </Button>
+                        }
 
-                <Stack direction="row" justifyContent="end" alignItems="center" spacing={2}>
-                    {
-                        props.includeGradeButton &&
-                        <Button color="success" variant="outlined" size="large" endIcon={<DoneAllRoundedIcon />} onClick={() => handleCompilation(true)} disabled={!isEditorReady} justify="flex-end" >
-                            Grade
+
+                        <Button variant="outlined" size="large" endIcon={<CodeIcon />} onClick={() => handleCompilation(false)} disabled={!isEditorReady} justify="flex-end">
+                            Compile
                         </Button>
-                    }
+                        {(!isEditorReady && (compilerServerStatus !== CompilerServerStatuses.UNCONTACTABLE)) ? <CircularProgress size='1rem' /> : null}
 
+                    </Stack>
 
-                    <Button variant="outlined" size="large" endIcon={<CodeIcon />} onClick={() => handleCompilation(false)} disabled={!isEditorReady} justify="flex-end">
-                        Compile
-                    </Button>
-                    {(!isEditorReady && (compilerServerStatus !== CompilerServerStatuses.UNCONTACTABLE)) ? <CircularProgress size='1rem' /> : null}
-
-                </Stack>
+                }
+              
             </Box>
 
             {

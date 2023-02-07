@@ -20,7 +20,7 @@ log = logging.getLogger(__name__)
 # should probably be renamed
 class ProcessWrapper:
     is_windows = platform.system() == 'Windows'
-    process_timeout_seconds = int(os.getenv('PROCESS_RUN_TIMEOUT_SECONDS', 15))
+    process_timeout_seconds = int(os.getenv('PROCESS_RUN_TIMEOUT_SECONDS', 5))
     
     @classmethod
     def shell_run__split_text(cls, str_command:str):

@@ -1,0 +1,24 @@
+// normal text
+normal text has no special formatting
+
+// title starts with a #
+# Title 
+
+// starts with ## 
+## title 2
+
+// starts with ###
+### title 3
+
+// a code editor - must have no spaces in front. Put all the defaul code within the <><> tags
+<Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
+    int main() {
+    std::cout << "Hello World!";
+    return 0;
+} </Editor>
+
+// a link
+[displayed text]^{https://linkhref.com}
+
+// a tooltip
+[displayed text]^{text that only appears on hovering}
