@@ -58,7 +58,7 @@ All the code you write for a functions should be enclosed in curly braces.
 
 Below, we have a file with just a function, a(), but no main function. Try running it, and see what happens! You should get an error, telling you that main() was not defined.
 
-<Editor nofiles=false, noerrors=false>int a(){
+<Editor nofiles=true, noerrors=false>int a(){
     return 0;
 } </Editor>
 
@@ -66,7 +66,7 @@ Below, we have a file with just a function, a(), but no main function. Try runni
 Here, we have another program with a main() function.  
 This file runs well, and no errors are reported.
 
-<Editor nofiles=false, noerrors=false>int main() {
+<Editor nofiles=true, noerrors=false>int main() {
     return 0;
 } </Editor>
 
@@ -81,7 +81,7 @@ The most basic way to provide input and output is through the terminal (or comma
 We can display some text ("Hello World!") on the terminal with the following code:
 
 
-<Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
+<Editor nofiles=true, noerrors=false, nocompile=false >#include <iostream>
     int main() {
     std::cout << "Hello World!";
     return 0;
@@ -107,7 +107,7 @@ you can see that `std::cout << "Hello World"` is like moving "Hello World" into 
 The opposite is true for std::cin, which reads data from your terminal.
 `std::cin >> yourVariable;`
 
-<Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
+<Editor nofiles=true, noerrors=false, nocompile=false >#include <iostream>
 int main() {
     std::cout << "Enter a number:";
 
@@ -128,7 +128,7 @@ To get a whole line, using std::getline()
 
 The code below does not have the newline character, so all the output comes out together on one line.
 
-<Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
+<Editor nofiles=true, noerrors=false, nocompile=false >#include <iostream>
 int main() {
     std::cout << "Mary: 'Good Morning!'";
     std::cout << "John: 'How was your day?'";
@@ -140,7 +140,7 @@ int main() {
 
 We can fix this by using the newline character. 
 
-<Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
+<Editor nofiles=true, noerrors=false, nocompile=false >#include <iostream>
 int main() {
     std::cout << "Mary: 'Good Morning!'\n";
     std::cout << "John: 'How was your day?'\n";
