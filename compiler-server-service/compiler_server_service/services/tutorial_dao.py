@@ -25,6 +25,7 @@ class TutorialData:
     prewritten_cpp_files  : list = field(default_factory=lambda: [])
     prewritten_tests      : list = field(default_factory=lambda: [])
     expectedConsoleOutput : str = ""
+    diagram               : str = ""
     
 @dataclass
 class TopicData:

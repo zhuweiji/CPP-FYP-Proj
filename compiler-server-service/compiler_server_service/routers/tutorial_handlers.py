@@ -35,6 +35,7 @@ def get_tutorial_detail(topicId:int, tutorialId: int, user_id:Optional[str]=None
         leftpane_instructions:           str = ''
         previous_tutorial_topicid_tutid: tuple[int, int] = (None, None)
         next_tutorial_topicid_tutid    : tuple[int, int ] = (None, None)
+        diagram:                         str = ''
         
     result = Result()
     

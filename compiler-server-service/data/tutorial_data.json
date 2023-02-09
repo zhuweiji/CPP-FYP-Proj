@@ -11,7 +11,8 @@
                     "expectedConsoleOutput": "Hello CPP!",
                     "prewritten_cpp_files": "",
                     "prewritten_tests": "",
-                    "leftPaneInstructions": "Hello!\n\nWelcome to Comprehend C++\n\nIn this section we will try to create log hello world into the console.\n\n\n\n=============================================================\nGrading Objectives: Log 'Hello CPP!' into the terminal"
+                    "leftPaneInstructions": "Hello!\n\nWelcome to Comprehend C++\n\nIn this section we will try to log hello world into the console.\n\n\n\n=============================================================\nGrading Objectives: Log 'Hello CPP!' into the terminal",
+                    "diagram": "classDiagram\nclass GeoPointType {\n <<enumeration>>\n  BROWNFIELD\n  OGWELL\n  CELL_TOWER\n  NUCLEAR_REACTOR\n  SUPERFUND\n}\nclass GeoPoint {\n  -UUID id\n  +GeoPointType type\n  +GeographyPoint location\n  -UUID metadata references metadata(id)\n  +Datetime createdAt\n}\nclass GeographyPoint {\n  <<interface>>\n  +GeoJSON geojson\n  +Int srid\n  +Float longitude\n  +Float latitude\n}\nclass NearbyPoint {\n <<Interface>>\n  -UUID id references GeoPoint(id)\n  +GeoPointType GeoPoint::type\n  +GeographyPoint GeoPoint::location\n  +UUID GeoPoint::metadata\n  +Float distance\n}\nclass NearbyPoints {\n<<Service>>\n  +GeoJSON origin\n  +Float radiusMi\n  +Int first\n  +Int last\n  +Int offset\n  +Cursor before\n  +Cursor after\n}\n\nGeoPoint *-- GeoPointType: Composition\nGeoPoint *-- GeographyPoint: Composition\nGeoPoint \"1\" <|-- \"1\" NearbyPoint: Implements\nNearbyPoints \"1\" -- \"0..n\"NearbyPoint: Contains\n"
                 },
                 { 
                     "id": 2, "name": "Variable and List Instantialization",

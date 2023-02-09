@@ -10,7 +10,7 @@ import useWindowSize from 'react-use/lib/useWindowSize'
 
 import './TutorialPage.css';
 
-import example from "../components/exampleDiagram";
+// import example from "../components/exampleDiagram";
 import MermaidDiagram from "../components/MermaidDiagram";
 
 import SchemaTwoToneIcon from '@mui/icons-material/SchemaTwoTone';
@@ -36,11 +36,13 @@ function App(props) {
 
     const [leftPaneInstructions, setLeftPaneInstructions] = useState("");
     const [gradingPassed, setGradingPassed] = useState(false);
+    const [mermaidDiagram, setmermaidDiagram] = useState('')
 
     const [previousTutorialHref, setPreviousTutorialHref] = useState("");
     const [nextTutorialHref, setNextTutorialHref] = useState("");
     const [previousTutorialDisabled, setPreviousTutorialDisabled] = useState(false);
     const [nextTutorialDisabled, setNextTutorialDisabled] = useState(false);
+
 
 
 
@@ -58,7 +60,7 @@ function App(props) {
 
     useEffect(() => {
         let tutorialData;
-        async function IIFE() {
+        async function fetchData() {
             tutorialData = await TutorialDataFetch.getTutorialInformation(topicId, tutorialId);
             let leftPaneData = tutorialData['leftpane_instructions']
             leftPaneData = leftPaneData.replaceAll("\\n", "\n");
@@ -70,7 +72,7 @@ function App(props) {
             if (!prevTopicId && !prevTutorialId){
                 setPreviousTutorialDisabled(true);
             }else{
-                setPreviousTutorialHref(`/tutorial/${prevTopicId}/${prevTutorialId}`);
+                setPreviousTutorialHref(`/notebook/${prevTopicId}/${prevTutorialId}`);
             }
 
             let [nextTopicId, nextTutorialId] = tutorialData['next_tutorial_topicid_tutid']
@@ -78,11 +80,11 @@ function App(props) {
             if (!nextTopicId && !nextTutorialId){
                 setNextTutorialDisabled(true);
             }else{
-                setNextTutorialHref(`/tutorial/${nextTopicId}/${nextTutorialId}`);
+                setNextTutorialHref(`/notebook/${nextTopicId}/${nextTutorialId}`);
             }
         }
         
-        IIFE();
+        fetchData();
     }, [topicId, tutorialId])
 
     const { windowWidth, windowHeight } = useWindowSize()
@@ -112,9 +114,10 @@ function App(props) {
                 <Grid item xs={4} id='leftGrid'>
 
                     <Stack direction="column" backgroundColor={blueGrey[900]} justifyContent="end" sx={{ display: 'flex' }} >
-                        <div id="mermaidDiagramObj">
-                            <MermaidDiagram chart={example} />
-                        </div>
+                        
+                        {mermaidDiagram ? <div id="mermaidDiagramObj">
+                            <MermaidDiagram chart={mermaidDiagram} />
+                        </div> : null} 
 
                         <div id="instructionPage">
                             {leftPaneInstructions}
