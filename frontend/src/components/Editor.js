@@ -157,7 +157,7 @@ function CodeEditor(props) {
 
         let resultObj = {}
         // filter out files that are not in this editor component (they are in other editor components, but monaco keeps a global store of all files)
-        Object.keys(result).filter(k => k.includes(relDir)).map(k => resultObj[k.replace(relDir, '')] = result[k])
+        Object.keys(result).filter(k => k.match(RegExp('^'+relDir))).map(k => resultObj[k.replace(relDir, '')] = result[k])
         return resultObj
 
     }
