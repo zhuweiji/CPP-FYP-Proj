@@ -25,7 +25,7 @@ const linkRegex = /\[(?<content>[\S\s]+)\]\((?<linkhref>.+)\)/g
 const tooltipRegex = /\[(?<content>[\S\s]+)\]\^\{(?<tooltip>.+)\}/g
 
 let _reactComponentKey = 0;
-const newReactComponentKey = () => {
+const reactComponentKey = () => {
     _reactComponentKey += 1;
     return _reactComponentKey;
 }
@@ -35,7 +35,7 @@ const NotebookHeader = (text, key) => {
     // dont add margin if one of the few items on the page - otherwise there is too much whitespace on top
     return <Box mt={key <= 2 ? 0 : 10} mb={5} key={key}>
         <Divider >
-            <Typography fontFamily='PT Serif' color='black' key={newReactComponentKey()} variant="h2" mt={5} mb={5} p={10} whiteSpace="pre-line">{text}</Typography>
+            <Typography fontFamily='PT Serif' color='black' key={reactComponentKey()} variant="h2" mt={5} mb={5} p={10} whiteSpace="pre-line">{text}</Typography>
         </Divider>
     </Box>
 }
@@ -43,7 +43,7 @@ const NotebookHeader = (text, key) => {
 const NotebookHeader2 = (text, key) => {
     // dont add margin if one of the few items on the page - otherwise there is too much whitespace on top
     return <Box mt={key <= 2 ? 0 : 10} mb={5} key={key}>
-        <Typography fontFamily='Playfair Display' color='black' key={newReactComponentKey()} variant="h3" mt={5} mb={4} whiteSpace="pre-line">{text}</Typography>
+        <Typography fontFamily='Playfair Display' color='black' key={reactComponentKey()} variant="h3" mt={5} mb={4} whiteSpace="pre-line">{text}</Typography>
         <Divider></Divider>
     </Box>
 }
@@ -51,13 +51,13 @@ const NotebookHeader2 = (text, key) => {
 const NotebookHeader3 = (text, key) => {
     // dont add margin if one of the few items on the page - otherwise there is too much whitespace on top
     return <Box mt={key <= 2 ? 0 : 10} mb={5} key={key}>
-        <Typography fontFamily='Playfair Display' color='black' key={newReactComponentKey()} variant="h4" mt={5} mb={4} whiteSpace="pre-line">{text}</Typography>
+        <Typography fontFamily='Playfair Display' color='black' key={reactComponentKey()} variant="h4" mt={5} mb={4} whiteSpace="pre-line">{text}</Typography>
         <Divider></Divider>
     </Box>
 }
 
 const NotebookCodeBlock = (inlineCodeBlock) => {
-    return <Paper key={newReactComponentKey()} elevation={1} sx={{ backgroundColor: '#333333', mt: 2, mb: 5 }}>
+    return <Paper key={reactComponentKey()} elevation={1} sx={{ backgroundColor: '#333333', mt: 2, mb: 5 }}>
         {inlineCodeBlock}
     </Paper >
 }
@@ -67,8 +67,8 @@ const InlineCodeBlock = (text) => {
 
     text = text.replaceAll(/\\n/g, '\n')
 
-    return <Box key={newReactComponentKey()} >
-        <Typography key={newReactComponentKey()} display='inline' sx={{
+    return <Box key={reactComponentKey()} >
+        <Typography key={reactComponentKey()} display='inline' sx={{
 
             backgroundColor: '#333333',
             display: 'inline-block',
@@ -84,7 +84,7 @@ const InlineCodeBlock = (text) => {
 }
 
 const NotebookLink = (content, link) => {
-    return <Link href={link} key={newReactComponentKey()}>{content}</Link>
+    return <Link href={link} key={reactComponentKey()}>{content}</Link>
 }
 
 const HtmlTooltip = styled(({ className, ...props }) => (
@@ -101,15 +101,15 @@ const HtmlTooltip = styled(({ className, ...props }) => (
 
 
 const NotebookTooltip = (text, tooltipText) => {
-    return <HtmlTooltip key={newReactComponentKey()} mt={5} title={
+    return <HtmlTooltip key={reactComponentKey()} mt={5} title={
         <>
             <Typography fontFamily='Open Sans' fontSize='.8rem' color='black' width='50rem'
-                key={newReactComponentKey()} whiteSpace="pre-line">
+                key={reactComponentKey()} whiteSpace="pre-line">
                 {tooltipText}</Typography>
         </>
     } placement="bottom-start" fontSize='3rem'>
         <Typography display='inline-block' fontFamily='Open Sans' fontSize='1.2rem' color='#00695c'
-            key={newReactComponentKey()} whiteSpace="pre-line"
+            key={reactComponentKey()} whiteSpace="pre-line"
         >
             {text}</Typography>
 
@@ -160,7 +160,7 @@ const NotebookTextBlock = (text) => {
 
 
 
-    return <Paper key={newReactComponentKey()} elevation={1} sx={{
+    return <Paper key={reactComponentKey()} elevation={1} sx={{
         textRendering: 'optimizeLegibility', backgroundColor: '#fffffb',
         mt: 2, mb: 2
     }}>
@@ -169,7 +169,7 @@ const NotebookTextBlock = (text) => {
 
     function Text(text) {
         return <Typography color='black' display='inline-block' fontFamily='Open Sans' fontSize='1.1rem'
-            key={newReactComponentKey()} padding={3} mb={2} whiteSpace="pre-line"
+            key={reactComponentKey()} padding={3} mb={2} whiteSpace="pre-line"
         >
 
             {text.replaceAll(/\\n/g, '\n')}
@@ -219,10 +219,50 @@ export default function NotebookPage() {
 
         let lineNumber = 0;
 
-        for (let line of lines) {
-            // TODO: extract the extract component code into another function and use that in the create component function for editor groups
-            if (false) {
 
+        let currentComponentData = {};
+        let currentComponentName;
+        let parsingComponent = false;
+
+
+        const componentStartTagRegex = /^<(?<componentName>\w+)(?<args>[\w=,\s]*?)>/
+        const componentEndTagRegex = /<(?<componentNameEnd>\/.+)>/
+
+
+        for (let line of lines) {
+
+            if (line.match(componentStartTagRegex) && !parsingComponent) {
+                parsingComponent = true;
+
+                let matchObject = line.match(componentStartTagRegex)
+                currentComponentName = matchObject.groups.componentName;
+                currentComponentData['args'] = matchObject.groups.args.split(',');
+
+                let lineComponentData = line.replace(componentStartTagRegex, '');
+
+                if (line.match(componentEndTagRegex)) {
+                    lineComponentData = lineComponentData.replace(componentEndTagRegex, '')
+                    currentComponentData['data'] = [lineComponentData];
+
+                    output.push(parseComponent2(currentComponentName, currentComponentData, lineNumber));
+                    currentComponentData = {};
+                    parsingComponent = false;
+                } else {
+                    currentComponentData['data'] = [lineComponentData];
+
+                }
+
+            } else if (parsingComponent && line.match(componentEndTagRegex)) {
+                let lineComponentData = line.replace(componentEndTagRegex, '')
+                currentComponentData['data'].push(lineComponentData)
+
+                output.push(parseComponent2(currentComponentName, currentComponentData, lineNumber));
+                currentComponentData = {}
+                parsingComponent = false;
+
+
+            } else if (parsingComponent) {
+                currentComponentData['data'].push(line);
             } else {
 
                 const startOfLineRegex = (reg) => new RegExp('^' + reg.source)
@@ -264,60 +304,7 @@ export default function NotebookPage() {
         return output
     }
 
-    let extractComponent = {
-        componentStartTagRegex: /^<(?<componentName>\w+)(?<args>[\w=,\s]*?)>/,
-        componentEndTagRegex: (componentName) => RegExp('</' + componentName + '>'),
-
-        currentComponentData: {},
-        parsingComponent: false,
-        currentComponentName: '',
-
-        reset: function(){
-            this.currentComponentData = {};
-            this.parsingComponent = false;
-            this.currentComponentName = '';
-        },
-
-        call: function (line) {
-            let componentStartTagRegex = this.componentStartTagRegex;
-            let componentEndTagRegex = this.componentEndTagRegex(this.currentComponentName);
-            
-            if (line.match(componentStartTagRegex) && !parsingComponent) {
-                this.parsingComponent = true;
-
-                let matchObject = line.match(componentStartTagRegex)
-                this.currentComponentName = matchObject.groups.componentName;
-                this.currentComponentData['args'] = matchObject.groups.args.split(',');
-
-                let lineComponentData = line.replace(componentStartTagRegex, '');
-
-                if (line.match(componentEndTagRegex)) {
-                    lineComponentData = lineComponentData.replace(componentEndTagRegex, '')
-                    currentComponentData['data'] = [lineComponentData];
-
-                    this.reset();
-                    return createComponent(currentComponentName, currentComponentData, lineNumber)
-                } else {
-                    currentComponentData['data'] = [lineComponentData];
-
-                }
-
-            } else if (parsingComponent && line.match(componentEndTagRegex)) {
-                let lineComponentData = line.replace(componentEndTagRegex, '')
-                currentComponentData['data'].push(lineComponentData)
-
-                output.push(createComponent(currentComponentName, currentComponentData, lineNumber));
-                currentComponentData = {}
-                parsingComponent = false;
-
-
-            } else if (parsingComponent) {
-                currentComponentData['data'].push(line);
-            }
-        }
-    }
-
-    function createComponent(componentName, componentData, lineNumber) {
+    function parseComponent2(componentName, componentData, lineNumber) {
         let raw_args = componentData['args'].map(i => i.trim())
         let data = componentData['data'].join('\n');
 
@@ -330,10 +317,6 @@ export default function NotebookPage() {
             .map(k => args[k.name] = k.value)
 
         switch (componentName) {
-            case 'EditorGroup':
-                console.log(data);
-                // parseComponent2('Editor', editorData, newReactComponentKey());
-                break;
             case 'Editor':
                 component = <Box key={lineNumber} mb={15} mt={5}>
                     <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' dir={`${lineNumber}/`} defaultValue={data ?? '>'} noCompile={args.nocompile === 'true' ?? false} errorOptions={!args.noerrors === 'true' ?? true} noFiles={args.nofiles === 'true' ?? false}> </CodeEditor>
@@ -347,6 +330,95 @@ export default function NotebookPage() {
 
     }
 
+
+    const parsedNotebook = () => {
+        // let lines = notebookData.split(/\r?\n/);
+        let lines = notebookData.split(/\n\n/);
+
+
+        let nonEmptyLines = lines.filter(i => i);
+
+        let output = [];
+
+        let lineNumber = 0;
+        let parsingComponent = false;
+        let componentData = {};
+        let currentComponentName;
+
+        // TODO: refactor to html like braces (<Editor></Editor> otherwise too many issues with code)
+        const startOfComponent = (text) => text.trim()[0] == "<";
+        const endOfComponent = (text, componentName) => text.match(RegExp(`${componentName}>`))
+
+
+        while (lineNumber < nonEmptyLines.length) {
+            let line = nonEmptyLines[lineNumber];
+            let outputLine;
+
+            if (startOfComponent(line)) {
+                parsingComponent = true;
+                const componentNameRegex = /<\s*(?<name>[a-zA-Z]+)/;
+                currentComponentName = line.match(componentNameRegex).groups.name
+                componentData[currentComponentName] = [line]
+
+                if (endOfComponent(line, currentComponentName)) {
+                    parsingComponent = false;
+                    let component = parseComponent(componentData[currentComponentName], currentComponentName, lineNumber)
+                    output.push(component)
+                }
+
+            } else if (parsingComponent && endOfComponent(line, currentComponentName)) {
+                parsingComponent = false;
+                componentData[currentComponentName].push(line)
+                let component = parseComponent(componentData[currentComponentName], currentComponentName, lineNumber)
+                output.push(component)
+
+            } else if (parsingComponent) {
+                componentData[currentComponentName].push(line)
+
+            } else if (line.trim().substring(0, 2) === "##") {
+                line = line.replaceAll('#', '')
+                outputLine = NotebookHeader(line, lineNumber)
+            } else if (line.trim()[0] === "#") {
+                line = line.replace('#', '')
+                outputLine = NotebookHeader2(line, lineNumber)
+            } else {
+                outputLine = NotebookTextBlock(line, lineNumber)
+            }
+            output.push(outputLine);
+            lineNumber = lineNumber + 1
+        }
+        return output
+    }
+
+    function parseComponent(data, componentName, lineNumber) {
+        data = data.join('\n')
+        let component;
+
+        if (componentName === 'Editor') {
+            const defaultValueRegex = /defaultvalue\s?={(?<defaultvalue>[\s\S]+)}/
+            let defaultValue = data.match(defaultValueRegex)?.groups.defaultvalue;
+
+            const errorOptionsRegex = /noerror(s)?\s?={(?<noErrors>[\s\S]+)} /
+            let errorOptionsMatch = data.match(errorOptionsRegex);
+            let noerror;
+            if (errorOptionsMatch) {
+                noerror = errorOptionsMatch.groups.noErrors;
+            }
+
+            const noFilesRegex = /nofile(s)?\s?={(?<noFiles>[\s\S]+)}/
+            let noFiles = data.match(noFilesRegex)?.groups.noFiles ?? false;
+
+            component = <Box key={lineNumber} mb={15} mt={5}>
+                <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' defaultValue={defaultValue ?? '>'} errorOptions={!noerror ?? true} noFiles={noFiles}> </CodeEditor>
+            </Box>
+        } else if (componentName === 'Code') {
+            const valueRegex = /value(s)?\s?={(?<value>[\s\S]+)}/
+            let value = data.match(valueRegex)?.groups.value ?? '';
+            component = NotebookCodeBlock(value, lineNumber)
+        }
+
+        return component;
+    }
 
     return <>
         <TopNavBar></TopNavBar>
@@ -381,7 +453,7 @@ export default function NotebookPage() {
                         {notebookData ? parseNotebook2()
                             :
                             <Stack spacing={2} p={10}>
-                                <Skeleton variant="rounded" width='80vw' height='5vh' />
+                                <Skeleton variant="rounded" width='80vw' height='5vh'/>
                                 <Skeleton variant="rectangular" width='80vw' height='15vh' mb={2} />
                                 <Skeleton variant="rectangular" width='80vw' height='20vh' mb={2} />
                                 <Skeleton variant="rectangular" width='80vw' height='10vh' mb={2} />
