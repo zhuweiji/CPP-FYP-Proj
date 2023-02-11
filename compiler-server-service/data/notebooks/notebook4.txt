@@ -60,18 +60,19 @@ There are two parts to a header file: \n
 We will go through why we need to have header guards in the next section.
 
 In the add.h file:
+In the add.cpp file:
 
-<EditorGroup>
-<Editor nofiles=false, noerrors=false, nocompile=false >//header guards
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  >//header guards
     #ifndef ADD_H
     #define ADD_H 
 
     //function declarations
     int add(int v1, int v2);
     #endif
-</Editor>
+</EditorFile>
 
-<Editor nofiles=false, noerrors=false, nocompile=false >#include "add.h"
+<EditorFile filename=add.cpp >#include "add.h"
 int add(int v1, int v2){
     return v1+v2;
 }
@@ -79,11 +80,10 @@ int main(){
     add(1,2);
     return 0;
 }
-</Editor>    
+</EditorFile>    
 </EditorGroup>
 
 
-In the add.cpp file:
 
 
 It is standard practice to have the .cpp code file #include the header file.

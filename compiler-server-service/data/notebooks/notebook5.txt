@@ -1,38 +1,20 @@
-# C++ basics
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  >//header guards
+    #ifndef ADD_H
+    #define ADD_H 
 
-## This is seconadary
+    //function declarations
+    int add(int v1, int v2);
+    #endif
+</EditorFile>
 
-### This is next
-
-Eu excepteur sit exercitation incididunt commodo. Minim ipsum excepteur voluptate anim laborum mollit officia fugiat Lorem aliquip. Ad id voluptate amet eiusmod amet tempor proident consequat ipsum minim aliquip adipisicing exercitation dolore. Ullamco dolore in tempor consequat eiusmod sit.
-
-
-Est quis consectetur consequat occaecat. Magna eu dolor irure cupidatat excepteur proident aute sit sit. Cupidatat duis velit id deserunt elit do. Esse laboris eu culpa amet velit id nisi laborum proident deserunt laboris do est. Fugiat sit in anim in aute excepteur veniam velit ad labore ex. Eiusmod consectetur ipsum tempor irure ex cillum labore tempor. Tempor ad pariatur tempor cillum minim proident.Qui quis qui ipsum elit deserunt cillum anim occaecat dolor. Irure adipisicing aute cupidatat consequat elit est adipisicing id Lorem in id. Magna voluptate ullamco magna dolore occaecat tempor nisi aliquip eiusmod laborum.
-
-[google.com](https://google.com)
-
-`int main(){
-    add(1,2);
+<EditorFile filename=add.cpp >#include "add.h"
+int add(int v1, int v2){
+    return v1+v2;
 }
-int add(int v1, int v2){return v1+v2;}
-}`
-
-asoidnaosd
-
-
-Where is my hello
-
-<Editor nofiles=true>int main(){
+int main(){
     add(1,2);
+    return 0;
 }
-int add(int v1, int v2){return v1+v2;}
-
-} </Editor>
-
-<Editor>
- int main(){
-    add(1,2);
-}
-int add(int v1, int v2){return v1+v2;}
-
-} </Editor>
+</EditorFile>    
+</EditorGroup>
