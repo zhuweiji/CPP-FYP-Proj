@@ -138,7 +138,7 @@ function CodeEditor(props) {
         });
 
 
-        let actions = editor.getSupportedActions().filter((a) => a.id == 'vs.editor.ICodeEditor:1:compile-code');
+        let actions = editor.getSupportedActions().filter((a) => a.id === 'vs.editor.ICodeEditor:1:compile-code');
 
     }
 
@@ -149,7 +149,7 @@ function CodeEditor(props) {
         let result = {}
         const replaceTopLevelBackslash = (str) => str.replace('/', '')
 
-        monacoEditor.getModels().map(model => {
+        monacoEditor.getModels().forEach(model => {
             let filenameOfModel = model._associatedResource.path;
             filenameOfModel = replaceTopLevelBackslash(filenameOfModel)
             result[filenameOfModel] = model.getValue();
@@ -157,7 +157,9 @@ function CodeEditor(props) {
 
         let resultObj = {}
         // filter out files that are not in this editor component (they are in other editor components, but monaco keeps a global store of all files)
-        Object.keys(result).filter(k => k.match(RegExp('^'+relDir))).map(k => resultObj[k.replace(relDir, '')] = result[k])
+        Object.keys(result)
+            .filter(k => k.match(RegExp('^'+relDir)))
+            .forEach(k => resultObj[k.replace(relDir, '')] = result[k])
         return resultObj
 
     }
