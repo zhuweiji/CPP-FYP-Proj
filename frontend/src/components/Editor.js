@@ -56,12 +56,13 @@ function CodeEditor(props) {
     const [showDeleteError, setShowDeleteError] = useState(false);
     const [showFilenameError, setShowFilenameError] = useState(false);
 
+    
     const relDir = props.dir ?? ''
-    const firstFile = 'main.cpp'
-    const [currentEditorFilename, setCurrentEditorFilename] = useState(relDir + firstFile);
-    const [editorFile, setEditorFile] = useState({
-        [relDir + firstFile]: `${defaultTextInEditor}`
-    });
+    let initialEditorFiles = props.files ?? { 
+        [relDir + 'main.cpp']: props.defaultValue ?? `${defaultTextInEditor}`
+        };
+    const [currentEditorFilename, setCurrentEditorFilename] = useState(Object.keys(initialEditorFiles)[0]);
+    const [editorFile, setEditorFile] = useState(initialEditorFiles);
 
     const [secondsTillUnthrottled, setSecondsTillUnthrottled] = useState(0);
     const [postCompileMessages, setPostCompileMessages] = useState('');
@@ -314,7 +315,7 @@ function CodeEditor(props) {
 
 
     function deleteCurrentFile() {
-        if (currentEditorFilename === firstFile) {
+        if (Object.keys(editorFile).length <= 1) {
             setShowDeleteError(true);
             setTimeout(() => {
                 setShowDeleteError(false);
@@ -325,8 +326,10 @@ function CodeEditor(props) {
         setShowDeleteError(false);
         let { [relDir + currentEditorFilename]: _, ...rest } = editorFile;
         setEditorFile(rest);
-        setCurrentEditorFilename(firstFile);
+        setCurrentEditorFilename(Object.keys(editorFile)[0]);
     }
+
+    console.log('currentEditorFilename = ', currentEditorFilename)
 
     return (
         <>
@@ -338,7 +341,7 @@ function CodeEditor(props) {
                     <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} mb={2}>
                         <Stack direction='column'>
                             <Button onClick={deleteCurrentFile}>Delete Current File</Button>
-                            <Typography variant='small' color='#d32f2f'>{showDeleteError ? "Cannot delete main.cpp" : ""}</Typography>
+                            <Typography variant='small' color='#d32f2f'>{showDeleteError ? "Cannot delete the last file" : ""}</Typography>
                         </Stack>
 
                         <Box>
@@ -374,7 +377,7 @@ function CodeEditor(props) {
                     beforeMount={handleEditorWillMount}
                     onMount={handleEditorDidMount}
 
-                    defaultValue={props.defaultValue || (editorFile[currentEditorFilename] ?? "")}
+                    defaultValue={editorFile[currentEditorFilename]}
                     path={currentEditorFilename}
                     theme={theme}
                 // theme="vs-dark"

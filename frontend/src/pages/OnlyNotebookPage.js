@@ -221,7 +221,15 @@ export default function NotebookPage() {
 
         for (let line of lines) {
             // TODO: extract the extract component code into another function and use that in the create component function for editor groups
-            if (false) {
+            let maybeComponent = componentBuilder.call(line);
+
+            if (maybeComponent !== false) {
+                if (maybeComponent === true){
+                    continue
+                }
+                else{
+                    output.push(maybeComponent);
+                }
 
             } else {
 
@@ -246,8 +254,6 @@ export default function NotebookPage() {
                     case !!line.match(startOfLineRegex(linkRegex)):
                         let groups = Array.from(line.matchAll(linkRegex)).map(i => i.groups)[0]
                         output.push(NotebookLink(groups.content, groups.linkhref))
-
-
                         break;
                     case !!line.match(startOfLineRegex(tooltipRegex)):
                         let item = Array.from(line.matchAll(tooltipRegex)).map(i => i.groups)[0]
@@ -264,8 +270,8 @@ export default function NotebookPage() {
         return output
     }
 
-    let extractComponent = {
-        componentStartTagRegex: /^<(?<componentName>\w+)(?<args>[\w=,\s]*?)>/,
+    const componentBuilder = {
+        componentStartTagRegex: /^<(?<componentName>\w+)(?<args>[\w=,\s\.]*?)>/,
         componentEndTagRegex: (componentName) => RegExp('</' + componentName + '>'),
 
         currentComponentData: {},
@@ -281,59 +287,131 @@ export default function NotebookPage() {
         call: function (line) {
             let componentStartTagRegex = this.componentStartTagRegex;
             let componentEndTagRegex = this.componentEndTagRegex(this.currentComponentName);
-            
-            if (line.match(componentStartTagRegex) && !parsingComponent) {
+
+            if (line.match(componentStartTagRegex) && !this.parsingComponent) {
                 this.parsingComponent = true;
 
                 let matchObject = line.match(componentStartTagRegex)
                 this.currentComponentName = matchObject.groups.componentName;
                 this.currentComponentData['args'] = matchObject.groups.args.split(',');
 
+                componentEndTagRegex = this.componentEndTagRegex(this.currentComponentName);
+
                 let lineComponentData = line.replace(componentStartTagRegex, '');
 
                 if (line.match(componentEndTagRegex)) {
                     lineComponentData = lineComponentData.replace(componentEndTagRegex, '')
-                    currentComponentData['data'] = [lineComponentData];
+                    this.currentComponentData['data'] = [lineComponentData];
 
+                    let currentComponentName = this.currentComponentName;
+                    let currentComponentData = this.currentComponentData;
                     this.reset();
-                    return createComponent(currentComponentName, currentComponentData, lineNumber)
+
+                    let component = createComponent(currentComponentName, currentComponentData);
+                    return component;
                 } else {
-                    currentComponentData['data'] = [lineComponentData];
+                    this.currentComponentData['data'] = [lineComponentData];
 
                 }
 
-            } else if (parsingComponent && line.match(componentEndTagRegex)) {
+            } else if (this.parsingComponent && line.match(componentEndTagRegex)) {
                 let lineComponentData = line.replace(componentEndTagRegex, '')
-                currentComponentData['data'].push(lineComponentData)
+                this.currentComponentData['data'].push(lineComponentData)
 
-                output.push(createComponent(currentComponentName, currentComponentData, lineNumber));
-                currentComponentData = {}
-                parsingComponent = false;
+                let currentComponentName = this.currentComponentName;
+                let currentComponentData = this.currentComponentData;
+                this.reset();
+                let component = createComponent(currentComponentName, currentComponentData);
+                return component;
 
-
-            } else if (parsingComponent) {
-                currentComponentData['data'].push(line);
+            } else if (this.parsingComponent) {
+                this.currentComponentData['data'].push(line);
+            } else{
+                return false;
             }
+
+            return true;
+        },
+        
+        // given a string of several components together, return an object with keys 
+        //   components: an array of split components, 
+        //   unmatched: an array of text that does not belong to any components
+        splitComponents: function(text, componentName){
+            let componentStartTagRegex = this.componentStartTagRegex;
+            let componentEndTagRegex = this.componentEndTagRegex(componentName);
+
+            let output = {components: [], unmatched: []}
+
+            text = text.trim()
+
+
+            while (text){
+                let foundComponentStartTag = text.match(componentStartTagRegex);
+                let foundComponentEndTag = text.match(componentEndTagRegex);
+
+                if (foundComponentStartTag && foundComponentEndTag){
+                    let componentData = text.substr(foundComponentStartTag.index, foundComponentEndTag.index + foundComponentEndTag[0].length)
+                    output.components.push(componentData);
+
+                    if (foundComponentStartTag.index !== 0){
+                        output.unmatched.push(text.substr(0, foundComponentStartTag.index))
+                    }
+
+                    text = text.substr(foundComponentEndTag.index + foundComponentEndTag[0].length+1)
+                } else{
+                    output.unmatched.push(text)
+                    text = ''
+                }
+
+            }
+
+            return output;
+
         }
     }
 
-    function createComponent(componentName, componentData, lineNumber) {
+    
+
+    function createComponent(componentName, componentData, lineNumber=newReactComponentKey()) {
         let raw_args = componentData['args'].map(i => i.trim())
         let data = componentData['data'].join('\n');
 
         let component;
         let args = {}
 
-        raw_args.map(i => i.match(/(?<name>\w+?)=(?<value>\w+)/))
+        raw_args.map(i => i.match(/(?<name>\w+?)=(?<value>\w+(\.\w+))/))
             .filter(i => i)
             .map(j => j.groups)
             .map(k => args[k.name] = k.value)
 
+
         switch (componentName) {
             case 'EditorGroup':
-                console.log(data);
-                // parseComponent2('Editor', editorData, newReactComponentKey());
+                let splitData = componentBuilder.splitComponents(data, 'EditorFile');
+                if (splitData.unmatched.length > 0){
+                    console.warn(`some text was unmatched within an editor group was unmatched ${splitData.unmatched}`)
+                }
+                let components = splitData.components ?? [];
+
+                let unnamedFileIndex = 0;
+                const generateFilename = () => {
+                    unnamedFileIndex++;
+                    return `file_${unnamedFileIndex}.cpp`;
+                }
+
+                let editorData = {}
+                components.map(i => componentBuilder.call(i, 'EditorFile')).forEach(obj => {
+                    console.log('obj = ', obj)
+                    editorData[obj.filename ?? generateFilename()] = obj.data;
+                });
+                component = <Box key={lineNumber} mb={15} mt={5}>
+                    <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' files={editorData}
+                    noCompile={args.nocompile === 'true' ?? false} errorOptions={!args.noerrors === 'true' ?? true} noFiles={args.nofiles === 'true' ?? false}> </CodeEditor>
+                </Box>
                 break;
+            case 'EditorFile': 
+                return {filename: args.filename, data: data}
+
             case 'Editor':
                 component = <Box key={lineNumber} mb={15} mt={5}>
                     <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' dir={`${lineNumber}/`} defaultValue={data ?? '>'} noCompile={args.nocompile === 'true' ?? false} errorOptions={!args.noerrors === 'true' ?? true} noFiles={args.nofiles === 'true' ?? false}> </CodeEditor>
