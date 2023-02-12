@@ -133,8 +133,13 @@ export default function TutorialList(props) {
     })
 
     let listItems = data.map(topic => {
-        let image_url = topic['img_name'] || 'objects_on_table.jpg'
+        let image_url = topic['img_name'] || 'objects_on_table.jpg';
         const imageObject = require(`../static/${image_url}`);
+        
+        let numTutorialsCompleted = 0;
+        if (tutorialsData && tutorialsData.tutorials_completed) {
+            numTutorialsCompleted = new Set(tutorialsData.tutorials_completed.filter(i => i.topic_id === topic.id)).size;
+        }
 
         return <div key={topic['id']}>
 
@@ -223,7 +228,9 @@ export default function TutorialList(props) {
                     })
                 }
             </List>
-            <LinearProgressWithLabel value={0} />
+            <LinearProgressWithLabel value={
+                Math.min((numTutorialsCompleted/topic.tuts.length)*100, 100)
+                } />
 
             <br /><br />
             <br /><br />
