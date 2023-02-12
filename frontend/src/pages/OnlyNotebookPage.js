@@ -78,7 +78,7 @@ const InlineCodeBlock = (text) => {
             whiteSpace: "pre-wrap",
             overflowY: 'auto',
             color: '#9cd025',
-        }}>{replaceBackticks(text)}</Typography>
+        }}>{replaceBackticks(text).replaceAll('\\t','\t')}</Typography>
     </Box >
 
 }
@@ -390,10 +390,12 @@ export default function NotebookPage() {
         let component;
         let args = {}
 
-        raw_args.map(i => i.match(/(?<name>\w+?)=(?<value>\w+(\.\w+))/))
+        raw_args.map(i => i.match(/(?<name>\w+?)=(?<value>\w+(\.\w+)?)/))
             .filter(i => i)
             .map(j => j.groups)
             .map(k => args[k.name] = k.value)
+
+        
 
 
         switch (componentName) {
@@ -416,7 +418,6 @@ export default function NotebookPage() {
                     let filename = obj.filename ?? generateFilename()
                     editorData[`${dir}/${filename}`] = obj.data;
                 });
-                console.log('editorData = ', editorData)
                 component = <Box key={lineNumber} mb={15} mt={5}>
                     <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' files={editorData}
                     noCompile={args.nocompile === 'true' ?? false} errorOptions={!args.noerrors === 'true' ?? true} noFiles={args.nofiles === 'true' ?? false}> </CodeEditor>
@@ -430,6 +431,10 @@ export default function NotebookPage() {
                     <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' dir={`${lineNumber}/`} defaultValue={data.trim() ?? '>'} noCompile={args.nocompile === 'true' ?? false} errorOptions={!args.noerrors === 'true' ?? true} noFiles={args.nofiles === 'true' ?? false}> </CodeEditor>
                 </Box>
                 break;
+
+            case 'Code':
+                component = NotebookCodeBlock(InlineCodeBlock(data));
+                break;
             default:
                 throw Error(`${componentName} not found`)
 
@@ -439,94 +444,6 @@ export default function NotebookPage() {
     }
 
 
-    const parsedNotebook = () => {
-        // let lines = notebookData.split(/\r?\n/);
-        let lines = notebookData.split(/\n\n/);
-
-
-        let nonEmptyLines = lines.filter(i => i);
-
-        let output = [];
-
-        let lineNumber = 0;
-        let parsingComponent = false;
-        let componentData = {};
-        let currentComponentName;
-
-        // TODO: refactor to html like braces (<Editor></Editor> otherwise too many issues with code)
-        const startOfComponent = (text) => text.trim()[0] == "<";
-        const endOfComponent = (text, componentName) => text.match(RegExp(`${componentName}>`))
-
-
-        while (lineNumber < nonEmptyLines.length) {
-            let line = nonEmptyLines[lineNumber];
-            let outputLine;
-
-            if (startOfComponent(line)) {
-                parsingComponent = true;
-                const componentNameRegex = /<\s*(?<name>[a-zA-Z]+)/;
-                currentComponentName = line.match(componentNameRegex).groups.name
-                componentData[currentComponentName] = [line]
-
-                if (endOfComponent(line, currentComponentName)) {
-                    parsingComponent = false;
-                    let component = parseComponent(componentData[currentComponentName], currentComponentName, lineNumber)
-                    output.push(component)
-                }
-
-            } else if (parsingComponent && endOfComponent(line, currentComponentName)) {
-                parsingComponent = false;
-                componentData[currentComponentName].push(line)
-                let component = parseComponent(componentData[currentComponentName], currentComponentName, lineNumber)
-                output.push(component)
-
-            } else if (parsingComponent) {
-                componentData[currentComponentName].push(line)
-
-            } else if (line.trim().substring(0, 2) === "##") {
-                line = line.replaceAll('#', '')
-                outputLine = NotebookHeader(line, lineNumber)
-            } else if (line.trim()[0] === "#") {
-                line = line.replace('#', '')
-                outputLine = NotebookHeader2(line, lineNumber)
-            } else {
-                outputLine = NotebookTextBlock(line, lineNumber)
-            }
-            output.push(outputLine);
-            lineNumber = lineNumber + 1
-        }
-        return output
-    }
-
-    function parseComponent(data, componentName, lineNumber) {
-        data = data.join('\n')
-        let component;
-
-        if (componentName === 'Editor') {
-            const defaultValueRegex = /defaultvalue\s?={(?<defaultvalue>[\s\S]+)}/
-            let defaultValue = data.match(defaultValueRegex)?.groups.defaultvalue;
-
-            const errorOptionsRegex = /noerror(s)?\s?={(?<noErrors>[\s\S]+)} /
-            let errorOptionsMatch = data.match(errorOptionsRegex);
-            let noerror;
-            if (errorOptionsMatch) {
-                noerror = errorOptionsMatch.groups.noErrors;
-            }
-
-            const noFilesRegex = /nofile(s)?\s?={(?<noFiles>[\s\S]+)}/
-            let noFiles = data.match(noFilesRegex)?.groups.noFiles ?? false;
-
-            component = <Box key={lineNumber} mb={15} mt={5}>
-                <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' defaultValue={defaultValue ?? '>'} errorOptions={!noerror ?? true} noFiles={noFiles}> </CodeEditor>
-            </Box>
-        } else if (componentName === 'Code') {
-            const valueRegex = /value(s)?\s?={(?<value>[\s\S]+)}/
-            let value = data.match(valueRegex)?.groups.value ?? '';
-            component = NotebookCodeBlock(value, lineNumber)
-        }
-
-        return component;
-    }
 
     return <>
         <TopNavBar></TopNavBar>

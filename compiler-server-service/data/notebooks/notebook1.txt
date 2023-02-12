@@ -69,8 +69,9 @@ This is where the C++ compiler will look to start your code.
 
 This is similar to the `public static void main(string args)` method of Java.
 
-The type (int, boolean, etc.) returned by a function is written on the left of the function name.
-All the code you write for a functions should be enclosed in curly braces.
+The type (int, boolean, etc.) returned by a function or a variable is written on the left of its name.
+
+All the code included in a function should be enclosed in curly braces.
 
 `int main(){
     return 0;
@@ -78,7 +79,9 @@ All the code you write for a functions should be enclosed in curly braces.
 
 Below, we have a file with just a function, a(), but no main function. Try running it, and see what happens! You should get an error, telling you that main() was not defined.
 
-<Editor nofiles=true, noerrors=false>int a(){
+<Editor nofiles=true, noerrors=false>
+// this code will result in an error
+int a(){
     return 0;
 } </Editor>
 
@@ -109,11 +112,8 @@ We can display some text ("Hello World!") on the terminal with the following cod
 
 Let's break down what we did here.
 
-
-As part of the C++ language, there is some pre-written functionality already included. 
-We call this the C++ standard library. 
+Every programming language has some pre-written libraries built into the language. For C++, we have the standard library. 
 Part of this is the input/output library (iostream) that deals with basic input and output. This allows us to read from and write to the terminal.
-
 
 We tell the compiler to add this functionality via the `#include <iostream>` statement.
 

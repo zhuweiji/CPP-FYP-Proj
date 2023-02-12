@@ -1,8 +1,24 @@
 # Control Flow 
 
-In this topic we will quickly run through the syntax of different control flow statements such as if statements and for loops. 
+In this topic we will quickly run through the syntax of different control flow statements such as if statements and for loops. \n
+Hopefully, this should all be familiar to you. If you require a refresher about any of these concepts, you can refer to the following link.
 
-## If statements
+[Control Flow Introduction](https://www.learncpp.com/cpp-tutorial/control-flow-introduction/)
+
+## If Statements
+
+<Code>
+if (condition){
+    // your code here
+} else if (another condition){
+    // your code here
+} else {
+    // your code here
+}
+</Code>
+
+Brackets must be placed around the condition 
+`if (1 > 0)`
 
 <Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
     int main() {
@@ -14,5 +30,207 @@ In this topic we will quickly run through the syntax of different control flow s
     return 0;
 } </Editor>
 
+Remember to enclose your code in braces.
 
-</EditorGroup>
+<Code>
+if (condition){
+    // all code to be run if the condition is true
+}
+</Code>
+
+You may omit the brace if there is only a single statmenet, but having the brace there helps prevent you from making hard to spot errors.
+
+<Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
+    int main() {
+    if (false)
+        std::cout << "This won't be printed to the console";
+        std::cout << "But this will - woops";
+    return 0;
+} </Editor>
+
+
+## Switch Statements
+
+<Code>
+switch (value){
+    case possible_value_1:
+        //code here
+        break;
+    case possible_value_2:
+    ...
+
+    default:
+        //code here
+        break;
+}
+</Code>
+
+The switch statement takes a single value `switch (YOUR_VALUE)`
+
+and checks it against some possible values `case POSSIBLE_VALUE:\n\t//some code\n\tbreak;`
+
+The code under the default label executes if none of the cases match.
+
+Make sure to include the `break;` keyword under every case, or all the code underneath will execute as well.
+
+[More info]^{This behavior is called fallthrough, and you might want to utilise it in some cases, but it is usually unexpected and it might be an anti-practice to rely on it too often.}
+
+[A relevant stackoverflow discussion](https://stackoverflow.com/questions/188461/switch-statement-fall-through-should-it-be-allowed)
+
+<Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
+    int main() {
+    int user_id = 1;
+
+    switch (user_id){
+        case 1:
+            std::cout << "Hello User 1!\n";
+        case 2:
+            std::cout << "Hello User 2!\n";
+        default:
+            std::cout << "Hello Unknown User!\n";
+    }
+    return 0;
+} </Editor>
+
+
+
+
+
+
+The switch statement can only be used to check integers or values which can be converted to integer types or enumerated types. This means that it cannot be used for strings, floats and pointers.
+
+<Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
+    int main() {
+        std::string name = "Johnny";
+        // this won't compile because the switch statement does not allow strings.
+        switch (name){
+        case "Johnny":
+            std::cout << "Hello Johnny!";
+            break;
+        default:
+            std::cout << "Unknown";
+            break;
+    }
+    return 0;
+} </Editor>
+
+
+## For Loops
+
+<Code>
+for (init-statement; condition; end-expression){
+    // your code here
+}
+</Code>
+
+<Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
+int main(){
+    for (int count = 0; count <= 10; count++){
+        std::cout << count << ' ';
+    }
+    std::cout << '\n';
+
+    return 0;
+}
+</Editor>
+
+The init-statement happens once at the start of the loop. This is where you'd create variables you use in the loop, such as `int count = 0;`
+
+[Loop-scoping]^{Variables declared in the init-statement only exist while the for loop is executing, and cannot be used after the loop finishes.}
+
+The loop continues while the condition is evaluated as true. e.g. `count <= 10`
+
+The end-expression is executed once after every loop iteration.
+
+
+
+You may sometimes need to use multiple variables within the loop. You can declare multiple variables in the init-statement.
+
+<Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
+
+int main()
+{
+    std::cout << "\nThe following values add to 9:\n";
+    for (int x=0, y=9; x < 10; ++x, --y)
+        std::cout << x << '+' << y << '\n';
+
+    return 0;
+} </Editor>
+
+## For-each loops
+
+Given an array, we can use a for-each loop to iterate through the array instead.
+
+<Code>
+for (auto variable_name : array){
+    statement;
+}
+</Code>
+
+<Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
+
+int main()
+{
+    int numbers[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    for (int number : numbers) 
+    {
+       std::cout << number << ' '; 
+    }
+    return 0;
+}</Editor>
+
+The auto keyword the C++ compiler to deduce the type of the variable.
+
+You should prefer using for-each loops to a normal for loop. For-each loops are shorter to write and not as prone to off-by-one errors.
+
+[Off By One Error](https://simple.wikipedia.org/wiki/Off-by-one_error)
+
+## While loops
+
+<Code>
+while (condition){
+    // your code here
+}
+</Code>
+
+The loop variables you use `while (value >= 0)`  should almost always be signed, or you may risk difficult errors..
+
+Take a look at the code below! Without the break statement, there would be an infinite loop. See if you can tell what is going on.
+
+<Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
+
+int main()
+{
+    unsigned int count = 10;
+    
+    while (count >= 0){
+        std::cout << count << ' ';
+        if (count > 100){
+            std::cout << "What is going on...\n";
+            break;
+        }
+        --count;
+    }
+
+    std::cout << '\n';
+
+    return 0;
+} </Editor>
+
+[Can you guess the answer?]^{Unsigned ints cannot be negative, so subtracting from count when it is equal to zero would make it the max possible value for its size.}
+
+## Do while loops
+
+A do while statement is a loop that executes at least once whereas a while loop may never execute at all if the condition is false `while (false)` 
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iostream>
+int main() {
+    int count = 0;
+    do {
+        std::cout << count;
+        count++;
+    } while (false);
+    return 0;
+}
+</Editor>
