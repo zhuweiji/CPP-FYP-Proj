@@ -139,6 +139,7 @@ function App(props) {
                 nextTutorialDisabled={nextTutorialDisabled}
                 tutorialId={tutorialId}
                 topicId={topicId}
+                mermaidDiagram={mermaidDiagram}
             ></BottomAppBar>
 
         </div>
@@ -186,30 +187,38 @@ function BottomAppBar(props) {
 
             <AppBar position="fixed" sx={{ top: 'auto', bottom: 0, height: '3.5rem', alignContent: 'center', backgroundColor: blueGrey[50] }}>
                 <Toolbar>
-                    <IconButton size='small' color="inherit" onClick={() => {
+
+                    <Button
+                        sx={{ color: 'black', fonfontWeight: 'bold'}}
+                    startIcon={<FormatListNumberedIcon sx={{ color: blueGrey[900] }} />}
+                    onClick={() => {
                         navigate(`/notebook/${props.topicId}/${props.tutorialId}`);
                         navigate(0);
                     }}>
-                        <FormatListNumberedIcon sx={{ color: blueGrey[900] }} />
-                        <Typography sx={{ color: 'black' }}>Notebook</Typography>
-                    </IconButton>
+                        To the Notebook
+                    </Button>
                     
-                    <IconButton size='small' color="inherit" onClick={toggleMermaidDiagram}>
-                        <SchemaTwoToneIcon sx={{ color: blueGrey[900] }} />
-                    </IconButton>
-
+                    {
+                        props.mermaidDiagram ? <IconButton size='small' color="inherit" onClick={toggleMermaidDiagram}>
+                            <SchemaTwoToneIcon sx={{ color: blueGrey[900] }} />
+                        </IconButton> 
+                        :
+                        null
+                    }
+                    
+{/* 
                     <IconButton size='small' color="inherit" onClick={toggleLeftGrid} disabled>
                         <TextSnippetTwoToneIcon sx={{ color: blueGrey[900] }} />
-                    </IconButton>
+                    </IconButton> */}
 
                     
 
                     <Box sx={{ flexGrow: 1 }} />
                     
                     <Stack direction="row" spacing={2}>
-                        <IconButton size='small' color="inherit" disabled>
+                        {/* <IconButton size='small' color="inherit" disabled>
                             <TerminalTwoToneIcon sx={{ color: blueGrey[900] }} />
-                        </IconButton>
+                        </IconButton> */}
 
                         {
                             !props.previousTutorialDisabled &&
