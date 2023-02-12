@@ -171,7 +171,7 @@ function CodeEditor(props) {
 
         Object.keys(result)
             .filter(k => k.match(RegExp('^'+relDir)))
-            .forEach(k => resultObj[k.replace(relDir+'/', '')] = result[k])
+            .forEach(k => resultObj[k.split('/').at(-1)] = result[k])
 
         console.log('resultObj = ', resultObj)        
 
