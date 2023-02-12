@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 
-import { indigo, blueGrey } from '@mui/material/colors';
+import { blueGrey } from '@mui/material/colors';
 
 import { styled } from '@mui/material/styles';
-import { AppBar, Box, Stack, Grid, Typography, Paper, Divider, Container, Link, Button, Tooltip, Skeleton } from '@mui/material';
-import { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+import { Box, Stack, Grid, Typography, Paper, Divider, Container, Link, Button, Tooltip, Skeleton, IconButton } from '@mui/material';
+import TerminalTwoToneIcon from '@mui/icons-material/TerminalTwoTone';
+import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
+import { tooltipClasses } from '@mui/material/Tooltip';
 import TopNavBar from "../components/Nav";
 
 import './TutorialPage.css';
 import { NotebookService } from "../services/NotebookService";
 import CodeEditor from "../components/Editor";
 
-import { matchRoutes, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import ErrorPage from "./ErrorPage";
-import Editor from "@monaco-editor/react";
 
 const titleRegex = /^(?<!#)#(?<content>[\w\s]+)/
 const title2Regex = /^(?<!#)##(?<content>[\w\s]+)/
@@ -447,6 +447,12 @@ export default function NotebookPage() {
 
     return <>
         <TopNavBar></TopNavBar>
+
+        <Button sx={{ position: 'fixed', top: 90, right: 16 }}
+            onClick={() => navigate(`/tutorial/${topicId}/${tutorialId}`)}
+            startIcon={<DoubleArrowIcon/>}>
+            To the Tutorial
+        </Button>
 
         <Box sx={{ backgroundColor: '#fbf9f6', pb: 50, pt: 2 }}>
             {
