@@ -8,8 +8,12 @@ As you may have experienced, setting up the development environment is sometimes
 The work involved in preparing your laptop/desktop to be able to write code, such as by installing the compiler for your programming language of choice, the code editor or IDE (such as VSCode, PyCharm) is enormous. \n
 To help you with this, we have created the some tools to make it easier for you to get started on writing code quickly, so that you can focus on the other 90 percent of the trouble that is actually learning the programming language.
 
-Firstly, this page is a notebook that has some helpful [links](https://google.com) , [tooltips that you can hover on]^{Helpful information would be placed here, so look out for these tooltips!} 
-and good coding practices highlighted for you. \n
+Firstly, this page is a notebook that has some helpful [links](https://learn.microsoft.com/en-us/cpp/?view=msvc-170) , such this link to the official C++ documentation by Microsoft. 
+
+There are also some tooltips that may hold additional information, such as more detailed explainations of concepts or good coding practices highlighted for you. 
+
+[Here is a tooltip you can hover on!]^{Helpful information would be placed here, so look out for these tooltips!} 
+
 Each tutorial has a notebook like this that will guide you step-by-step through the material you will need to learn. 
 Secondly, in the notebooks are some code editors that will allow you to run code to have a better understanding of the material. Here's one below.
 
@@ -22,10 +26,26 @@ Secondly, in the notebooks are some code editors that will allow you to run code
 When you require it, the editors also have a file bar at the top where you can create new files.
 All the files and code you write will be compiled together and run. We will learn more about this in the next topics!
 
-<Editor nofiles=false, noerrors=false>
-    int main() {
-    return 0;
-} </Editor>
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+#include <iostream>
+#include "add.h"
+int main(){
+    std::cout << add(1,2);
+}
+</EditorFile>
+
+<EditorFile filename=add.cpp >#include "add.h"
+int add(int v1, int v2){
+    return v1+v2;
+}
+</EditorFile>    
+
+<EditorFile filename=add.h >
+int add(int v1, int v2);
+</EditorFile>    
+
+</EditorGroup>
 
 # Prerequisites
 

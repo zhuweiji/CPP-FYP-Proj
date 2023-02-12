@@ -1,105 +1,101 @@
-# Forward Declarations 
+# Preprocessor Directives
 
-Try running the following code:
+Preprocessor directives are statements such as 
 
-<Editor nofiles=false, noerrors=false, nocompile=false >int main(){
-// we use add() here
-    add(1,2);
-}
+`#include <iostream>`
+`#include "car.h"`
+`#ifndef MYFILE_H`
 
-// but we only declare it here
-int add(int v1, int v2){
-    return v1+v2;
+These are statements that are run before the rest of the code is compiled. \n
+There are several types of preprocessor directives that are important to us.
+
+
+## Include
+
+The #include directive is the one you will be using most often.
+
+There are two forms of #include: 
+The one with angle brackets - <> \n
+These are used for files from the standard library, such as iostream 
+
+`include <iostream>`
+
+There are also the ones with quotes - "
+These are used for user-written files, such as the files you create
+
+`#include "Car.h"`
+
+## Macro Defines
+
+The #define directive tells the preprocessor to replace a value with another
+
+For example, the following directive will replace all occurences of `SECRET_KEY` in the code with the value password123
+
+<Editor nofiles=true, noerrors=false, nocompile=true >#define SECRET_KEY password123
+
+bool loginToDatabase(){
+    // when the code is compiled, this becomes
+    // database.login_using_key(password123);
+    database.login_using_key(SECRET_KEY);
+    
 }
 </Editor>
 
 
-The code doesn't run because the function add() was not defined at the time that it was called in main(). \n
-To solve this, we can either write the definition of add() above main():
-
-<Editor nofiles=false, noerrors=false, nocompile=false > //we move the declaration of add() above
-int add(int v1, int v2){
-    return v1+v2;
-}
-
-int main(){
-    add(1,2);
-} </Editor>
-
-Or we could add a function declaration for add() before main()
-
-<Editor nofiles=false, noerrors=false, nocompile=false >//we add this function declaration
-int add(int v1, int v2);
-
-int main(){
-    add(1,2);
-}
-
-// and the actual implementation of the function here
-int add(int v1, int v2){
-    return v1+v2;
-    }
-} </Editor>
-
-As you can see, a function declaration contains only the function name, return type, and parameters of the function. \n
-This is also called the function's signature.
-
-It serves to tell the compiler that the function add() exists and is declared elsewhere. \n
-The actual code (the function definition) can be written below or in another file.
-
-## Header files
-
-In C++, it is standard practice to write the function declarations (only the function signature) in a header file (with the .h extension or rarely, .hpp ),\nand the function definitions (the actual code) in .cpp files. The .h and .cpp should have the same name for consistency.
-
-Lets try writing one now.
-
-There are two parts to a header file: \n
-1. The header guard
-2. The function declarations
-
-We will go through why we need to have header guards in the next section.
-
-In the add.h file:
-In the add.cpp file:
-
-<EditorGroup nofiles=false, noerrors=false, nocompile=false>
-<EditorFile  >//header guards
-    #ifndef ADD_H
-    #define ADD_H 
-
-    //function declarations
-    int add(int v1, int v2);
-    #endif
-</EditorFile>
-
-<EditorFile filename=add.cpp >#include "add.h"
-int add(int v1, int v2){
-    return v1+v2;
-}
-int main(){
-    add(1,2);
-    return 0;
-}
-</EditorFile>    
-</EditorGroup>
+It is preferred to avoid this usage of #define, and use const variables instead. However, we introduce this concept as you may encounter this in older code.
 
 
+You can also use the #define directive without a value to replace with.
+
+`#define SECRET KEY`
+
+In this case, `SECRET_KEY` would just be removed from the code. 
 
 
-It is standard practice to have the .cpp code file #include the header file.
-Take note that we use #include "add.h" instead of <add> as we are including a user-defined file.
+## Conditional Compilation
+
+[What are development and production environments?]^{An example of an development environment is you creating code on your own computer! A production environment would be one where your code has been tested thoroughly and is deployed onto some server for full-scale use.}
+
+<Editor nofiles=true, noerrors=false, nocompile=true >#ifdef IS_DEV
+    // your code here
+    std.cout << "hello! don't display me in a production environment!";
+#endif </Editor>
 
 
-# Header Guards
+The #ifdef (if defined) directive tells the preprocessor to compile the code only if the identifier (ie SECRET_KEY) has already been #defined.
 
-A function or variable can only be defined once. 
+<Editor nofiles=true, noerrors=false, nocompile=true >#ifndef IS_DEV
+    // your code here
+    std.cout << "hello! welcome to our important application!";
+#endif </Editor>
 
-<Editor nofiles=true, noerrors=false, nocompile=false >void add(){};
-void add(){};
-int main() {
-    add();
-} </Editor>
+The #ifndef (if not defined) is the opposite of #ifdef, checking if the identifier has not been defined. 
 
-When we have files that we will #include, there is a chance that it may be #included twice, causing a duplicate definition error.
 
-Therefore, we use header guards to only include header files once, so that this will not happen.
+## Additional Information
+
+The preprocessor does not handle directives like C++ code. It processes the entire file for directives before any C++ code is compiled, and only compiles the C++ code after.  \n
+Think of the preprocessor as a program who will go through your code and modify it without looking at the C++ code itself.
+
+`if (false){
+    #define MY_NAME "Alex"
+}`
+
+Importantly, this means that any code above and below the #define does not affect it. The #define statement is processed before any code is compiled. 
+The program functions the same as if the #define was written outside of the if statement.
+
+[Best Practice]
+You should write any #define statements outside functions and conditional statements to avoid confusion.
+
+The preprocessor modifies code on a file-by-file basis.
+This means that #defines in one file will not affect another. 
+
+Consider the following code: 
+
+`#include <iostream>\n\nvoid doSomething(){\n    #ifdef PRINT\n        std::cout << "Printing!";\n    #endif\n\n    #ifndef PRINT\n        std::cout << "Not printing!";\n    #endif\n}\n\nvoid doSomething(); // forward declaration for function doSomething()\n\n#define PRINT\nint main(){\n    doSomething();\n    return 0;\n}`
+
+The above program will print:
+
+`Not printing!`
+
+Attribution: Some of the code here was taken from https://www.learncpp.com/cpp-tutorial/introduction-to-the-preprocessor/, which has a more detailed write-up if you are interested.

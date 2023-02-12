@@ -34,12 +34,13 @@ let topic1 = {
     tuts: [
         { id: 1, name: `Hello World! ` },
         { id: 2, name: "Variable and List Instantialization" },
-        { id: 3, name: "Preprocessor Directives (#)" },
-        { id: 4, name: "Forward Declarations And Header Files" },
-        { id: 5, name: "Exercise: Use Predefined Code To Create A Calculator" },
-        { id: 6, name: "Data Structures" },
-        { id: 7, name: "Static Casting, Const Variables and Literals" },
-        { id: 8, name: "Namespaces" },
+        { id: 3, name: "Loops and Control Structures" },
+        { id: 4, name: "Preprocessor Directives (#)" },
+        { id: 5, name: "Forward Declarations And Header Files" },
+        { id: 6, name: "Exercise: Use Predefined Code To Create A Calculator" },
+        { id: 7, name: "Data Structures" },
+        { id: 8, name: "Static Casting, Const Variables and Literals" },
+        { id: 9, name: "Namespaces" },
 
     ]
 }

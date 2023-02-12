@@ -20,44 +20,51 @@
                     "prewritten_cpp_files": "",
                     "prewritten_tests": "",
                     "leftPaneInstructions":"Empty for now"
-                },
-                { 
-                    "id": 3, "name": "Preprocessor Directives (#)",
+                },{
+                    "id": 3,
+                    "name": "Loops and Control Structures",
                     "expectedConsoleOutput": "",
                     "prewritten_cpp_files": "",
                     "prewritten_tests": "",
                     "leftPaneInstructions": "Empty for now"
                 },
                 { 
-                    "id": 4, "name": "Forward Declarations And Header Files",
+                    "id": 4, "name": "Preprocessor Directives (#)",
                     "expectedConsoleOutput": "",
                     "prewritten_cpp_files": "",
                     "prewritten_tests": "",
                     "leftPaneInstructions": "Empty for now"
                 },
                 { 
-                    "id": 5, "name": "Exercise: Use Predefined Code To Create A Calculator",
+                    "id": 5, "name": "Forward Declarations And Header Files",
                     "expectedConsoleOutput": "",
                     "prewritten_cpp_files": "",
                     "prewritten_tests": "",
                     "leftPaneInstructions": "Empty for now"
                 },
                 { 
-                    "id": 6, "name": "Data Structures",
+                    "id": 6, "name": "Exercise: Use Predefined Code To Create A Calculator",
                     "expectedConsoleOutput": "",
                     "prewritten_cpp_files": "",
                     "prewritten_tests": "",
                     "leftPaneInstructions": "Empty for now"
                 },
                 { 
-                    "id": 7, "name": "Static Casting, Const Variables and Literals",
+                    "id": 7, "name": "Data Structures",
                     "expectedConsoleOutput": "",
                     "prewritten_cpp_files": "",
                     "prewritten_tests": "",
                     "leftPaneInstructions": "Empty for now"
                 },
                 { 
-                    "id": 8, "name": "Namespaces",
+                    "id": 8, "name": "Static Casting, Const Variables and Literals",
+                    "expectedConsoleOutput": "",
+                    "prewritten_cpp_files": "",
+                    "prewritten_tests": "",
+                    "leftPaneInstructions": "Empty for now"
+                },
+                { 
+                    "id": 9, "name": "Namespaces",
                     "expectedConsoleOutput": "",
                     "prewritten_cpp_files": "",
                     "prewritten_tests": "",
