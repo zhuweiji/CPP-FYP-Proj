@@ -38,7 +38,7 @@ if (condition){
 }
 </Code>
 
-You may omit the brace if there is only a single statmenet, but having the brace there helps prevent you from making hard to spot errors.
+You may omit the brace if there is only a single statement, but having the brace there helps prevent you from making hard to spot errors.
 
 <Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
     int main() {
@@ -183,7 +183,7 @@ The auto keyword the C++ compiler to deduce the type of the variable.
 
 You should prefer using for-each loops to a normal for loop. For-each loops are shorter to write and not as prone to off-by-one errors.
 
-[Off By One Error](https://simple.wikipedia.org/wiki/Off-by-one_error)
+[Off By One Errors](https://simple.wikipedia.org/wiki/Off-by-one_error)
 
 ## While loops
 
@@ -193,7 +193,7 @@ while (condition){
 }
 </Code>
 
-The loop variables you use `while (value >= 0)`  should almost always be signed, or you may risk difficult errors..
+The loop variables you use `while (value >= 0)`  should almost always be signed, or you may risk difficult errors.
 
 Take a look at the code below! Without the break statement, there would be an infinite loop. See if you can tell what is going on.
 
@@ -217,7 +217,7 @@ int main()
     return 0;
 } </Editor>
 
-[Can you guess the answer?]^{Unsigned ints cannot be negative, so subtracting from count when it is equal to zero would make it the max possible value for its size.}
+[Can you guess the answer?]^{Unsigned ints cannot be negative, so subtracting from count when it is equal to zero would make it the max possible value for its size. If you weren't careful with this loop, you would have created an infinite loop!}
 
 ## Do while loops
 
@@ -228,7 +228,7 @@ A do while statement is a loop that executes at least once whereas a while loop 
 int main() {
     int count = 0;
     do {
-        std::cout << count;
+        std::cout << "The value of count is " << count << "\n";
         count++;
     } while (false);
     return 0;
