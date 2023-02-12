@@ -354,10 +354,9 @@ export default function NotebookPage() {
 
             let output = {components: [], unmatched: []}
 
-            text = text.trim()
-
-
             while (text){
+                text = text.trim()
+
                 let foundComponentStartTag = text.match(componentStartTagRegex);
                 let foundComponentEndTag = text.match(componentEndTagRegex);
 
@@ -384,7 +383,7 @@ export default function NotebookPage() {
 
     
 
-    function createComponent(componentName, componentData, lineNumber=newReactComponentKey()) {
+    function createComponent(componentName, componentData, lineNumber = reactComponentKey()) {
         let raw_args = componentData['args'].map(i => i.trim())
         let data = componentData['data'].join('\n');
 
@@ -412,9 +411,9 @@ export default function NotebookPage() {
                 }
 
                 let editorData = {}
+                let dir = getRandomValue();
                 components.map(i => componentBuilder.call(i, 'EditorFile')).forEach(obj => {
-                    console.log('obj = ', obj)
-                    editorData[obj.filename ?? generateFilename()] = obj.data;
+                    editorData[`${dir}/${obj.filename}` ?? generateFilename()] = obj.data;
                 });
                 component = <Box key={lineNumber} mb={15} mt={5}>
                     <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' files={editorData}
@@ -426,7 +425,7 @@ export default function NotebookPage() {
 
             case 'Editor':
                 component = <Box key={lineNumber} mb={15} mt={5}>
-                    <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' dir={`${lineNumber}/`} defaultValue={data ?? '>'} noCompile={args.nocompile === 'true' ?? false} errorOptions={!args.noerrors === 'true' ?? true} noFiles={args.nofiles === 'true' ?? false}> </CodeEditor>
+                    <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' dir={`${lineNumber}/`} defaultValue={data.trim() ?? '>'} noCompile={args.nocompile === 'true' ?? false} errorOptions={!args.noerrors === 'true' ?? true} noFiles={args.nofiles === 'true' ?? false}> </CodeEditor>
                 </Box>
                 break;
             default:
@@ -589,3 +588,10 @@ export default function NotebookPage() {
 
     </>
 }
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+}
+const getRandomValue = () => getRandomInt(0, Number.MAX_SAFE_INTEGER);
