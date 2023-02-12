@@ -56,8 +56,14 @@ function CodeEditor(props) {
     const [showDeleteError, setShowDeleteError] = useState(false);
     const [showFilenameError, setShowFilenameError] = useState(false);
 
-    
-    const relDir = props.dir ?? ''
+    let currDir;
+    if (props.files){
+        let dirs = new Set(Object.keys(props.files).map(i => i.split('/')[0]))
+        if (dirs.length > 1) console.warn('editor only supports one level of directories (do not have more than one directory for files)')
+        currDir = dirs.values().next().value;
+    }   
+
+    const [relDir, setRelDir] = useState(currDir ?? props.dir ?? '')
     let initialEditorFiles = props.files ?? { 
         [relDir + 'main.cpp']: props.defaultValue ?? `${defaultTextInEditor}`
         };
@@ -102,7 +108,10 @@ function CodeEditor(props) {
 
 
     function handleEditorWillMount(monaco) {
-        // do something before editor is mounted
+        Object.entries(initialEditorFiles).forEach( ([filepath, code]) => {
+            monaco.editor.createModel(code, 'cpp', monaco.Uri.parse(`file:${filepath}`))
+        })
+
     }
 
     function handleEditorDidMount(editor, monaco) {
@@ -112,6 +121,13 @@ function CodeEditor(props) {
         editorRef.current = editor;
         monacoRef.current = monaco;
 
+        console.log('monaco.editor = ', monaco.editor)
+        console.log('initialEditorFiles = ', initialEditorFiles)
+        
+
+        console.log('monaco.editor = ', monaco.editor)
+
+        
         editorRef.current.addAction({
             id: 'delete-left-shift-del',
             label: 'Delete Left',
@@ -150,7 +166,8 @@ function CodeEditor(props) {
         let result = {}
         const replaceTopLevelBackslash = (str) => str.replace('/', '')
 
-        monacoEditor.getModels().forEach(model => {
+        monacoEditor.getModels()
+            .forEach(model => {
             let filenameOfModel = model._associatedResource.path;
             filenameOfModel = replaceTopLevelBackslash(filenameOfModel)
             result[filenameOfModel] = model.getValue();
@@ -158,9 +175,13 @@ function CodeEditor(props) {
 
         let resultObj = {}
         // filter out files that are not in this editor component (they are in other editor components, but monaco keeps a global store of all files)
+
         Object.keys(result)
             .filter(k => k.match(RegExp('^'+relDir)))
-            .forEach(k => resultObj[k.replace(relDir, '')] = result[k])
+            .forEach(k => resultObj[k.replace(relDir+'/', '')] = result[k])
+
+        console.log('resultObj = ', resultObj)        
+
         return resultObj
 
     }
@@ -328,8 +349,6 @@ function CodeEditor(props) {
         setEditorFile(rest);
         setCurrentEditorFilename(Object.keys(editorFile)[0]);
     }
-
-    console.log('currentEditorFilename = ', currentEditorFilename)
 
     return (
         <>
