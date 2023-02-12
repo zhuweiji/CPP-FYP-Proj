@@ -413,8 +413,10 @@ export default function NotebookPage() {
                 let editorData = {}
                 let dir = getRandomValue();
                 components.map(i => componentBuilder.call(i, 'EditorFile')).forEach(obj => {
-                    editorData[`${dir}/${obj.filename}` ?? generateFilename()] = obj.data;
+                    let filename = obj.filename ?? generateFilename()
+                    editorData[`${dir}/${filename}`] = obj.data;
                 });
+                console.log('editorData = ', editorData)
                 component = <Box key={lineNumber} mb={15} mt={5}>
                     <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' files={editorData}
                     noCompile={args.nocompile === 'true' ?? false} errorOptions={!args.noerrors === 'true' ?? true} noFiles={args.nofiles === 'true' ?? false}> </CodeEditor>

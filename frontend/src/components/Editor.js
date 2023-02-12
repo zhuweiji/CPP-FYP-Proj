@@ -121,13 +121,6 @@ function CodeEditor(props) {
         editorRef.current = editor;
         monacoRef.current = monaco;
 
-        console.log('monaco.editor = ', monaco.editor)
-        console.log('initialEditorFiles = ', initialEditorFiles)
-        
-
-        console.log('monaco.editor = ', monaco.editor)
-
-        
         editorRef.current.addAction({
             id: 'delete-left-shift-del',
             label: 'Delete Left',
