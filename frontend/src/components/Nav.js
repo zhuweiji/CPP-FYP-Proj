@@ -69,7 +69,8 @@ const ResponsiveAppBar = (props) => {
                 { 'page': 'Tutorials', 'link': '/tutorials' },
                 { 'page': 'Instructions', 'link': '/instructions' },
                 { 'page': 'Interactive Games', 'link': '/games' },
-                { 'page': 'Notebook', 'link': '/notebook' }]
+                // { 'page': 'Notebook', 'link': '/notebook' }
+                ]
         : [];
 
 
