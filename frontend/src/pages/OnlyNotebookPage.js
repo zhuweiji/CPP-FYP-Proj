@@ -56,7 +56,7 @@ export default function OnlyNotebookPage(){
 
         </Fade>
 
-        <Notebook name={`notebook${tutorialId}`}/>
+        <Notebook name={`notebook${topicId}-${tutorialId}`}/>
 
         <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
             <Button variant="contained" size='large' sx={{ mt: 10, mb: 20, minWidth:'40vw', minHeight:100}} onClick={() => navigate(`/tutorial/${topicId}/${tutorialId}`)}>To the Tutorial!</Button>
