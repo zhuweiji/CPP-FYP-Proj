@@ -25,36 +25,44 @@ export default function OnlyNotebookPage(){
 
     const navigate = useNavigate();
 
-    const [showTutorialStickyButton, setShowTutorialStickyButton] = useState(true);
 
-    let lastScroll = 0;
+    // not working because editors rerender causing all the data on the models to be lost on each state change 
+    // let lastScroll = 0;
+    // const [showTutorialStickyButton, setShowTutorialStickyButton] = useState(true);
 
-    useEffect(() => {
-      window.addEventListener('scroll', () => {
-          var st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
-          if (st > lastScroll) { // scroll down
-              setShowTutorialStickyButton(false);
-          } else if (st < lastScroll) { //scroll up
-              setShowTutorialStickyButton(true);
-          } // else was horizontal scroll
-          lastScroll = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-      })
+    // const handleTutorialStickyButton = () => {
+    //     let scrollY = window.scrollY;
+    //     if (scrollY > lastScroll) { // scroll down
+    //         setShowTutorialStickyButton(false);
+    //     } else if (scrollY < lastScroll) { //scroll up
+    //         setShowTutorialStickyButton(true);
+    //     } // else was horizontal scroll
+    //     lastScroll = scrollY <= 0 ? 0 : scrollY; // For Mobile or negative scrolling
+    // }
+
+    // useEffect(() => {
+    //   window.addEventListener('scroll', handleTutorialStickyButton);
+
+    //   return () => {
+    //     window.removeEventListener('scroll', handleTutorialStickyButton);
+    //   }
     
-    }, [])
+    // }, [])
+
+
     
 
 
     return <>
         <TopNavBar></TopNavBar>
 
-        <Fade in={showTutorialStickyButton}>
+        {/* <Fade in={myfunc}> */}
             <Button sx={{ position: 'fixed', top: 90, right: 16}}
                 onClick={() => navigate(`/tutorial/${topicId}/${tutorialId}`)}
                 startIcon={<DoubleArrowIcon />}>
                 To the Tutorial
             </Button>
-
-        </Fade>
+        {/* </Fade> */}
 
         <Notebook name={`notebook${topicId}-${tutorialId}`}/>
 
