@@ -1,15 +1,24 @@
+import logging
 import subprocess
 
+logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
+log = logging.getLogger(__name__)
+
+def start_process(*args):
+    try:
+        subprocess.run([*args])
+    except KeyboardInterrupt:
+        log.info("Keyboard Interrupt: Halting Program.")
 
 def start():
-    subprocess.run(['uvicorn', 'main:app', '--port' ,'8080', '--host', '0.0.0.0'])
+    start_process(*['uvicorn', 'main:app', '--port' ,'8080', '--host', '0.0.0.0'])
 
 def startreload():
-    subprocess.run(['uvicorn', 'main:app', '--port' ,'8080', '--host', '0.0.0.0', '--reload'])
+    start_process(*['uvicorn', 'main:app', '--port' ,'8080', '--host', '0.0.0.0', '--reload'])
     
 
 def test():
-    subprocess.run(["pytest"])
+    start_process(*['pytest'])
     
 def healthcheck():
-    subprocess.run(['curl', '--fail', 'http://localhost:8080', '||', 'exit 1'])
+    start_process(*[['curl', '--fail', 'http://localhost:8080', '||', 'exit 1']])
