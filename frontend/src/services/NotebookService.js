@@ -17,13 +17,16 @@ export class NotebookService{
             });
 
         if (response.status !== 200) {
-
+            if (response.status === 404){
+                return false
+            }
+            return false
         }
 
         let data = await response.json();
         if (data.errors){
-
-        }
+            console.log('data.errors = ', data.errors)
+        }   
         return data.message;
 
     }
