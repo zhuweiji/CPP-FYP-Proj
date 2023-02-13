@@ -1,0 +1,13 @@
+# Hello! 
+
+Welcome to Tutorial 1!
+
+If you need to, you can access the notebook for this tutorial via the button on the bottom left, labelled 'Notebook'.
+
+In this exercise, we will try to create our first C++ program.
+
+## Objectives
+
+Use std::cout to log 'Hello CPP!' to the terminal.
+
+You can run your code with the Compile button on the middle-right, and when you are ready you can use the Grade button to mark your code.

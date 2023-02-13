@@ -1,40 +1,36 @@
 import React, { useEffect, useState } from "react";
 
-import { AppBar, Box, Stack, Grid, Typography } from '@mui/material';
+import { AppBar, Box, Stack, Grid } from '@mui/material';
 
 import CodeEditor from "../components/Editor";
 import TopNavBar from "../components/Nav";
 // import BottomAppBar from "../components/EditorBottomAppBar";
-import Confetti from 'react-confetti'
-import useWindowSize from 'react-use/lib/useWindowSize' 
+import Confetti from 'react-confetti';
+import useWindowSize from 'react-use/lib/useWindowSize';
 
-import './TutorialPage.css';
 
 // import example from "../components/exampleDiagram";
 import MermaidDiagram from "../components/MermaidDiagram";
 
 import SchemaTwoToneIcon from '@mui/icons-material/SchemaTwoTone';
-import TerminalTwoToneIcon from '@mui/icons-material/TerminalTwoTone';
-import TextSnippetTwoToneIcon from '@mui/icons-material/TextSnippetTwoTone';
 import CssBaseline from '@mui/material/CssBaseline';
 import IconButton from '@mui/material/IconButton';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 
 
-import {Toolbar, Button, Chip} from '@mui/material';
+import { Toolbar, Button, Chip } from '@mui/material';
 
 import { blueGrey } from '@mui/material/colors';
 import TutorialDataFetch from "../services/TutorialDataFetch";
 
-import { matchRoutes, useLocation } from "react-router-dom"
-import Overlay from "../components/Overlay";
+import { useLocation } from "react-router-dom";
 
 import { useNavigate } from 'react-router-dom';
+import Notebook from "../components/Notebook";
 
 
-function App(props) {
 
-    const [leftPaneInstructions, setLeftPaneInstructions] = useState("");
+export default function TutorialPage(props) {
     const [gradingPassed, setGradingPassed] = useState(false);
     const [mermaidDiagram, setmermaidDiagram] = useState('')
 
@@ -48,7 +44,7 @@ function App(props) {
 
     // can try using this instead (might be more concise)
     // https://stackoverflow.com/questions/35352638/how-to-get-parameter-value-from-query-string
-    
+
     // get the path of this page (to get the tutorialId of the page)
     const routeRegex = '/tutorial/(?<topicId>[0-9]+)/(?<tutorialId>[0-9]+)'
 
@@ -62,44 +58,47 @@ function App(props) {
         let tutorialData;
         async function fetchData() {
             tutorialData = await TutorialDataFetch.getTutorialInformation(topicId, tutorialId);
-            let leftPaneData = tutorialData['leftpane_instructions']
-            leftPaneData = leftPaneData.replaceAll("\\n", "\n");
-            leftPaneData = leftPaneData.replaceAll('"', "");
-            setLeftPaneInstructions(leftPaneData);
+            // console.log('tutorialData = ', tutorialData)
+            // let leftPaneData = tutorialData['leftpane_instructions']
+            // leftPaneData = leftPaneData.replaceAll("\\n", "\n");
+            // leftPaneData = leftPaneData.replaceAll('"', "");
+            // setLeftPaneInstructions(leftPaneData);
+
 
             let [prevTopicId, prevTutorialId] = tutorialData['previous_tutorial_topicid_tutid']
-            
-            if (!prevTopicId && !prevTutorialId){
+
+            if (!prevTopicId && !prevTutorialId) {
                 setPreviousTutorialDisabled(true);
-            }else{
+            } else {
                 setPreviousTutorialHref(`/notebook/${prevTopicId}/${prevTutorialId}`);
             }
 
             let [nextTopicId, nextTutorialId] = tutorialData['next_tutorial_topicid_tutid']
 
-            if (!nextTopicId && !nextTutorialId){
+            if (!nextTopicId && !nextTutorialId) {
                 setNextTutorialDisabled(true);
-            }else{
+            } else {
                 setNextTutorialHref(`/notebook/${nextTopicId}/${nextTutorialId}`);
             }
         }
-        
+
         fetchData();
     }, [topicId, tutorialId])
 
     const { windowWidth, windowHeight } = useWindowSize()
 
-    function getPreviousTutorialHref(){
+    function getPreviousTutorialHref() {
         return previousTutorialHref;
     }
 
-    function getNextTutorialHref(){
+    function getNextTutorialHref() {
         return nextTutorialHref;
     }
 
     return (
-        <div>
-            <TopNavBar></TopNavBar>
+        <>
+
+            <TopNavBar fixed></TopNavBar>
 
             {/* single use whole-screen confetti display */}
             <Confetti
@@ -110,23 +109,25 @@ function App(props) {
                 run={gradingPassed}
             />
 
-            <Grid container spacing={1} className='TutorialPage' >
-                <Grid item xs={4} id='leftGrid'>
 
-                    <Stack direction="column" backgroundColor={blueGrey[900]} justifyContent="end" sx={{ display: 'flex' }} >
-                        
+
+            <Grid container >
+                <Grid item xs={4} id='leftGrid' >
+
+                    <Stack direction="column" backgroundColor={blueGrey[900]}
+                        sx={{ overflowY: 'scroll', maxHeight: '100vh'}} >
+
                         {mermaidDiagram ? <div id="mermaidDiagramObj">
                             <MermaidDiagram chart={mermaidDiagram} />
-                        </div> : null} 
+                        </div> : null}
 
-                        <div id="instructionPage">
-                            {leftPaneInstructions}
-                        </div>
+                        <Notebook name={`instructions${topicId}-${tutorialId}`} />
+
                     </Stack>
 
                 </Grid>
 
-                <Grid item xs={8}>
+                <Grid item xs={8} mt={8}>
                     <CodeEditor topicId={topicId} tutorialId={tutorialId} includeGradeButton={true} updateGradingToPassed={() => { setGradingPassed(true); }} />
                 </Grid>
 
@@ -142,7 +143,9 @@ function App(props) {
                 mermaidDiagram={mermaidDiagram}
             ></BottomAppBar>
 
-        </div>
+
+
+        </>
     );
 }
 
@@ -189,32 +192,32 @@ function BottomAppBar(props) {
                 <Toolbar>
 
                     <Button
-                        sx={{ color: 'black', fonfontWeight: 'bold'}}
-                    startIcon={<FormatListNumberedIcon sx={{ color: blueGrey[900] }} />}
-                    onClick={() => {
-                        navigate(`/notebook/${props.topicId}/${props.tutorialId}`);
-                        navigate(0);
-                    }}>
+                        sx={{ color: 'black', fonfontWeight: 'bold' }}
+                        startIcon={<FormatListNumberedIcon sx={{ color: blueGrey[900] }} />}
+                        onClick={() => {
+                            navigate(`/notebook/${props.topicId}/${props.tutorialId}`);
+                            navigate(0);
+                        }}>
                         To the Notebook
                     </Button>
-                    
+
                     {
                         props.mermaidDiagram ? <IconButton size='small' color="inherit" onClick={toggleMermaidDiagram}>
                             <SchemaTwoToneIcon sx={{ color: blueGrey[900] }} />
-                        </IconButton> 
-                        :
-                        null
+                        </IconButton>
+                            :
+                            null
                     }
-                    
-{/* 
+
+                    {/* 
                     <IconButton size='small' color="inherit" onClick={toggleLeftGrid} disabled>
                         <TextSnippetTwoToneIcon sx={{ color: blueGrey[900] }} />
                     </IconButton> */}
 
-                    
+
 
                     <Box sx={{ flexGrow: 1 }} />
-                    
+
                     <Stack direction="row" spacing={2}>
                         {/* <IconButton size='small' color="inherit" disabled>
                             <TerminalTwoToneIcon sx={{ color: blueGrey[900] }} />
@@ -237,8 +240,8 @@ function BottomAppBar(props) {
                             }
                             } />
                         }
-                        
-                        
+
+
                     </Stack>
 
                 </Toolbar>
@@ -247,4 +250,4 @@ function BottomAppBar(props) {
     );
 }
 
-export default App;
+

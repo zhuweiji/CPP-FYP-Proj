@@ -12,13 +12,11 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
-import { Divider } from '@mui/material';
 
 import CodeIcon from '@mui/icons-material/Code';
-import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import UserService from '../services/UserService';
 
@@ -38,6 +36,8 @@ const ResponsiveAppBar = (props) => {
     const redirectToTutorialListPage = useCallback(() => navigate('/tutorials', { replace: false }), [navigate]);
     const redirectToInstructionsPage = useCallback(() => navigate('/instructions', { replace: false }), [navigate]);
     const redirectToGamesPage = useCallback(() => navigate('/games', { replace: false }), [navigate]);
+
+    const appBarIsFixed = props.fixed
 
     useEffect(() => {
         setLoginCompleted(true);
@@ -76,16 +76,12 @@ const ResponsiveAppBar = (props) => {
 
 
     return (
-        <AppBar position='sticky' sx={{ bgcolor: indigo[900] }}>
+        <AppBar position={appBarIsFixed ? 'fixed' : 'sticky'} sx={{ bgcolor: indigo[900] }}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <CodeIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                     <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
+                        variant="h6" noWrap component="a" href="/" sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
                             fontFamily: 'monospace',
