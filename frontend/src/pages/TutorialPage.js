@@ -112,10 +112,10 @@ export default function TutorialPage(props) {
 
 
             <Grid container >
-                <Grid item xs={4} id='leftGrid' >
+                <Grid item xs={4} id='leftGrid'>
 
                     <Stack direction="column" backgroundColor={blueGrey[900]}
-                        sx={{ overflowY: 'scroll', maxHeight: '100vh'}} >
+                        sx={{ overflowY: 'auto', maxHeight: '100vh'}} >
 
                         {mermaidDiagram ? <div id="mermaidDiagramObj">
                             <MermaidDiagram chart={mermaidDiagram} />

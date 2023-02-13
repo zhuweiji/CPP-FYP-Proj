@@ -450,7 +450,7 @@ function CodeEditor(props) {
                     </Stack>
 
                     <Box id="executionResultDisplay"
-                        height={props.executionResultHeight || "21vh"}
+                        height={props.executionResultHeight || "15vh"}
                         sx={{
                             flexDirection: 'column',
                             fontFamily: 'Inconsolata',
