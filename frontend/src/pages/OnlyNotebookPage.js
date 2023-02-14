@@ -9,6 +9,7 @@ import TopNavBar from "../components/Nav";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import Notebook from "../components/Notebook";
+import { NotebookService } from "../services/NotebookService";
 
 
 
@@ -24,6 +25,19 @@ export default function OnlyNotebookPage(){
     if (!topicId) console.error('topicId of this page could not be found!')
 
     const navigate = useNavigate();
+
+    const notebookName = `notebook${topicId}-${tutorialId}`
+
+    useEffect(() => {
+        async function navigateToTutorialIfNoNotebook() {
+            let data = await NotebookService.getNotebook(notebookName);
+            if (!data) {
+                navigate(`/tutorial/${topicId}/${tutorialId}`, {replace:true})
+            }
+        }
+        navigateToTutorialIfNoNotebook();
+    }, [])
+    
 
 
     // not working because editors rerender causing all the data on the models to be lost on each state change 
@@ -64,7 +78,7 @@ export default function OnlyNotebookPage(){
             </Button>
         {/* </Fade> */}
 
-        <Notebook name={`notebook${topicId}-${tutorialId}`}/>
+        <Notebook name={notebookName}/>
 
         <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
             <Button variant="contained" size='large' sx={{ mt: 10, mb: 20, minWidth:'40vw', minHeight:100}} onClick={() => navigate(`/tutorial/${topicId}/${tutorialId}`)}>To the Tutorial!</Button>
