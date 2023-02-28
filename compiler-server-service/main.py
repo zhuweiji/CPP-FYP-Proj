@@ -56,6 +56,7 @@ origins = [
     "https://p01--compiler-server--m98yzdkgzrwc.code.run",
     "https://p01--compiler-server--m98yzdkgzrwc.code.run/"
     "http://p01--compiler-server--m98yzdkgzrwc.code.run",
+    "https://p01--compiler-server--m98yzdkgzrwc.code.run/tutorials"
 
 ]
 
