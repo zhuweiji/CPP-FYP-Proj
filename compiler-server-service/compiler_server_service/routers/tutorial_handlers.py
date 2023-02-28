@@ -36,6 +36,9 @@ def get_tutorial_detail(topicId:int, tutorialId: int, user_id:Optional[str]=None
         previous_tutorial_topicid_tutid: tuple[int, int] = (None, None)
         next_tutorial_topicid_tutid    : tuple[int, int ] = (None, None)
         diagram:                         str = ''
+        instruction_notebook_name:       str = ''
+        no_tutorial                     : bool = False
+        
         
     result = Result()
     
@@ -45,6 +48,8 @@ def get_tutorial_detail(topicId:int, tutorialId: int, user_id:Optional[str]=None
         result.errors = 'tutorial not found'
         raise HTTPException(status_code=404, detail=result)
     
+    result.no_tutorial = tutorial.no_tutorial
+    result.instruction_notebook_name = tutorial.tutorial_instructions
     result.default_code = tutorial.default_code
     
     previous_tutorial = TutorialDAO.get_previous_tutorial_of_tutorial(topicId=topicId, tutorialId=tutorialId)
@@ -63,10 +68,14 @@ def get_tutorials(user_id:Optional[str]=None):
     
     @dataclass 
     class Result(BasicResponse):
+        data               : list = field(default_factory=lambda: TutorialDAO.topic_data_list)
         tutorials_completed: list[CompletedTutorial__OnlyId] = field(default_factory=lambda: [])
     
+    log.info(TutorialDAO.topic_data_list)
     result = Result()
-        
+    
+    log.info(result)    
+    
     if user_id: 
         if user := UserData.find_by_id(user_id):
             result.tutorials_completed = user.tutorials_completed
