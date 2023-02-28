@@ -1,0 +1,6 @@
+# Objectives
+
+<Grading>Create a variable named value of type int.</Grading>
+
+
+<Grading>Create a variable named values to hold an int array </Grading>
