@@ -42,9 +42,12 @@ class Grader:
         prewritten_tests = TutorialDAO.get_prewritten_test_files(topicId=topicId, tutorialId=tutorialId)
         if not prewritten_tests: return True
         
+        
         prewritten_files = TutorialDAO.get_prewritten_cpp_files(topicId=topicId, tutorialId=tutorialId)
         
-        process_result = CPP_Compiler.write_compile_run(code_files=code, add_custom_headers=True, other_files=[*prewritten_files, *prewritten_tests])
+        process_result = CPP_Compiler.write_compile_run(all_code=code, add_custom_headers=True, other_files=[*prewritten_files, *prewritten_tests])
+        log.info(process_result.full_str())
+        log.info(process_result)
         doctest_result = DoctestOutputParser.parse(process_result)
         
         if isinstance(doctest_result, DoctestOverallResult) and doctest_result.all_passed: return True

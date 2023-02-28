@@ -21,7 +21,6 @@ class NotebookDAO:
     @classmethod
     def _get_notebook(cls, notebook_name:str, notebook_source_path: Path):
         found_files = list(notebook_source_path.glob(f'{notebook_name}{cls.notebook_file_extension}'))
-        log.info(found_files)
         
         if not found_files:
             return False
