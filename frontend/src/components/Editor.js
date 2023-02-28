@@ -57,16 +57,16 @@ function CodeEditor(props) {
     const [showFilenameError, setShowFilenameError] = useState(false);
 
     let currDir;
-    if (props.files){
+    if (props.files) {
         let dirs = new Set(Object.keys(props.files).map(i => i.split('/')[0]))
         if (dirs.length > 1) console.warn('editor only supports one level of directories (do not have more than one directory for files)')
         currDir = dirs.values().next().value;
-    }   
+    }
 
     const [relDir, setRelDir] = useState(currDir ?? props.dir ?? '')
-    let initialEditorFiles = props.files ?? { 
+    let initialEditorFiles = props.files ?? {
         [relDir + 'main.cpp']: props.defaultValue ?? `${defaultTextInEditor}`
-        };
+    };
     const [currentEditorFilename, setCurrentEditorFilename] = useState(Object.keys(initialEditorFiles)[0]);
     const [editorFile, setEditorFile] = useState(initialEditorFiles);
 
@@ -108,7 +108,7 @@ function CodeEditor(props) {
 
 
     function handleEditorWillMount(monaco) {
-        Object.entries(initialEditorFiles).forEach( ([filepath, code]) => {
+        Object.entries(initialEditorFiles).forEach(([filepath, code]) => {
             monaco.editor.createModel(code, 'cpp', monaco.Uri.parse(`file:${filepath}`))
         })
 
@@ -161,19 +161,17 @@ function CodeEditor(props) {
 
         monacoEditor.getModels()
             .forEach(model => {
-            let filenameOfModel = model._associatedResource.path;
-            filenameOfModel = replaceTopLevelBackslash(filenameOfModel)
-            result[filenameOfModel] = model.getValue();
-        });
+                let filenameOfModel = model._associatedResource.path;
+                filenameOfModel = replaceTopLevelBackslash(filenameOfModel)
+                result[filenameOfModel] = model.getValue();
+            });
 
         let resultObj = {}
         // filter out files that are not in this editor component (they are in other editor components, but monaco keeps a global store of all files)
 
         Object.keys(result)
-            .filter(k => k.match(RegExp('^'+relDir)))
+            .filter(k => k.match(RegExp('^' + relDir)))
             .forEach(k => resultObj[k.split('/').at(-1)] = result[k])
-
-        console.log('resultObj = ', resultObj)        
 
         return resultObj
 
@@ -231,6 +229,8 @@ function CodeEditor(props) {
             result = await CodeCompileService.compile_and_run(all_code, props.errorOptions ?? true);
         }
 
+
+        console.log('result = ', result)
         if (!result) {
             setPostCompileMessages('There was an error compiling your code. ')
             setIsEditorReady(true);
@@ -318,7 +318,7 @@ function CodeEditor(props) {
             setShowFilenameError(false);
 
             let newfile = {}
-            newfile[relDir+newEditorFilename] = ''
+            newfile[relDir + newEditorFilename] = ''
 
             setEditorFile({ ...editorFile, ...newfile });
             setCurrentEditorFilename(relDir + newEditorFilename);
@@ -345,7 +345,7 @@ function CodeEditor(props) {
 
     return (
         <>
-            <Box id="editorDiv" sx={{ border: "1px solid #979797", pt: 1, pl: 5, pr: 5, pb:5, marginRight: '5px' }}>
+            <Box id="editorDiv" sx={{ border: "1px solid #979797", pt: 1, pl: 5, pr: 5, pb: 5, marginRight: '5px' }}>
 
                 {
                     !(props.noFiles ?? false) &&
@@ -358,7 +358,7 @@ function CodeEditor(props) {
 
                         <Box>
                             {Object.entries(editorFile).map(([filename, fileobject], index) => {
-                                return <Button variant={currentEditorFilename === filename ? 'outlined' : 'text'} key={`file${index}`} onClick={() => setCurrentEditorFilename(filename)}>{filename.replace(/\w+\//,'')}</Button>
+                                return <Button variant={currentEditorFilename === filename ? 'outlined' : 'text'} key={`file${index}`} onClick={() => setCurrentEditorFilename(filename)}>{filename.replace(/\w+\//, '')}</Button>
                             }
                             )}
                         </Box>
@@ -397,7 +397,7 @@ function CodeEditor(props) {
 
 
                 <br /><br />
-                {!(props.noCompile ?? false) && 
+                {!(props.noCompile ?? false) &&
                     <Stack direction="row" justifyContent="end" alignItems="center" spacing={2}>
                         {
                             props.includeGradeButton &&
@@ -415,7 +415,7 @@ function CodeEditor(props) {
                     </Stack>
 
                 }
-              
+
             </Box>
 
             {
@@ -466,10 +466,10 @@ function CodeEditor(props) {
                         {displayedExecutionResult}
                     </Box>
                 </>
-                    
-                }
 
-  
+            }
+
+
         </>
 
     )

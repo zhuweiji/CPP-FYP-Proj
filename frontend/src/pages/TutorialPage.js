@@ -39,6 +39,8 @@ export default function TutorialPage(props) {
     const [previousTutorialDisabled, setPreviousTutorialDisabled] = useState(false);
     const [nextTutorialDisabled, setNextTutorialDisabled] = useState(false);
 
+    const [initialEditorData, setInitialEditorData] = useState(null);
+
 
 
 
@@ -58,12 +60,14 @@ export default function TutorialPage(props) {
         let tutorialData;
         async function fetchData() {
             tutorialData = await TutorialDataFetch.getTutorialInformation(topicId, tutorialId);
-            // console.log('tutorialData = ', tutorialData)
-            // let leftPaneData = tutorialData['leftpane_instructions']
-            // leftPaneData = leftPaneData.replaceAll("\\n", "\n");
-            // leftPaneData = leftPaneData.replaceAll('"', "");
-            // setLeftPaneInstructions(leftPaneData);
 
+            console.log('tutorialData.default_code = ', tutorialData.default_code)
+            if (typeof tutorialData.default_code === 'string') {
+                setInitialEditorData({ 'main.cpp': tutorialData.default_code });
+            } else {
+                setInitialEditorData(tutorialData.default_code);
+
+            }
 
             let [prevTopicId, prevTutorialId] = tutorialData['previous_tutorial_topicid_tutid']
 
@@ -114,8 +118,8 @@ export default function TutorialPage(props) {
             <Grid container >
                 <Grid item xs={4} id='leftGrid'>
 
-                    <Stack direction="column" backgroundColor={blueGrey[900]}
-                        sx={{ overflowY: 'auto', maxHeight: '100vh'}} >
+                    <Stack direction="column" backgroundColor='#fbf9f6'
+                        sx={{ overflowY: 'auto', maxHeight: '100vh' }} >
 
                         {mermaidDiagram ? <div id="mermaidDiagramObj">
                             <MermaidDiagram chart={mermaidDiagram} />
@@ -128,7 +132,11 @@ export default function TutorialPage(props) {
                 </Grid>
 
                 <Grid item xs={8} mt={8}>
-                    <CodeEditor topicId={topicId} tutorialId={tutorialId} includeGradeButton={true} updateGradingToPassed={() => { setGradingPassed(true); }} />
+                    {
+                        initialEditorData && <CodeEditor topicId={topicId} tutorialId={tutorialId} files={initialEditorData}
+                            includeGradeButton={true} updateGradingToPassed={() => { setGradingPassed(true); }} />
+                    }
+
                 </Grid>
 
             </Grid>

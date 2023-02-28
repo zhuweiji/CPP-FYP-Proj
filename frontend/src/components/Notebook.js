@@ -17,7 +17,7 @@ const codeRegex = /`(?<content>[\S\s]+?)`/g
 const linkRegex = /\[(?<content>[\S\s]+)\]\((?<linkhref>.+)\)/g
 const tooltipRegex = /\[(?<content>[\S\s]+)\]\^\{(?<tooltip>.+)\}/g
 
-export default function Notebook({name}) {
+export default function Notebook({ name }) {
 
     const [notebookData, setNotebookData] = useState('');
     const [showErrorMessage, setShowErrorMessage] = useState(false);
@@ -26,9 +26,9 @@ export default function Notebook({name}) {
         async function getData() {
             try {
                 let data = await NotebookService.getNotebook(name);
-                if (!data){
+                if (!data) {
                     throw Error('Could not get notebook')
-                } else{
+                } else {
                     setNotebookData(data);
                     return true;
                 }
@@ -261,6 +261,13 @@ export default function Notebook({name}) {
             case 'Code':
                 component = NotebookCodeBlock(InlineCodeBlock(data));
                 break;
+
+            case 'Grading':
+                component = <Box key={lineNumber} p={3} backgroundColor='black'>
+                    <Typography fontFamily='PT Serif' color='whitesmoke' key={reactComponentKey()} variant="h5" whiteSpace="pre-line" sx={{ ml: 5 }}>{data}</Typography>
+                </Box>
+                break;
+
             default:
                 throw Error(`${componentName} not found`)
 
