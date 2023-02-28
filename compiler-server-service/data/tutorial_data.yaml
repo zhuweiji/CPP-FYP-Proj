@@ -1,0 +1,140 @@
+---
+topics:
+  - topic_name: C++ Basics
+    description: Learn the basics of C++ - compiling and running your first hello world programs
+    img_name: first_steps.jpg
+
+    tutorials:
+      - name: Hello World!
+        expectedConsoleOutput: Hello CPP!
+        prewritten_cpp_files: ""
+        prewritten_tests: ""
+
+      - name: Variable and List Instantialization
+        expectedConsoleOutput: ""
+        prewritten_cpp_files: ""
+        prewritten_tests: ""
+
+      - name: Loops and Control Structures
+        expectedConsoleOutput: ""
+        prewritten_cpp_files: ""
+        prewritten_tests: ""
+
+      - name: Preprocessor Directives (#)
+        expectedConsoleOutput: ""
+        prewritten_cpp_files: ""
+        prewritten_tests: ""
+
+      - name: Forward Declarations And Header Files
+        expectedConsoleOutput: ""
+        prewritten_cpp_files: ""
+        prewritten_tests: ""
+
+      - name: "Exercise: Use Predefined Code To Create A Calculator"
+        expectedConsoleOutput: ""
+        prewritten_cpp_files: ""
+        prewritten_tests: ""
+
+      - name: Data Structures
+        expectedConsoleOutput: ""
+        prewritten_cpp_files: ""
+        prewritten_tests: ""
+
+      - name: Static Casting, Const Variables and Literals
+        expectedConsoleOutput: ""
+        prewritten_cpp_files: ""
+        prewritten_tests: ""
+
+      - name: Namespaces
+        expectedConsoleOutput: ""
+        prewritten_cpp_files: ""
+        prewritten_tests: ""
+
+  - topic_name: Tutorial 2 - Object Oriented Design in C++
+    description: Implement the Object Oriented principles in C++ to make your understanding of OOP language agnostic
+    img_name: corgi_and_friend.jpg
+
+    tutorials:
+      - name: My First C++ Object
+
+      - name: Pariatur quis ex culpa officia magna velit consequat.
+
+      - name: Adipisicing laboris consequat consequat irure esse laboris do esse.
+
+      - name: Private or Public?
+        description: "Encapsulation: Don't air your dirty laundry where others might see them."
+
+      - name: "Inheritance vs Composition: Which to Choose?"
+        description: ""
+
+      - name: "(SOLID) Single Responsibility Principle"
+        description: Don't build anything that does everything.
+
+      - name: "(SOLID) Open-Closed Principle (OCP)"
+
+      - name: "(SOLID) Liskov Substitution Principle (LSP)"
+
+      - name: "(SOLID) Interface Segregation Principle (ISP)"
+
+      - name: "(SOLID) Dependency Injection Principle (DIP)"
+
+      - name: ""
+
+      - name: ""
+
+  - topic_name: Tutorial 3 - Conceptual Representations to Code
+    description: Build familiarity by creating things in C++ using a specification
+    img_name: convoluted_diagram.jpg
+    tutorials:
+      - name: Class Diagrams? I Don't Go To Class.
+      - name: UML Diagrams
+      - name: Sit ad ullamco fugiat pariatur ea ex do non enim aliquip.
+      - name: Velit culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.
+      - name: Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud.
+      - name: Sit ad ullamco fugiat pariatur ea ex do non enim aliquip.
+      - name: Velit culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.
+
+  - topic_name: Capstone Project - Building STARs, the Course Registration platform
+    description: Solidify your understanding by building an entire project from start to end
+    img_name: mountain_peak.jpg
+
+    tutorials:
+      - name: Excepteur eu reprehenderit reprehenderit esse irure aliquip voluptate in.
+
+      - name: Sit ad ullamco fugiat pariatur ea ex do non enim aliquip.
+
+      - name: Velit culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.
+
+      - name: Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud.
+
+      - name: Sit ad ullamco fugiat pariatur ea ex do non enim aliquip.
+
+      - name: Velitculpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.
+
+  - topic_name: "(Advanced Tutorials) Common Design Patterns in Software Engineering"
+    description: Build everything with software! Explore the power of OOP by building different projects (maintainably and sustainably)
+    img_name: lens_mountain.jpg
+    tutorials:
+      - name: User Analytics
+        description: Create multiple classes to store and manipulate data to ensure that different departments can get the data they need for user-analytics
+
+      - name: Image Processing Pipeline
+        description: Use a pipeline pattern to implement a simple image editor. Image editors have to be able to undo unglamorous edits, so we will ensure our system can do so
+
+      - name: Data Access Objects
+        description: Use the DAO pattern to read data from external sources, while ensuring that your code does not become reliant on data from only one provider
+
+      - name: Data Manipulation and Cleaning
+        description: Use method chaining to make your data science notebooks readable, even after you return to the office after a long holiday
+
+      - name: Hiding the Spaghetti
+        description: Create a Facade to minimise the complexity that others (or more likely, yourself in a few weeks time) will face when using your modules
+
+      - name: Observers (Pub/Sub)
+        description: Write code to listen to the rise and fall of currency rates to ensure that you can exchange your SGD to USD at the most favourable rates
+
+      - name: Unit Tests
+        description: ""
+
+      - name: Application Programming Interfaces (API)
+        description: ""
