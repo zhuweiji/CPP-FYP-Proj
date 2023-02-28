@@ -1,10 +1,11 @@
-import json
 import logging
 import os
 from dataclasses import dataclass, field
+from itertools import count
 from pathlib import Path
 from typing import Any, List, Union
 
+import yaml
 from compiler_server_service.utilities import (
     GUIDED_TUTORIALS_DIR_PATH,
     TUTORIAL_DATA_FILE_PATH,
@@ -18,34 +19,42 @@ log = logging.getLogger(__name__)
 
 @dataclass
 class TutorialData:
-    id                    : int
     name                  : str
+    id                    : int = field(default_factory=count(1).__next__, init=False)
     description           : str = ""
-    leftPaneInstructions  : str = ""
     prewritten_cpp_files  : list = field(default_factory=lambda: [])
     prewritten_tests      : list = field(default_factory=lambda: [])
     expectedConsoleOutput : str = ""
     diagram               : str = ""
+    default_code          : Union[str, dict] = """#include <iostream>\n\n\nint main() {\n\tstd::cout << "Hello World!";\n\treturn 0;\n}"""
+    
+    def __repr__(self) -> str:
+        return f'Tutorial id:{self.id} {self.name}'
     
 @dataclass
 class TopicData:
-    topicId    : int
+    topicId    : int = field(default_factory=count(1).__next__, init=False)
     topic_name : str
     description: str
     img_name   : str
     tutorials  : list[TutorialData]
     
+    def __repr__(self) -> str:
+        return f'Topic id: {self.topicId} {self.topic_name}'
+    
     
 class TutorialDAO:
     topic_data_list: list[TopicData] = []
     all_topics_data: dict[int, TopicData] = {}
+    all_topic_ids = []
     
-    __raw_data = {}
-    with open(TUTORIAL_DATA_FILE_PATH) as f:
-        __raw_data = json.load(f)
-    if not (__all_topics_raw_data := __raw_data.get('topics', None)): raise MissingSetupData
+    with open(TUTORIAL_DATA_FILE_PATH.with_suffix('.yaml')) as f:
+        data = yaml.safe_load(f)
     
-    topic_data_list = [TopicData(**data) for data in __all_topics_raw_data]    
+    
+    if not (all_topics_raw_data := data.get('topics', None)): raise MissingSetupData
+    topic_data_list = [TopicData(**data) for data in all_topics_raw_data]    
+    topic_data_list = topic_data_list
     
     for topic in topic_data_list:
         all_topics_data[topic.topicId] = topic
@@ -54,6 +63,7 @@ class TutorialDAO:
     all_topic_ids = list(all_topics_data.keys())
     
     
+        
     @classmethod
     def find_topic(cls, topicId: int) -> Union[TopicData, None]:
         return safe_get(TutorialDAO.all_topics_data, topicId)

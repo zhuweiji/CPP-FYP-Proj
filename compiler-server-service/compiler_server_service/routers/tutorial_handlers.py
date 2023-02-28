@@ -32,7 +32,7 @@ def get_tutorial_detail(topicId:int, tutorialId: int, user_id:Optional[str]=None
     
     @dataclass 
     class Result(BasicResponse):
-        leftpane_instructions:           str = ''
+        default_code:                    Union[str, dict] = ''
         previous_tutorial_topicid_tutid: tuple[int, int] = (None, None)
         next_tutorial_topicid_tutid    : tuple[int, int ] = (None, None)
         diagram:                         str = ''
@@ -44,8 +44,8 @@ def get_tutorial_detail(topicId:int, tutorialId: int, user_id:Optional[str]=None
     if not tutorial: 
         result.errors = 'tutorial not found'
         raise HTTPException(status_code=404, detail=result)
-        
-    result.leftpane_instructions = tutorial.leftPaneInstructions or "Sorry! No instructions found for this tutorial"
+    
+    result.default_code = tutorial.default_code
     
     previous_tutorial = TutorialDAO.get_previous_tutorial_of_tutorial(topicId=topicId, tutorialId=tutorialId)
     if previous_tutorial:
@@ -54,7 +54,7 @@ def get_tutorial_detail(topicId:int, tutorialId: int, user_id:Optional[str]=None
     next_tutorial = TutorialDAO.get_next_tutorial_of_tutorial(topicId=topicId, tutorialId=tutorialId)
     if next_tutorial:
         result.next_tutorial_topicid_tutid = (TutorialDAO.get_topicId_of_tutorial(next_tutorial), next_tutorial.id)
-        
+    
     return result
 
 @router.get('/tutorials')

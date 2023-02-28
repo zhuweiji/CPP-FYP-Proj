@@ -9,10 +9,9 @@ log = logging.getLogger(__name__)
 
 class TestNotebookDao(unittest.TestCase):
     def test_get_by_name(self):
-        assert NotebookDAO.get_notebook_by_name('test_notebook'), "Could not find the notebook test_notebook"
+        assert NotebookDAO.get_notebook_by_name('notebook_formats'), "Could not find the notebook test_notebook"
         
         
         
         
         
-    
