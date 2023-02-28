@@ -5,22 +5,7 @@ import SETTINGS from "./settings"
 export class NotebookService {
     static HOST_URL = SETTINGS.HOST_URL;
 
-    // static cache = new Map();
-
-    // static cacheLookup(notebookId) {
-    //     if (this.cache.has(notebookId)) {
-    //         return this.cache.get(notebookId)
-    //     }
-    //     return false;
-    // }
-
-    // static cacheStore(notebookId, data) {
-    //     this.cache.set(notebookId, data);
-    // }
-
     static async getNotebook(id) {
-        // let cacheResult = this.cacheLookup(id);
-        // if (cacheResult) return cacheResult;
 
         let url = `${this.HOST_URL}notebooks/${id}`
         let response = await fetch(url,
