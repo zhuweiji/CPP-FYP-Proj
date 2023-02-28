@@ -51,7 +51,8 @@ app.include_router(notebook_handlers.router)
 
 origins = [
     "http://localhost:*",
-    "https://p01--compiler-server--m98yzdkgzrwc.code.run/*",
+    "https://p01--compiler-server--m98yzdkgzrwc.code.run",
+    "http://p01--compiler-server--m98yzdkgzrwc.code.run",
 
 ]
 
