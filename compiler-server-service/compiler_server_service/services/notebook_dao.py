@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 
-from compiler_server_service.utilities import INSTRUCTION_NOTEBOOKS_PATH, NOTEBOOKS_PATH
+from compiler_server_service.utilities import NOTEBOOKS_PATH
 
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ class NotebookDAO:
     @classmethod
     def get_instruction_notebook_by_name(cls, name):
         log.info(name)
-        return cls._get_notebook(name, INSTRUCTION_NOTEBOOKS_PATH)
+        return cls._get_notebook(name, NOTEBOOKS_PATH)
         
     @classmethod
     def _get_notebook(cls, notebook_name:str, notebook_source_path: Path):
