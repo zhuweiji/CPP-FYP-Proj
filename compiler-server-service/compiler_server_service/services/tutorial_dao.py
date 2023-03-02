@@ -20,13 +20,24 @@ log = logging.getLogger(__name__)
 @dataclass
 class TutorialData:
     name                  : str
-    id                    : int = field(default_factory=count(1).__next__, init=False)
     description           : str = ""
+
+    notebook              : str = ""
+
+    no_tutorial           : bool = False
+
+    tutorial_instructions : str = ""
+    default_code          : Union[str, dict] = """#include <iostream>\n\n\nint main() {\n\tstd::cout << "Hello World!";\n\treturn 0;\n}"""
+    diagram               : str = ""
     prewritten_cpp_files  : list = field(default_factory=lambda: [])
     prewritten_tests      : list = field(default_factory=lambda: [])
     expectedConsoleOutput : str = ""
-    diagram               : str = ""
-    default_code          : Union[str, dict] = """#include <iostream>\n\n\nint main() {\n\tstd::cout << "Hello World!";\n\treturn 0;\n}"""
+
+    id                    : int = field(default_factory=count(1).__next__, init=False)
+    
+    def __post_init__(self):
+        if self.no_tutorial is False and any((self.tutorial_instructions, self.diagram, self.prewritten_cpp_files, self.prewritten_cpp_files, self.prewritten_tests, self.expectedConsoleOutput)):
+            log.warning(f'{self} has no_tutorial flag set but has some elements of a tutorial in it')
     
     def __repr__(self) -> str:
         return f'Tutorial id:{self.id} {self.name}'
