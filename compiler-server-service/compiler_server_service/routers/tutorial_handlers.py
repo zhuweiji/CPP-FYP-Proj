@@ -76,8 +76,6 @@ def get_tutorials(user_id:Optional[str]=None):
     result = Result()
     result.data = TutorialDAO.topic_data_list
     
-    log.info(result)
-    
     if user_id: 
         if user := UserData.find_by_id(user_id):
             result.tutorials_completed = user.tutorials_completed
