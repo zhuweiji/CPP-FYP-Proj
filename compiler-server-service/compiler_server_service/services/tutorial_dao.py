@@ -21,11 +21,8 @@ log = logging.getLogger(__name__)
 class TutorialData:
     name                  : str
     description           : str = ""
-
     notebook              : str = ""
-
     no_tutorial           : bool = False
-
     tutorial_instructions : str = ""
     default_code          : Union[str, dict] = """#include <iostream>\n\n\nint main() {\n\tstd::cout << "Hello World!";\n\treturn 0;\n}"""
     diagram               : str = ""
@@ -35,6 +32,7 @@ class TutorialData:
 
     id                    : int = field(default_factory=count(1).__next__, init=False)
     
+
     def __post_init__(self):
         if self.no_tutorial is False and any((self.tutorial_instructions, self.diagram, self.prewritten_cpp_files, self.prewritten_cpp_files, self.prewritten_tests, self.expectedConsoleOutput)):
             log.warning(f'{self} has no_tutorial flag set but has some elements of a tutorial in it')
@@ -42,13 +40,15 @@ class TutorialData:
     def __repr__(self) -> str:
         return f'Tutorial id:{self.id} {self.name}'
     
+    
 @dataclass
 class TopicData:
-    topicId    : int = field(default_factory=count(1).__next__, init=False)
     topic_name : str
     description: str
     img_name   : str
     tutorials  : list[TutorialData]
+    
+    topicId    : int = field(default_factory=count(1).__next__, init=False)
     
     def __repr__(self) -> str:
         return f'Topic id: {self.topicId} {self.topic_name}'
