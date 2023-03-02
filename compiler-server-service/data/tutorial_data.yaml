@@ -6,49 +6,43 @@ topics:
 
     tutorials:
       - name: Hello World!
+        notebook: notebook1.txt
+
+        tutorial_instructions: instructions1.txt
         expectedConsoleOutput: Hello CPP!
         prewritten_cpp_files: ""
         prewritten_tests: ""
 
       - name: Variable and List Instantialization
-        expectedConsoleOutput: ""
-        prewritten_cpp_files: ""
-        prewritten_tests: ""
+        notebook: notebook2.txt
+        no_tutorial: True
 
       - name: Loops and Control Structures
-        expectedConsoleOutput: ""
-        prewritten_cpp_files: ""
-        prewritten_tests: ""
+        notebook: notebook3.txt
+        no_tutorial: True
 
       - name: Preprocessor Directives (#)
-        expectedConsoleOutput: ""
-        prewritten_cpp_files: ""
-        prewritten_tests: ""
+        notebook: notebook1.txt
+        no_tutorial: True
 
       - name: Forward Declarations And Header Files
-        expectedConsoleOutput: ""
-        prewritten_cpp_files: ""
-        prewritten_tests: ""
+        notebook: notebook1.txt
+        no_tutorial: True
 
       - name: "Exercise: Use Predefined Code To Create A Calculator"
-        expectedConsoleOutput: ""
-        prewritten_cpp_files: ""
-        prewritten_tests: ""
+        tutorial_instructions: instructions1.txt
 
       - name: Data Structures
-        expectedConsoleOutput: ""
-        prewritten_cpp_files: ""
-        prewritten_tests: ""
+        tutorial_instructions: instructions1.txt
+        no_tutorial: True
 
       - name: Static Casting, Const Variables and Literals
-        expectedConsoleOutput: ""
-        prewritten_cpp_files: ""
-        prewritten_tests: ""
+        tutorial_instructions: instructions1.txt
+        no_tutorial: True
 
       - name: Namespaces
-        expectedConsoleOutput: ""
-        prewritten_cpp_files: ""
-        prewritten_tests: ""
+        tutorial_instructions: instructions1.txt
+        no_tutorial: True
 
   - topic_name: Tutorial 2 - Object Oriented Design in C++
     description: Implement the Object Oriented principles in C++ to make your understanding of OOP language agnostic
