@@ -6,6 +6,7 @@ topics:
 
     tutorials:
       - name: Hello World!
+        id: 1
         notebook: notebook1.txt
 
         tutorial_instructions: instructions1.txt
@@ -14,33 +15,41 @@ topics:
         prewritten_tests: ""
 
       - name: Variable and List Instantialization
+        id: 2
         notebook: notebook2.txt
         no_tutorial: True
 
       - name: Loops and Control Structures
+        id: 3
         notebook: notebook3.txt
         no_tutorial: True
 
       - name: Preprocessor Directives (#)
+        id: 4
         notebook: notebook1.txt
         no_tutorial: True
 
       - name: Forward Declarations And Header Files
+        id: 5
         notebook: notebook1.txt
         no_tutorial: True
 
       - name: "Exercise: Use Predefined Code To Create A Calculator"
+        id: 6
         tutorial_instructions: instructions1.txt
 
       - name: Data Types
+        id: 7
         tutorial_instructions: instructions1.txt
         no_tutorial: True
 
       - name: Static Casting, Const Variables and Literals
+        id: 8
         tutorial_instructions: instructions1.txt
         no_tutorial: True
 
       - name: Namespaces
+        id: 9
         tutorial_instructions: instructions1.txt
         no_tutorial: True
 
@@ -50,43 +59,73 @@ topics:
 
     tutorials:
       - name: My First C++ Object
+        id: 1
+        no_tutorial: True
 
       - name: Pariatur quis ex culpa officia magna velit consequat.
+        id: 2
+        no_tutorial: True
 
       - name: Adipisicing laboris consequat consequat irure esse laboris do esse.
+        id: 3
+        no_tutorial: True
 
       - name: Private or Public?
+        id: 4
         description: "Encapsulation: Don't air your dirty laundry where others might see them."
+        no_tutorial: True
 
       - name: "Inheritance vs Composition: Which to Choose?"
+        id: 5
         description: ""
+        no_tutorial: True
 
       - name: "(SOLID) Single Responsibility Principle"
+        id: 6
         description: Don't build anything that does everything.
+        no_tutorial: True
 
       - name: "(SOLID) Open-Closed Principle (OCP)"
+        id: 7
+        no_tutorial: True
 
       - name: "(SOLID) Liskov Substitution Principle (LSP)"
+        id: 8
+        no_tutorial: True
 
       - name: "(SOLID) Interface Segregation Principle (ISP)"
+        id: 9
+        no_tutorial: True
 
       - name: "(SOLID) Dependency Injection Principle (DIP)"
+        id: 10
 
       - name: ""
+        id: 11
 
       - name: ""
+        id: 12
+
 
   - topic_name: Tutorial 3 - Conceptual Representations to Code
     description: Build familiarity by creating things in C++ using a specification
     img_name: convoluted_diagram.jpg
     tutorials:
       - name: Class Diagrams? I Don't Go To Class.
+        id: 1
       - name: UML Diagrams
+        id: 2
       - name: Sit ad ullamco fugiat pariatur ea ex do non enim aliquip.
+        id: 3
       - name: Velit culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.
+        id: 4
       - name: Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud.
+        id: 5
       - name: Sit ad ullamco fugiat pariatur ea ex do non enim aliquip.
+        id: 6
       - name: Velit culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.
+        id: 7
+
 
   - topic_name: Capstone Project - Building STARs, the Course Registration platform
     description: Solidify your understanding by building an entire project from start to end
@@ -94,41 +133,51 @@ topics:
 
     tutorials:
       - name: Excepteur eu reprehenderit reprehenderit esse irure aliquip voluptate in.
-
+        id: 1
       - name: Sit ad ullamco fugiat pariatur ea ex do non enim aliquip.
-
+        id: 2
       - name: Velit culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.
-
+        id: 3
       - name: Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud.
-
+        id: 4
       - name: Sit ad ullamco fugiat pariatur ea ex do non enim aliquip.
-
+        id: 5
       - name: Velitculpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.
+        id: 6
+
 
   - topic_name: "(Advanced Tutorials) Common Design Patterns in Software Engineering"
     description: Build everything with software! Explore the power of OOP by building different projects (maintainably and sustainably)
     img_name: lens_mountain.jpg
     tutorials:
       - name: User Analytics
+        id: 1
         description: Create multiple classes to store and manipulate data to ensure that different departments can get the data they need for user-analytics
 
       - name: Image Processing Pipeline
+        id: 2
         description: Use a pipeline pattern to implement a simple image editor. Image editors have to be able to undo unglamorous edits, so we will ensure our system can do so
 
       - name: Data Access Objects
+        id: 3
         description: Use the DAO pattern to read data from external sources, while ensuring that your code does not become reliant on data from only one provider
 
       - name: Data Manipulation and Cleaning
+        id: 4
         description: Use method chaining to make your data science notebooks readable, even after you return to the office after a long holiday
 
       - name: Hiding the Spaghetti
+        id: 5
         description: Create a Facade to minimise the complexity that others (or more likely, yourself in a few weeks time) will face when using your modules
 
       - name: Observers (Pub/Sub)
+        id: 6
         description: Write code to listen to the rise and fall of currency rates to ensure that you can exchange your SGD to USD at the most favourable rates
 
       - name: Unit Tests
+        id: 7
         description: ""
 
       - name: Application Programming Interfaces (API)
+        id: 8
         description: ""

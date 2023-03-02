@@ -19,6 +19,7 @@ log = logging.getLogger(__name__)
 
 @dataclass
 class TutorialData:
+    id                    : int
     name                  : str
     description           : str = ""
 
@@ -33,7 +34,6 @@ class TutorialData:
     prewritten_tests      : list = field(default_factory=lambda: [])
     expectedConsoleOutput : str = ""
 
-    id                    : int = field(default_factory=count(1).__next__, init=False)
     
     def __post_init__(self):
         if self.no_tutorial is False and any((self.tutorial_instructions, self.diagram, self.prewritten_cpp_files, self.prewritten_cpp_files, self.prewritten_tests, self.expectedConsoleOutput)):
@@ -81,7 +81,9 @@ class TutorialDAO:
     
     @classmethod
     def find_tutorial(cls, topicId: int, tutorialId: int) -> Union[TutorialData, None]:
-        if not (topic := cls.find_topic(topicId)): return None
+        topic = cls.find_topic(topicId)
+        if not topic: return None
+        
         return next( (i for i in topic.tutorials if i.id == tutorialId) , None) 
     
     @classmethod
