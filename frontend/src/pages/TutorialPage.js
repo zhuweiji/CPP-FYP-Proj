@@ -40,8 +40,10 @@ export default function TutorialPage(props) {
     const [nextTutorialDisabled, setNextTutorialDisabled] = useState(false);
 
     const [initialEditorData, setInitialEditorData] = useState(null);
+    const [notebookName, setNotebookName] = useState('');
 
 
+    const navigate = useNavigate();
 
 
     // can try using this instead (might be more concise)
@@ -61,12 +63,12 @@ export default function TutorialPage(props) {
         async function fetchData() {
             tutorialData = await TutorialDataFetch.getTutorialInformation(topicId, tutorialId);
 
-            console.log('tutorialData.default_code = ', tutorialData.default_code)
+            setNotebookName(tutorialData['instruction_notebook_name']);
+
             if (typeof tutorialData.default_code === 'string') {
                 setInitialEditorData({ 'main.cpp': tutorialData.default_code });
             } else {
                 setInitialEditorData(tutorialData.default_code);
-
             }
 
             let [prevTopicId, prevTutorialId] = tutorialData['previous_tutorial_topicid_tutid']
@@ -83,6 +85,10 @@ export default function TutorialPage(props) {
                 setNextTutorialDisabled(true);
             } else {
                 setNextTutorialHref(`/notebook/${nextTopicId}/${nextTutorialId}`);
+            }
+
+            if (tutorialData.no_tutorial === true) {
+                navigate(`/notebook/${nextTopicId}/${nextTutorialId}`, { 'replace': true });
             }
         }
 
@@ -257,5 +263,4 @@ function BottomAppBar(props) {
         </React.Fragment>
     );
 }
-
 
