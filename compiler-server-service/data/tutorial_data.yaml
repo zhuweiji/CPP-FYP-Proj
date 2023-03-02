@@ -58,11 +58,11 @@ topics:
     img_name: corgi_and_friend.jpg
 
     tutorials:
-      - name: My First C++ Object
+      - name: Why do we have to learn something else?
         id: 1
         no_tutorial: True
 
-      - name: Pariatur quis ex culpa officia magna velit consequat.
+      - name: Creating a C++ Object.
         id: 2
         no_tutorial: True
 

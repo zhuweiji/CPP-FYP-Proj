@@ -7,8 +7,9 @@ Object Oriented Programming is a way to structure your code. \n Previously, by u
 
 ### Task - Calculating Complex Numbers
 
-Imagine that we have a requirement to create a program that calculates complex numbers.
+Let's see how OOP can help us to make our code more readable and bug-free.
 
+Imagine that we have a requirement to create a program that calculates complex numbers. \n
 A complex number (z) is a number that has two parts: \n
 
 <Code>
@@ -17,7 +18,7 @@ Complex Number z: a + b i
 
 Where a is the real number component and b is the imaginary component
 
-To add and subtract two complex numbers, we simply add their respective real number and imaginary components. 
+To add and subtract two complex numbers, we simply add/subtract their respective real number and imaginary components. 
 `z1 + z2 = (a1 + a2) + (b1 + b2) i`
 
 How would we implement this as code? 
@@ -25,33 +26,34 @@ Using functions, we might implement the following:
 
 <Editor nofiles=false, noerrors=false, nocompile=false >
 #include <iostream>     // std::cout
-    void print_complex(int a, int b){
-        std::cout << "Complex Number " << a << " + " << b << " i";
-    }
+void print_complex(int a, int b){
+    std::cout << "Complex Number " << a << " + " << b << " i";
+}
 
-    int add_real(int a1, int a2) {
-        return a1+a2;
-        }
-    int add_imaginary(int b1, int b2) {
-        return b1+b2;
-        }
+int add_real(int a1, int a2) {
+    return a1+a2;
+}
 
-    int main() {
-        // complex number z1 = 1 + 1i
-        int a1 = 1;
-        int b1 = 1; 
+int add_imaginary(int b1, int b2) {
+    return b1+b2;
+}
 
-        // complex number z2 = 2 + 2i
-        int a2 = 2;
-        int b2 = 2;
+int main() {
+    // complex number z1 = 1 + 1i
+    int a1 = 1;
+    int b1 = 1; 
 
-        // z3 = z1 + z2
-        int a3 = add_real(a1,a2);
-        int b3 = add_imaginary(b1,b2);
+    // complex number z2 = 2 + 2i
+    int a2 = 2;
+    int b2 = 2;
 
-        print_complex(a3,b3);
-        return 0;
-    }
+    // z3 = z1 + z2
+    int a3 = add_real(a1,a2);
+    int b3 = add_imaginary(b1,b2);
+
+    print_complex(a3,b3);
+    return 0;
+}
  </Editor>
 
 ### Optimisation 1
@@ -96,9 +98,10 @@ This creates the opportunity for an error where we change one component of the i
     }
  </Editor>
 
-Do you see the error? We mistakenly added  (a1 + a2) and (b1 + b3). This might happen more frequently than you expect, especially if we are performing a large number of operations or are dealing with a large number of imaginary numbers.
+Do you see the error? We mistakenly added  (a1 + a2) and (b1 + b3), when it should have been (b1 + b2). This might happen more frequently than you expect, especially if we are performing a large number of operations or are dealing with a large number of imaginary numbers.
 
-We can use the std::pair type to make the code more explicit. A pair is a data type containing two components
+We can use the std::pair type to make the code more explicit. \n
+A pair is a data type containing two components
 e.g. a pair of two ints would be 
 `std::pair <int,int>`
 where the types of the two components is int and int
@@ -125,7 +128,7 @@ where the types of the two components is int and int
     }
  </Editor>
 
- This way, the components of the imaginary number are encapsulated together. If we do any operation on an imaginary number, we can be assured that the previous error would not happen.
+ This way, the components of the imaginary number are encapsulated together. If we try to add or subtract a complex number, we can be assured that the previous error would not happen.
  This reduces the occurences of errors in our program, and also makes it easier to read and reason about.
 
 
@@ -349,7 +352,6 @@ The Complex Number class acts as a blueprint from which all objects must follow 
 
 We say that Complex Number is a class, and we can create Complex Number objects (we also call them instances) by giving them actual values.
 
-## The Syntax of A C++ Class
 
 ### Classes as Encapsulation of state
 
@@ -359,6 +361,8 @@ Each of these is called an attribute (or member in C++). For example, a vehicle 
 
 
 Going back to our original problem of trying to make sure that we cannot mix up Complex Numbers and Locations in our code, we can create a class for each of them.
+
+Don't worry about the syntax for now - We'll learn how to write a class ourselves later.
 
 <EditorGroup nofiles=false, noerrors=false, nocompile=false>
 <EditorFile  filename=main.cpp>
