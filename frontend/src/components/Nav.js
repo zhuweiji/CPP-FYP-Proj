@@ -22,7 +22,7 @@ import UserService from '../services/UserService';
 
 
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Logout'];
 
 const ResponsiveAppBar = (props) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -65,12 +65,12 @@ const ResponsiveAppBar = (props) => {
         setAnchorElUser(null);
     };
     const pages_and_links = !props.hideLinks ?
-            [
-                { 'page': 'Tutorials', 'link': '/tutorials' },
-                { 'page': 'Instructions', 'link': '/instructions' },
-                { 'page': 'Interactive Games', 'link': '/games' },
-                // { 'page': 'Notebook', 'link': '/notebook' }
-                ]
+        [
+            { 'page': 'Tutorials', 'link': '/tutorials' },
+            { 'page': 'Instructions', 'link': '/instructions' },
+            { 'page': 'Interactive Games', 'link': '/games' },
+            // { 'page': 'Notebook', 'link': '/notebook' }
+        ]
         : [];
 
 
