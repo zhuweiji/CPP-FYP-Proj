@@ -1,0 +1,486 @@
+# Object-Oriented Programming
+
+Welcome to OOP! \n
+In this section, we will learn about OOP and see why OOP was invented and adopted by so many programming languages!
+
+Object Oriented Programming is a way to structure your code. \n Previously, by using functions to encapsulate parts into reusable portions, we have managed to make our clean more readable, changable and testable.
+
+### Task - Calculating Complex Numbers
+
+Imagine that we have a requirement to create a program that calculates complex numbers.
+
+A complex number (z) is a number that has two parts: \n
+
+<Code>
+Complex Number z: a + b i
+</Code>
+
+Where a is the real number component and b is the imaginary component
+
+To add and subtract two complex numbers, we simply add their respective real number and imaginary components. 
+`z1 + z2 = (a1 + a2) + (b1 + b2) i`
+
+How would we implement this as code? 
+Using functions, we might implement the following:
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iostream>     // std::cout
+    void print_complex(int a, int b){
+        std::cout << "Complex Number " << a << " + " << b << " i";
+    }
+
+    int add_real(int a1, int a2) {
+        return a1+a2;
+        }
+    int add_imaginary(int b1, int b2) {
+        return b1+b2;
+        }
+
+    int main() {
+        // complex number z1 = 1 + 1i
+        int a1 = 1;
+        int b1 = 1; 
+
+        // complex number z2 = 2 + 2i
+        int a2 = 2;
+        int b2 = 2;
+
+        // z3 = z1 + z2
+        int a3 = add_real(a1,a2);
+        int b3 = add_imaginary(b1,b2);
+
+        print_complex(a3,b3);
+        return 0;
+    }
+ </Editor>
+
+### Optimisation 1
+
+There are some potential pitfalls in the code above. 
+
+The two components of the imaginary numbers are declared as seperate variables.
+This creates the opportunity for an error where we change one component of the imaginary number without changing the other.
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iostream>     // std::cout
+    void print_complex(int a, int b){
+        std::cout << "Complex Number " << a << " + " << b << " i";
+    }
+
+    int add_real(int a1, int a2) {
+        return a1+a2;
+        }
+    int add_imaginary(int b1, int b2) {
+        return b1+b2;
+        }
+
+    int main() {
+        // complex number z1 = 1 + 1i
+        int a1 = 1;
+        int b1 = 1; 
+
+        // complex number z2 = 2 + 2i
+        int a2 = 2;
+        int b2 = 2;
+
+        // complex number z3 = -1 + -1i
+        int a3 = -1;
+        int b3 = -1;
+
+        // z4 = a1 + b2
+        int a4 = add_real(a1,a2);
+        int b4 = add_imaginary(b1,b3);
+
+        print_complex(a4,b4);
+        return 0;
+    }
+ </Editor>
+
+Do you see the error? We mistakenly added  (a1 + a2) and (b1 + b3). This might happen more frequently than you expect, especially if we are performing a large number of operations or are dealing with a large number of imaginary numbers.
+
+We can use the std::pair type to make the code more explicit. A pair is a data type containing two components
+e.g. a pair of two ints would be 
+`std::pair <int,int>`
+where the types of the two components is int and int
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <utility>      // std::pair, std::make_pair
+#include <iostream>     // std::cout
+
+    void print_complex(std::pair<int,int> z){
+        std::cout << "Complex Number " << z.first << " + " << z.second << " i";
+    }
+    std::pair<int,int> add_complex(std::pair<int,int> z1, std::pair<int,int> z2){
+        return std::pair<int,int> (z1.first + z2.first, z1.second + z2.second);
+    }
+
+    int main() {
+        std::pair <int,int> z1 (1,1);
+        std::pair <int,int> z2 (2,2);
+
+        std::pair<int,int> z3 = add_complex(z1,z2);
+        print_complex(z3);
+
+        return 0;
+    }
+ </Editor>
+
+ This way, the components of the imaginary number are encapsulated together. If we do any operation on an imaginary number, we can be assured that the previous error would not happen.
+ This reduces the occurences of errors in our program, and also makes it easier to read and reason about.
+
+
+### Optimisation 2
+
+We can shift the functions that operate on complex numbers into their own file.
+This groups related functionality about Complex Numbers together.
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+#include <iostream>
+#include <utility>      // std::pair, std::make_pair
+
+#include "complex.h"
+
+    int main(){
+        std::pair <int,int> z1 (1,1);
+        std::pair <int,int> z2 (2,2);
+
+        std::pair<int,int> z3 = add_complex(z1,z2);
+        z3 = multiply_complex(z1, z3);
+        print_complex(z3);
+        
+    }
+</EditorFile>
+
+<EditorFile filename=complex.cpp>
+    #include <iostream>     // std::cout
+    #include <utility>      // std::pair, std::make_pair
+
+    #include "complex.h"
+
+    void print_complex(std::pair<int,int> z){
+        std::cout << "Complex Number " << z.first << " + " << z.second << " i";
+    }
+    std::pair<int,int> add_complex(std::pair<int,int> z1, std::pair<int,int> z2){
+        return std::pair<int,int> (z1.first + z2.first, z1.second + z2.second);
+    }
+    std::pair<int,int> subtract_complex(std::pair<int,int> z1, std::pair<int,int> z2){
+        return std::pair<int,int> (z2.first - z1.first, z2.second - z1.second );
+    }
+    std::pair<int,int> multiply_complex(std::pair<int,int> z1, std::pair<int,int> z2){
+        int real      = z1.first * z2.first - z1.second * z2.second;
+        int imaginary = z1.first * z2.second + z1.second * z2.first;
+        return std::pair<int,int> (real, imaginary );
+    }
+
+</EditorFile>
+
+<EditorFile filename=complex.h>
+#include <utility>      // std::pair, std::make_pair
+
+    void print_complex(std::pair<int,int> z);
+    std::pair<int,int> add_complex(std::pair<int,int> z1, std::pair<int,int> z2);
+    std::pair<int,int> subtract_complex(std::pair<int,int> z1, std::pair<int,int> z2);
+    std::pair<int,int> multiply_complex(std::pair<int,int> z1, std::pair<int,int> z2);
+
+</EditorFile>
+</EditorGroup>
+
+In this way, the functionality of complex numbers is grouped together, and we can perform operations on complex numbers easily.
+
+However, there are more potential errors we could fix as well.
+
+if we had two types of operations both operating on pairs of ints, we might confuse their functionality together, since they both operate on pairs of ints.
+Take for example an engineering program which can perform operations on both complex numbers and 2-d locations.
+
+<Code>
+complex number:  z = a + bi
+location:        point = x, y
+</Code>
+
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+#include <iostream>
+#include <utility>      // std::pair, std::make_pair
+
+#include "complex.h"
+
+    int main(){
+        // complex numbers z1 and z2
+        std::pair <int,int> z1 (1,1);
+        std::pair <int,int> z2 (2,2);
+        
+        // location z = x,y
+        std::pair <int,int> z (150,50);
+
+        std::pair<int,int> z3 = add_complex(z1,z);
+        z3 = multiply_complex(z1, z3);
+        print_complex(z3);
+    }
+</EditorFile>
+
+<EditorFile filename=complex.cpp>
+    #include <iostream>     // std::cout
+    #include <utility>      // std::pair, std::make_pair
+
+    #include "complex.h"
+
+    void print_complex(std::pair<int,int> z){
+        std::cout << "Complex Number " << z.first << " + " << z.second << " i";
+    }
+    std::pair<int,int> add_complex(std::pair<int,int> z1, std::pair<int,int> z2){
+        return std::pair<int,int> (z1.first + z2.first, z1.second + z2.second);
+    }
+    std::pair<int,int> subtract_complex(std::pair<int,int> z1, std::pair<int,int> z2){
+        return std::pair<int,int> (z2.first - z1.first, z2.second - z1.second );
+    }
+    std::pair<int,int> multiply_complex(std::pair<int,int> z1, std::pair<int,int> z2){
+        int real      = z1.first * z2.first - z1.second * z2.second;
+        int imaginary = z1.first * z2.second + z1.second * z2.first;
+        return std::pair<int,int> (real, imaginary );
+    }
+
+</EditorFile>
+
+<EditorFile filename=complex.h>
+#include <utility>      // std::pair, std::make_pair
+
+    void print_complex(std::pair<int,int> z);
+    std::pair<int,int> add_complex(std::pair<int,int> z1, std::pair<int,int> z2);
+    std::pair<int,int> subtract_complex(std::pair<int,int> z1, std::pair<int,int> z2);
+    std::pair<int,int> multiply_complex(std::pair<int,int> z1, std::pair<int,int> z2);
+
+</EditorFile>
+
+<EditorFile filename=location.cpp>
+    #include <utility>      // std::pair, std::make_pair
+    #include <iostream>     // std::cout
+    
+    #include "location.h"
+    
+    void print_location(std::pair<int,int> point){
+        std::cout << "Location " << point.first << " + " << point.second << " i";
+    }
+    std::pair<int,int> move_x(std::pair<int,int> point, int distance){
+        return std::pair<int,int> (point.first + distance, point.second);
+    }
+    std::pair<int,int> move_y(std::pair<int,int> point, int distance){
+        return std::pair<int,int> (point.first, distance + point.second);
+    }
+</EditorFile>
+
+<EditorFile filename=location.h>
+    #include <utility>      // std::pair, std::make_pair
+
+    void print_location(std::pair<int,int> point);
+    std::pair<int,int> move_x(std::pair<int,int> point, int distance);
+    std::pair<int,int> move_y(std::pair<int,int> point, int distance);
+</EditorFile>
+</EditorGroup>
+
+Woops! We added a location to our complex number and multiplied it. Who knows where we'd end up!
+
+[2-d Locations and Complex Numbers]^{While complex numbers are like 2-d locations in some sense mathematically, it would be best for us to avoid confusing the two in our code.}
+
+
+## Classes
+
+Before we discuss how we would fix the issue above, we must talk about OOP.
+
+For the Complex Number concept, we have made two optimisations to the code thus far:
+1. Grouping related data together (putting the real and imaginary components of the complex number together in a std::pair)
+2. Grouping related functionality of a Complex Number together
+
+In this way, by grouping the data and functionality of Complex Numbers together, we can reason about our code more easily, especially if there are other concepts in the same code, such as Location.
+
+
+In Object Oriented Programming, there are several concepts we must know.
+
+### Classes vs Objects
+
+Many people struggle to differentiate classes vs objects, especially when they are still learning OOP.
+Continuing with our Complex Number examples:
+
+Take the value `z1 = 1 + i`
+
+In this case, z1 is a real, concrete complex number. We may have another complex number.
+`z2 = 3 + 2i`
+
+In fact, we can have as many complex numbers as we want! From z1,z2 ... all the way to infinity!
+
+However, they will all follow the form 
+`Complex Number: z = a + b i`
+
+In this analogy, the z1 ... z100 are objects, while Complex Numbers as a concept is the class.
+
+We create objects by giving values to a class, such as 
+`a = 1, b = 2 -> Complex Number: z = 1 + 2i`
+
+We can do the same for another concept, such as a vehicle:
+If we say that the most important characteristics of a vehicle are
+
+<Code>
+Vehicle: Number of wheels, Current Speed, Color, Owner
+</Code>
+
+We can create concrete representations of a vehicle
+
+<Code>
+Vehicle MyCar = Vehicle(
+    Number of Wheels = 2,
+    Current Speed    = 0km/h,
+    Color            = Adriatic Blue,
+    Owner            = Me
+)
+
+Vehicle YourCar = Vehicle(
+    Number of Wheels = 2,
+    Current Speed    = 0km/h,
+    Color            = Hot Pink,
+    Owner            = You
+)
+</Code>
+
+Each object has its own values (which we call the object's state). Each object is the concrete instantiation of a class. \n
+A class itself is more of a concept or an idea, rather than something which has a real value. \n
+The Complex Number class acts as a blueprint from which all objects must follow the template, but there is still a difference between ( 1 + 1 i )  and the idea of Complex Numbers as a whole.
+
+
+We say that Complex Number is a class, and we can create Complex Number objects (we also call them instances) by giving them actual values.
+
+## The Syntax of A C++ Class
+
+### Classes as Encapsulation of state
+
+We use OOP to group state together to make our code clearer. In the vehicle example above, every time that we see a Vehicle class in our code, we know that there is some state attached to it, such as its Number of Wheels or Color.
+Each of these is called an attribute (or member in C++). For example, a vehicle has the attributes Number of Wheels, Current Speed, Color and Owner.
+
+
+
+Going back to our original problem of trying to make sure that we cannot mix up Complex Numbers and Locations in our code, we can create a class for each of them.
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+#include "complex.cpp"
+#include "location.cpp"
+int main() {
+    // complex numbers z1 and z2
+    ComplexNumber z1 {1,1};
+    ComplexNumber z2 {2,2};
+
+    //location z
+    Location z{100,150};
+
+    ComplexNumber z3 = z1.add(z2);
+
+    z3.print();
+    return 0;
+}
+</EditorFile>
+
+<EditorFile filename=complex.cpp>
+#include <iostream>
+
+class ComplexNumber{
+    public:
+        int real_value;
+        int complex_value;
+
+        void print(){
+            std::cout << "Complex Number " << real_value << " + " << complex_value << " i\n" ;
+        }
+        ComplexNumber add(ComplexNumber other){
+            return ComplexNumber{real_value + other.real_value, complex_value + other.complex_value};
+        }
+        ComplexNumber subtract(ComplexNumber other){
+            return  ComplexNumber{other.real_value - real_value, other.complex_value - complex_value};
+        }
+        ComplexNumber multiply(ComplexNumber other){
+            int real      = real_value * other.real_value - complex_value * other.complex_value;
+            int imaginary = real_value * other.complex_value + complex_value * other.real_value;
+            return ComplexNumber{real, imaginary};
+        }
+};
+</EditorFile>
+
+<EditorFile filename=location.cpp>
+#include <iostream>
+
+class Location{
+    public:
+        int x;
+        int y;
+
+        void print(){
+            std::cout << "Location x-coords: " << x << " y-coords: " << y << "\n";
+        }
+};
+</EditorFile>
+
+</EditorGroup>
+
+In fact, if we made the same mistake of adding a location to a complex number, we would get an error!
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+#include "complex.cpp"
+#include "location.cpp"
+int main() {
+    // complex numbers z1 and z2
+    ComplexNumber z1 {1,1};
+    ComplexNumber z2 {2,2};
+
+    //location z
+    Location z{100,150};
+
+    ComplexNumber z3 = z1.add(z);
+
+    z3.print();
+    return 0;
+}
+</EditorFile>
+
+<EditorFile filename=complex.cpp>
+#include <iostream>
+
+class ComplexNumber{
+    public:
+        int real_value;
+        int complex_value;
+
+        void print(){
+            std::cout << "Complex Number " << real_value << " + " << complex_value << " i\n" ;
+        }
+        ComplexNumber add(ComplexNumber other){
+            return ComplexNumber{real_value + other.real_value, complex_value + other.complex_value};
+        }
+        ComplexNumber subtract(ComplexNumber other){
+            return  ComplexNumber{other.real_value - real_value, other.complex_value - complex_value};
+        }
+        ComplexNumber multiply(ComplexNumber other){
+            int real      = real_value * other.real_value - complex_value * other.complex_value;
+            int imaginary = real_value * other.complex_value + complex_value * other.real_value;
+            return ComplexNumber{real, imaginary};
+        }
+};
+</EditorFile>
+
+<EditorFile filename=location.cpp>
+#include <iostream>
+
+class Location{
+    public:
+        int x;
+        int y;
+
+        void print(){
+            std::cout << "Location x-coords: " << x << " y-coords: " << y << "\n";
+        }
+};
+</EditorFile>
+
+</EditorGroup>
+
+In this way, our IDE would show our errors while we are writing code, or in the worst case, the compiler would throw up errors (as it just did) during compile time. 
+The enforcing of these errors during compile time rather than during program execution allows for better code and reduces the number of mysterious and unfixable bugs in your code.
