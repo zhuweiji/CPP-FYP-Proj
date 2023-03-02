@@ -1,0 +1,238 @@
+# Data Types
+
+In this section, we'll briefly go through the various data types available in C++.
+
+<Code>
+int myNumber;
+int randomNumber();
+</Code>
+
+
+## Integers (Int)
+
+An integer represents whole numbers. By default, they represent signed numbers (these variables can be either positive or negative).
+
+<Code>
+short v1;
+int v2;
+long v3;
+long long v4;
+</Code>
+
+### Unsigned Ints
+
+The `unsigned`  keyword establishes that the value can only be zero or positive.
+
+<Code>
+unsigned short us;
+unsigned int ui;
+unsigned long ul;
+unsigned long long ull;
+</Code>
+
+This allows for the variable to store a value 2x bigger than its signed equivalent.
+However, in most use cases it is better to simply use a larger data type (int -> long -> long long) than to use the unsigned variant. \n
+This is because unsigned values may introduce unexpected bugs. 
+
+Consider the following:
+What would you expect the result to be?
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iostream>
+
+int main()
+{
+	unsigned int x = 3;
+	unsigned int y = 5;
+
+	std::cout << x - y << '\n';
+	return 0;
+}
+</Editor>
+
+Isn't that strange? Unsigned ints cannot be negative, so the value wraps around after 0 to max-1, max-2 ... 
+
+### Implicit Conversion
+
+A more subtle error would be the following:
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iostream>
+
+int main()
+{
+    signed int s  = -1;
+    unsigned int u  = 1;
+
+    if (s < u) 
+        std::cout << "-1 is less than 1\n";
+    else
+        std::cout << "1 is less than -1\n"; 
+
+    return 0;
+}
+</Editor>
+
+In this case, mathematical operations can only be performed onto two variables of the same data type. The signed int is implicitly converted to unsigned to carry out the operation.
+-1 is implicitly converted to 4294967295, and therefore the second statement executes.
+
+
+In most cases, prefer signed ints over unsigned ints.
+
+
+## Floating Point Numbers (Float)
+
+These are the floating point data types.
+
+<Code>
+float v1;
+double v2;
+long double v3;
+</Code>
+
+
+
+
+Floating point numbers in C++ are subject to the same truncation errors that all other languages face. 
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iomanip> // for std::setprecision()
+#include <iostream>
+
+int main()
+{
+    
+
+    double d1{ 1.0 };
+    std::cout << d1 << '\n';
+
+    double d2{ 0.1 + 0.1 + 0.1 + 0.1 + 0.1 + 0.1 + 0.1 + 0.1 + 0.1 + 0.1 }; // should equal 1.0
+    std::cout << d2 << '\n';
+
+    return 0;
+}
+</Editor>
+
+In some C++ compilers, division by zero does not cause an error unlike in other languages. 
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iostream>
+
+int main()
+{
+    double zero {0.0};
+    double posinf { 5.0 / zero }; // positive infinity
+    std::cout << posinf << '\n';
+
+    double neginf { -5.0 / zero }; // negative infinity
+    std::cout << neginf << '\n';
+
+    double nan { zero / zero }; // not a number (mathematically invalid)
+    std::cout << nan << '\n';
+
+    return 0;
+}
+</Editor>
+
+However, it is still best to avoid these operations.
+
+## Booleans (bool)
+
+<Code>
+bool b1 = true;
+bool b2 = !true;
+
+</Code>
+
+The boolean values true and false and lowercased.
+
+### Type Conversion
+
+If bools are converted to int, the value true is converted to 1, while the value of false is converted to 0.
+
+If ints are converted to bool: \n
+All non-zero ints are false. The only int that evaluates as true is 0. \n
+Similarly, for strings and char, only empty strings are false.
+
+## Characters (Char)
+
+This data type holds a single character. This can be a single letter, number, symbol or whitespace.
+
+<Code>
+char c1;
+wchar_t c2;
+char16_t c3;
+char32_t c4;
+</Code>
+
+### Type Conversion
+
+You can initialize char variables using character literals:
+`char ch1 = 'a'; // initialize with code point for 'a' (stored as integer 97) (preferred)`
+
+However, you might initialize a char variable with its ASCII integer value as well, but this should be avoided if possible
+`char ch2 = 97; // initialize with integer 97 ('a') (not preferred)`
+
+<Editor nofiles=false, noerrors=true, nocompile=false >
+#include <iostream>
+int main() {
+    char ch1 = '97' ;
+    char ch2 = 97 ;
+
+    std::cout << ch1 << "\n";
+    std::cout << ch2 << "\n";
+    return 0;
+}
+ </Editor>
+
+## Void 
+
+This is typically only used for functions to indicate that they do not return anything (no data-type).
+
+void cannot be used to declare a variable.
+
+## Strings 
+
+The `std::string` type is defined in the <string> header.
+
+<Code>
+#include <string> // allows use of std::string
+
+int main()
+{
+    std::string name; // empty string
+
+    return 0;
+}
+</Code>
+
+
+
+
+## sizeof
+
+We can use the `sizeof`  operator to get the size of a variable.
+
+<Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
+
+int main()
+{
+    std::cout << "bool:\t\t" << sizeof(bool) << " bytes\n";
+    std::cout << "char:\t\t" << sizeof(char) << " bytes\n";
+    std::cout << "wchar_t:\t" << sizeof(wchar_t) << " bytes\n";
+    std::cout << "char16_t:\t" << sizeof(char16_t) << " bytes\n";
+    std::cout << "char32_t:\t" << sizeof(char32_t) << " bytes\n";
+    std::cout << "short:\t\t" << sizeof(short) << " bytes\n";
+    std::cout << "int:\t\t" << sizeof(int) << " bytes\n";
+    std::cout << "long:\t\t" << sizeof(long) << " bytes\n";
+    std::cout << "long long:\t" << sizeof(long long) << " bytes\n";
+    std::cout << "float:\t\t" << sizeof(float) << " bytes\n";
+    std::cout << "double:\t\t" << sizeof(double) << " bytes\n";
+    std::cout << "long double:\t" << sizeof(long double) << " bytes\n";
+
+    return 0;
+}
+
+
+
+</Editor>

@@ -32,7 +32,7 @@ topics:
       - name: "Exercise: Use Predefined Code To Create A Calculator"
         tutorial_instructions: instructions1.txt
 
-      - name: Data Structures
+      - name: Data Types
         tutorial_instructions: instructions1.txt
         no_tutorial: True
 
