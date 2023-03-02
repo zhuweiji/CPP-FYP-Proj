@@ -1,2 +1,11 @@
 # Creating our own C++ objects
 
+## Public and Private attributes
+
+## Instance Variables
+
+## Functions in classes (Methods)
+
+## Static Variables/Methods
+
+
