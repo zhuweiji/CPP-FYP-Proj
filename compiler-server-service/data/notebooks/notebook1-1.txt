@@ -162,24 +162,10 @@ We use the insertion operator << to display the data on the right of the std::co
 If you squint your eyes and imagine that std::cout is your terminal or your display,
 you can see that `std::cout << "Hello World"` is like moving "Hello World" into your terminal.
 
+std::cin does the opposite, reading from the standard input stream in your terminal. `std::cin >> my_variable;`
 
-The opposite is true for std::cin, which reads data from your terminal.
-`std::cin >> yourVariable;`
+However, you'll have to try this on your own device as we do not support this functionality :(
 
-<Editor nofiles=true, noerrors=false, nocompile=false >#include <iostream>
-int main() {
-    std::cout << "Enter a number:";
-
-    int x = 0; 
-
-    std::cin >> x;
-    std::cout << "Your number is " << x << "!";
-    return 0;
-}
-</Editor>
-
-std::cin reads from the terminal input until it finds a whitespace character (ie ' '). 
-To get a whole line, using std::getline()
 
 ## Newlines: std::endl vs \n
 
