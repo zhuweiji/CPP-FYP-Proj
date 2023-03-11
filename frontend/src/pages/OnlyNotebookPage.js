@@ -66,7 +66,7 @@ export default function OnlyNotebookPage() {
                 onClick={() => navigate(`/tutorial/${topicId}/${tutorialId}`)}
                 startIcon={<DoubleArrowIcon />}
             >
-                To the Tutorial
+                Skip
             </Button>
             {/* </Fade> */}
 
@@ -84,7 +84,7 @@ export default function OnlyNotebookPage() {
                     sx={{ mt: 10, mb: 20, minWidth: '40vw', minHeight: 100 }}
                     onClick={() => navigate(`/tutorial/${topicId}/${tutorialId}`)}
                 >
-                    To the Tutorial!
+                    Next!
                 </Button>
             </Stack>
         </>
