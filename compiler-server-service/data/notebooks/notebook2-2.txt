@@ -1,11 +1,525 @@
 # Creating our own C++ objects
 
+## What's in a class?
+
+In our programming without OOP thus far, we have learned two broad concepts: variables and functions
+
+A class can contain variables and functions within itself. \n
+When a class contains 
+1. variables - we call them data members or member variables
+2. functions - we call them function members
+
+[Verbiage in other programming languages]^{You may see the terms attributes/properties being used to refer to data members and method being used to refer to member functions in other OO languages such as Python, JavaScript, Java, Objective-C, C#, and so on. While there may be minor variances between languages, the broad stroke concpet is the same. }
+
+### Data Members
+
+These represent data types encapsulated by a class. \n
+These typically represent data that is required by that class to function or can be logically grouped with the class conceptually.
+
+<Code>
+int   BankAccountUser.money
+int   ComplexNumber.real_value
+bool  NetworkConnection.is_connected 
+</Code>
+
+### Function Members
+
+These represent functions that belong to a class. \n
+These functions typically operate on the classes' own data members, or are otherwise logically connected with the idea of the class in some manner.
+
+<Code>
+void BankAccountUser.display_current_balance()
+int  BankAccountUser.deposit(int amountCents)
+bool NetworkConnection.disconnect()
+</Code>
+
+## Object Instantialization
+
+Remember the difference between an object and a class? \n
+A class is the blueprint (Complex Numbers) from which we can create multple objects (1+2i, -3+4i, ...).
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+#include <iostream>
+#include "complex.cpp"
+int main(){
+    ComplexNumber z1 {1,2}; // instantialization of an object
+    z1.print();
+}
+</EditorFile>
+<EditorFile filename=complex.cpp>
+#include <iostream>
+
+class ComplexNumber{
+    public:
+        int real_value;
+        int complex_value;
+
+        void print(){
+            std::cout << "Complex Number " << real_value << " + " << complex_value << " i\n" ;
+        }
+        ComplexNumber add(ComplexNumber other){
+            return ComplexNumber{real_value + other.real_value, complex_value + other.complex_value};
+        }
+        ComplexNumber subtract(ComplexNumber other){
+            return  ComplexNumber{other.real_value - real_value, other.complex_value - complex_value};
+        }
+        ComplexNumber multiply(ComplexNumber other){
+            int real      = real_value * other.real_value - complex_value * other.complex_value;
+            int imaginary = real_value * other.complex_value + complex_value * other.real_value;
+            return ComplexNumber{real, imaginary};
+        }
+};
+</EditorFile>
+
+</EditorGroup>
+
+
 ## Public and Private attributes
 
-## Instance Variables
+In many cases, we might want to hide some internal data or functionality of the class to prevent modification by others.
 
-## Functions in classes (Methods)
+For example, take the `BackAccountUser`  class that we mentioned previously.
+
+
+Much of the rationale for creating classes in the first place was to minimize confusion and provide clarity to code. 
+A large degree of the benefit of using objects and classes is that they provide an encapsulated logical entity that will behave as expected whenever we see or use it in the code.
+
+### Story Time
+
+Imagine if we had the following class `BankAccountUser`  which has the money data member and some function members that change the amount of money that the User has. \n
+Bank Account holders cannot have their balances go below zero in this bank. 
+
+<Code>
+// amount of money the user has in the bank.
+int BankAccountUser.money \n
+
+// add some money to their account when the user deposits some money at an ATM or bank outlet.
+bool BackAccountUser.deposit(int amountCents) \n
+
+// withdraw (removes) some money from their bank account, only if they have sufficient balance in their account.  
+// if they don't, return false
+bool BankAccountUser.withdraw(int amountCents)
+</Code>
+
+Let's say that a new person (Mary) makes a new account with the Bank. \n
+Mary makes an immediate deposit to the bank, handing money to the bank teller, who then updates on the Bank's system that Mary has made a deposit.
+
+<Code>
+// Mary creates their bank account and immediately decides to deposit $5000 to their account
+Mary = BankAccountUser{};
+Mary.deposit(5000*100); \n
+...
+// Some time later, Mary makes a withdrawal
+Mary.withdraw(3000*100); \n
+</Code>
+
+Another developer writes some code for a payments app that links to a person's bank account. \n
+His code directly removes money from money data member directly instead of calling the withdraw function. 
+
+
+(Don't worry about the syntax for now, we'll dig into the details of how to write a class in the bottom of this section.)
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile filename=main.cpp>
+#include "BankAccountUser.cpp"
+
+#include <iostream>
+
+int main(){
+    BankAccountUser Mary = BankAccountUser {};
+    Mary.deposit(5000*100);
+    Mary.withdraw(3000*100);
+
+    Mary.money -= 3000 * 100;
+
+    std::cout << Mary.money;
+
+    return 0;
+}
+</EditorFile>
+
+<EditorFile  filename=BankAccountUser.cpp>
+#ifndef BackAccountUser_CPP 
+#define BackAccountUser_CPP
+
+class BankAccountUser{
+    public:
+        int money;
+        bool deposit(int amountCents){
+            money += amountCents;
+            return true;
+        }
+        bool withdraw(int amountCents){
+            if (amountCents <= money){
+                money -= amountCents;
+                return true;
+            }
+            return false;
+        }
+};
+
+#endif
+</EditorFile>
+</EditorGroup>
+
+Great! It complies, it runs, what could go wrong?
+
+[Explanation.]^{Because the writer of the code didn't use the withdraw() function, the user's balance could go less than zero, and there would be no indication that anything was wrong. The withdraw() function implements a check on the balance of the BackAccountUser which performs a check on whether a withdrawal can be made or not based on real-world logic. In fact, by directly manipulating the data member BankAccountUser.money in this way, anyone could just arbitrarily change the value as and when they like in their code, which would break our mental understanding of a BankAccountUser object.}
+
+
+
+This is why we introduce the concepts of public and private members. \n
+There are some public members (i.e. data or function members) which are exposed and can be changed by anyone at anytime.
+
+<Code>
+Mary.money = 1000000
+</Code>
+
+However, we can also write private members which can only be accessed by the function members of the class itself, and not by the outside world. \n
+Anything that is not a function member of the class itself attempting to use a private member will throw an error.
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile filename=main.cpp>
+#include "BankAccountUser.cpp"
+int main(){
+    BankAccountUser Mary = BankAccountUser {};
+    Mary.deposit(5000*100);
+    Mary.withdraw(3000*100);
+
+    Mary.money -= 3000 * 100;
+
+    std::cout << Mary.money;
+
+    return 0;
+</EditorFile>
+
+<EditorFile  filename=BankAccountUser.cpp>
+class BankAccountUser{
+    private:
+        int money = 0;
+    public:
+        bool deposit(int amountCents){
+            money += amountCents;
+            return true;
+        }
+        bool withdraw(int amountCents){
+            if (amountCents >= money){
+                money -= amountCents;
+                return true;
+            }
+            return false;
+        }
+};
+</EditorFile>
+
+</EditorGroup>
+
+Members are private by default (any members not explicitly declared as public are private). \n
+
+Other developers can write code to use the objects we create without having to worry about accidentally breaking the correctness of the object.
+
+## Syntax of a C++ class
+
+The syntax of creating a C++ class is the following
+
+<Code>
+class MyClassName{
+    int attribute_1;       // a private member (private by default)
+
+    public:
+        int attribute_2;   // a public data member
+        void my_method(){  // a public function member
+
+        }
+        
+};
+</Code>
+
+## Constructors
+
+When all the data members of a class are public, we can instantialize ( create an object from the class ) using list-initialization.
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iostream>
+
+#include <iostream>
+class MyClass{
+    public:
+        int a{};
+};
+int main() {
+    MyClass object = MyClass{1}; // instantialization using braces (list-initialization)
+    std::cout << object.a;
+    return 0;
+}
+
+ </Editor>
+
+
+However, when one or more members are private, we will use a constructor to initialize the class.
+
+We use a constructor to initialize member variables of the class to user-provided values, and also to do any setup steps necessary for the class to be used (e.g. open a file or database). \n
+The constructor:
+1. Must be public
+2. Should have the same name as the class
+3. Should have no return type (not even void)
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+
+<EditorFile  filename=BankAccountUser.cpp>
+class BankAccountUser{
+    private:
+        int money = 0;
+    public:
+        BankAccountUser(int startingBalance){
+            money = startingBalance;
+        }
+    
+};
+</EditorFile>
+
+<EditorFile filename=main.cpp>
+#include "BankAccountUser.cpp"
+int main(){
+    BankAccountUser Mary = BankAccountUser {1000 * 100};
+    return 0;
+}
+</EditorFile>
+</EditorGroup>
+
+Using a constructor, we can assert that the values we initialize an object with are sane and valid.
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+
+<EditorFile filename=main.cpp>
+#include "BankAccountUser.cpp"
+int main(){
+    BankAccountUser Mary = BankAccountUser {-50};
+    return 0;
+}
+</EditorFile>
+
+<EditorFile  filename=BankAccountUser.cpp>
+#include <stdexcept>
+#include <iostream>
+class BankAccountUser{
+    private:
+        int money = 0;
+    public:
+        BankAccountUser(int startingBalance){
+            if (startingBalance < 0){
+                throw std::invalid_argument( "Tried to create a new User with negative balance in their account" );
+
+            }
+            money = startingBalance;
+        }
+    
+};
+</EditorFile>
+</EditorGroup>
+
+## Member Initialization List
+
+While it may be more natural to initialize member variables using assignment, like in this example: 
+
+<Code>
+public:
+    MyClass(){
+        attribute_1 = 1;
+        attribute_2 = 'h';
+    }
+</Code>
+
+It's best practice in C++ to initialize member variables in a constructor using member initialization lists, in this format:
+
+<Code>
+public:
+    MyClass(): attribute_1{1}, attribute_2{'h'}{
+
+    }
+</Code>
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iostream>
+class MyClass{
+    int attribute_1;
+    char attribute_2;
+    public:
+        MyClass(int a1, char a2): attribute_1{a1}, attribute_2{a2}{
+
+        }
+};
+
+int main() {
+    MyClass my_object = MyClass(1,'h');
+    return 0;
+}
+</Editor>
+
+
+This is for code optimization and is an established best practice. Using assignment (the first method) might generate warnings sometimes.
+
+More in-depth explanations are available below
+
+[learncpp](https://www.learncpp.com/cpp-tutorial/constructor-member-initializer-lists/)
+
+[stackoverflow](https://stackoverflow.com/questions/926752/why-should-i-prefer-to-use-member-initialization-lists)
+
 
 ## Static Variables/Methods
 
+Thus far, the member variables we have seen belong to objects. \n
+For example the amount of money in Mary's bank account is different to the amount of money in Bob's bank account.
 
+However, we might want to have some variables which are shared across all objects of the same class.\n
+For example, the bank's interest rate for all bank accounts, since the interest rate is the same for all BankAccountUser objects.
+
+<Code>
+BankAccountUser
+    interest_rate = 3.1% \n
+---------------------------
+BankAccountUser Mary:
+    money         = 500 \n
+
+BankAccountUser Gary:
+    money         = 1920 \n
+
+BankAccountUser Lary:
+    money         = 10
+</Code>
+
+[More Examples]^{Typical examples would be the database connection string to a database that stores all the data about BankAccountUsers, or a count of the number of all users created.}
+
+
+### Using static variables
+
+When accessing static variables from the class namespace, we use the scope resolution operator ( :: ) to access static variables, instead of the dot operator ( . ) \n
+However, when accessing static variables from an object, use the dot operator ( . )
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+#include <iostream>
+#include "myclass.cpp"
+int MyClass::s_value{ 1 };  // declaring the static member variable - we'll discuss this in the next part
+
+int main(){
+    std::cout << "Static Member Variable: " <<  MyClass::s_value << "\n\n";
+    MyClass object1 = MyClass{5};
+    MyClass object2 = MyClass{10};
+    std::cout << "Static Member Variable: " <<  object1.s_value << '\n';
+    std::cout << "Static Member Variable: " <<  object2.s_value << '\n';
+    object1.print();
+    object2.print();
+    return 0;
+}
+</EditorFile>
+<EditorFile  filename=myclass.cpp>
+#ifndef myclass_cpp
+#define myclass_cpp
+#include <iostream>
+
+class MyClass{
+    int m_value {};
+    public:
+        static int s_value; // declares the static member variable - we'll discuss this in the next part
+        MyClass(int value): m_value{value}{
+
+        }
+        void print(){
+            std::cout << "Member Variable: " << m_value << '\n';
+        }
+};
+
+#endif
+</EditorFile>
+</EditorGroup>
+
+### Syntax
+
+We declare that a member variable is static by adding the static keyword in the declaration.
+
+<Code>static int interest_rate;</Code>
+
+When instantiating static member variables pre C++17, we must declare them outside the class definition. \n
+
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iostream>
+
+class MyClass{
+    public:
+        static int s_value; // declares the static member variable
+};
+
+int MyClass::s_value{ 1 }; // defines the static member variable 
+
+int main()
+{
+
+} </Editor>
+
+
+## Header Files
+
+We can use header files to seperate the declaration and definition of our class files, just as we have done for functions.
+
+We typically only seperate the member functions into their own .cpp file, while the class definition goes into the .h file (including member variables and static member variables)
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile filename=date.h>
+#ifndef DATE_H
+#define DATE_H
+
+class Date
+{
+private:
+    int m_year;
+    int m_month;
+    int m_day;
+
+public:
+    Date(int year, int month, int day);
+
+    void SetDate(int year, int month, int day);
+
+    int getYear() { return m_year; }
+    int getMonth() { return m_month; }
+    int getDay()  { return m_day; }
+};
+
+#endif
+
+</EditorFile>
+
+<EditorFile filename=date.cpp>
+#include "Date.h"
+
+// Date constructor
+Date::Date(int year, int month, int day)
+{
+    SetDate(year, month, day);
+}
+
+// Date member function
+void Date::SetDate(int year, int month, int day)
+{
+    m_month = month;
+    m_day = day;
+    m_year = year;
+}
+</EditorFile>
+
+<EditorFile  filename=main.cpp>
+int main(){
+    return 0;
+}
+</EditorFile>
+</EditorGroup>
+
+## Hidden 'this' Pointer
+
+For most usecases, there is no need to access the `this`  pointer in a C++ class.
+
+However, users coming from other OOP languages such as Java and Python may be interested in the following article.
+[The This Pointer in C++ classes](https://www.learncpp.com/cpp-tutorial/the-hidden-this-pointer/)

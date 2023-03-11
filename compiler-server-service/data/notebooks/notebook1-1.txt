@@ -4,27 +4,70 @@ Welcome to Comprehend C++!!
 This is a website that was created specifically to help you learn programming in Object Oriented Programming in C++ \n
 We hope that through this website will help your learning process, and make it more interesting!
 
+## Prerequisites
+
+
+This application was built for the OODP course in Nanyang Technological University. 
+Any views expressed in this application are solely those of the author and do not represent that of the University. 
+While we have tried to source all our work as appropriate under fair use, if there is any work which you believe should not be on this site, please contact me at wzhu002@e.ntu.edu.sg
+
+This course assumes that you have some basic familiarity with programming. \n
+The following knowledge is presumed:
+    1. Basic Data Structures (e.g. ints, bools, lists)
+    2. Loops and If Statements
+    3. Functions
+
+## A short introduction to these tutorials
+
 As you may have experienced, setting up the development environment is sometimes 90 percent of the trouble. 
-The work involved in preparing your laptop/desktop to be able to write code, such as by installing the compiler for your programming language of choice, the code editor or IDE (such as VSCode, PyCharm) is enormous. \n
+The work involved in preparing your computer to be able to write code, such as by installing the compiler for a programming language , the code editor or IDE (such as VSCode, PyCharm) is enormous. \n
 To help you with this, we have created the some tools to make it easier for you to get started on writing code quickly, so that you can focus on the other 90 percent of the trouble that is actually learning the programming language.
 
-Firstly, this page is a notebook that has some helpful [links](https://learn.microsoft.com/en-us/cpp/?view=msvc-170) , such this link to the official C++ documentation by Microsoft. 
+### Links and Tooltips
 
-There are also some tooltips that may hold additional information, such as more detailed explainations of concepts or good coding practices highlighted for you. 
+Firstly, there might be underlined blue text like this: [links](https://learn.microsoft.com/en-us/cpp/?view=msvc-170) , which are links. This one is a link to the official C++ documentation by Microsoft. 
+
+There are also some tooltips that may hold additional information, such as more detailed explainations of concepts or good coding practices highlighted for you.
+One such tooltip is provided below, and they are usually in dark green.
 
 [Here is a tooltip you can hover on!]^{Helpful information would be placed here, so look out for these tooltips!} 
 
-Each tutorial has a notebook like this that will guide you step-by-step through the material you will need to learn. 
-Secondly, in the notebooks are some code editors that will allow you to run code to have a better understanding of the material. Here's one below.
+### Code Editors
+
+There are code editors that will allow you to run code to have a better understanding of the material. Here's one below. \n
+Don't worry about the code for now, just try running it and see what happens!
 
 <Editor nofiles=true, noerrors=false, nocompile=false >
-    int main() {
+#include <iostream>
+int main() {
+    std::cout << "hello world!";
     return 0;
 } </Editor>
 
+The output of the code comes in a certain format:
 
-When you require it, the editors also have a file bar at the top where you can create new files.
-All the files and code you write will be compiled together and run. We will learn more about this in the next topics!
+<Code>
+CodeExecutionResult: Success - The first line is a summary of what happened after you compiled your code. You can usually ignore this line \n
+There are two outputs: stdout and stderr, and these are displayed on two seperate lines as 
+out >   (normal output)
+err >   (error output)
+</Code>
+
+[More information about stderr and stdout]^{There are three standard streams for input and output in both Unix and Windows: stdin (standard input), stdout (standard output) and stderr (standard error). Typically when you run programs through your IDE or shell you will only see one output, but this is a merged stream of both stdout and stderr.}
+
+
+Some editors will also allow you to create and remove new files. 
+All the files and code you write will be compiled together and run. We will learn more about this in the next topics! \n
+There are three files in the editor below:
+
+<Code>
+1. main.cpp
+2. add.cpp
+3. add.h
+</Code>
+
+All the files will be compiled together and run when you click the compile button. Try running the code now!
+
 
 <EditorGroup nofiles=false, noerrors=false, nocompile=false>
 <EditorFile  filename=main.cpp>
@@ -47,21 +90,16 @@ int add(int v1, int v2);
 
 </EditorGroup>
 
-# Prerequisites
+# Programing in C++
 
+Through these tutorials we will try to build some familiarity with C++, although the focus of this course is on Object Oriented Programming. \n
+Therefore, we will only be going through enough C++ knowledge to be able to start coding OOP. To learn more about C++ itself, you can use the link below which goes into in-depth detail about C++. It is also tailored for absolute beginners to programming, although advanced readers familliar with other languages will have a lot of juicy material to dig into as well.
 
-This application was built for the OODP course in Nanyang Technological University. 
-Any views expressed in this application are solely those of the author and do not represent that of the University. 
-While we have tried to source all our work as appropriate under fair use, if there is any work which you believe should not be on this site, please contact me at wzhu002@e.ntu.edu.sg
+[More about C++](https://learncpp.com)
 
-This course assumes that you have some basic familiarity with programming. \n
-The following knowledge is presumed:
-    1. Basic Data Structures (e.g. ints, bools, lists)
-    2. Loops and If Statements
-    3. Functions
+Otherwise, let's get started!
 
-
-## main()
+## The main() function
 
 
 When writing a C++ program, you must first write the `main()` function. This function serves as the entry point to the program.
@@ -97,7 +135,8 @@ This file runs well, and no errors are reported.
 ## std::cin and std::cout
 
 
-Every program takes in some kind of input and returns some kind of output, from the most basic calculator to the most complex stock market prediction algorithm.
+Every program takes in some kind of input and returns some kind of output. 
+This ranges from the most basic calculator to the most complex stock market prediction algorithm. \n
 The most basic way to provide input and output is through the terminal (or command line). You have already seen the terminal in action, as the display right below each editor.
 
 
@@ -105,17 +144,17 @@ We can display some text ("Hello World!") on the terminal with the following cod
 
 
 <Editor nofiles=true, noerrors=false, nocompile=false >#include <iostream>
-    int main() {
+int main() {
     std::cout << "Hello World!";
     return 0;
 } </Editor>
 
 Let's break down what we did here.
 
-Every programming language has some pre-written libraries built into the language. For C++, we have the standard library. 
-Part of this is the input/output library (iostream) that deals with basic input and output. This allows us to read from and write to the terminal.
+C++ has many pre-built libraries, such as the input/output library (iostream) that deals with reading and writing input and output from the standard streams. \n
+We used the `#include <iostream>`  line to include the iostream library in our code. \n
+This allows us to read from and write to the terminal.
 
-We tell the compiler to add this functionality via the `#include <iostream>` statement.
 
 As part of the iostream library, there are the functions std::cin and std::cout. They are short for character in (cin) and character out (cout). 
 We use the insertion operator << to display the data on the right of the std::cout function. 

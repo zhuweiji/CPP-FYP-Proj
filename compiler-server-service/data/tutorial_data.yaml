@@ -58,7 +58,7 @@ topics:
     img_name: corgi_and_friend.jpg
 
     tutorials:
-      - name: Why do we have to learn something else?
+      - name: Basics of Object Oriented Programming in C++
         id: 1
         no_tutorial: True
 

@@ -19,7 +19,15 @@ Complex Number z: a + b i
 Where a is the real number component and b is the imaginary component
 
 To add and subtract two complex numbers, we simply add/subtract their respective real number and imaginary components. 
-`z1 + z2 = (a1 + a2) + (b1 + b2) i`
+
+<Code>
+z1 = a1 + b1 i
+z2 = a2 + b2 i
+\n
+z1 + z2 = (a1 + a2) + (b1 + b2) i
+</Code>
+
+
 
 How would we implement this as code? 
 Using functions, we might implement the following:
@@ -98,7 +106,9 @@ This creates the opportunity for an error where we change one component of the i
     }
  </Editor>
 
-Do you see the error? We mistakenly added  (a1 + a2) and (b1 + b3), when it should have been (b1 + b2). This might happen more frequently than you expect, especially if we are performing a large number of operations or are dealing with a large number of imaginary numbers.
+[Do you see the error?]^{We mistakenly added  (a1 + a2) and (b1 + b3), when it should have been (b1 + b2). This might happen more frequently than you expect, especially if we are performing a large number of operations or are dealing with a large number of imaginary numbers.}
+
+### Grouping the data
 
 We can use the std::pair type to make the code more explicit. \n
 A pair is a data type containing two components
@@ -193,13 +203,19 @@ In this way, the functionality of complex numbers is grouped together, and we ca
 
 However, there are more potential errors we could fix as well.
 
-if we had two types of operations both operating on pairs of ints, we might confuse their functionality together, since they both operate on pairs of ints.
+If we had two types of operations both operating on pairs of ints, we might confuse their functionality together, since they both operate on pairs of ints.
 Take for example an engineering program which can perform operations on both complex numbers and 2-d locations.
+\n
+See if you can find the error in the program:
 
 <Code>
 complex number:  z = a + bi
+    The real and imaginary components of the complex numbers in the program may take values from -100 to +100
+
 location:        point = x, y
+    The lattitudes and longitudes may take arbitrarily large values.
 </Code>
+
 
 
 <EditorGroup nofiles=false, noerrors=false, nocompile=false>
@@ -215,7 +231,7 @@ location:        point = x, y
         std::pair <int,int> z2 (2,2);
         
         // location z = x,y
-        std::pair <int,int> z (150,50);
+        std::pair <int,int> z (1500,-15901);
 
         std::pair<int,int> z3 = add_complex(z1,z);
         z3 = multiply_complex(z1, z3);
@@ -282,7 +298,8 @@ location:        point = x, y
 </EditorFile>
 </EditorGroup>
 
-Woops! We added a location to our complex number and multiplied it. Who knows where we'd end up!
+[What was the error?]^{Woops! We added a location to our complex number and multiplied it. Who knows where we'd end up!}
+
 
 [2-d Locations and Complex Numbers]^{While complex numbers are like 2-d locations in some sense mathematically, it would be best for us to avoid confusing the two in our code.}
 
@@ -374,7 +391,7 @@ int main() {
     ComplexNumber z2 {2,2};
 
     //location z
-    Location z{100,150};
+    Location z{1500,-15901};
 
     ComplexNumber z3 = z1.add(z2);
 
