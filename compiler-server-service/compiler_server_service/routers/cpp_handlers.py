@@ -26,10 +26,29 @@ router = APIRouter(
     tags=['Compiler Service'],
 )
 
+def create_file_to_null_stdcin():
+    """Creates a CPP file that sets std::cin to null, otherwise the process will hang until timeout waiting for input from cin"""
+    code = """
+#include <iostream>
+    
+    struct myStruct
+{
+    myStruct() { std::cin.rdbuf(nullptr); }
+};
+
+namespace
+{
+    // Put in anonymous namespace, because this variable should not be accessed
+    // from other translation units
+    myStruct myStructVariable;
+}"""
+    return LogicalCodeFile(code=code)
+    
 
 def parse_incoming_codegroup(code_data: dict):
     try:
         all_code = [LogicalCodeFile(filename=k, code=v) for k,v in code_data.items()]
+        all_code.append(create_file_to_null_stdcin())
         return all_code
         
     except Exception as E:
