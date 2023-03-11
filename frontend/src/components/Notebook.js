@@ -222,7 +222,6 @@ export default function Notebook({ name }) {
             .map(j => j.groups)
             .map(k => args[k.name] = k.value)
 
-
         switch (componentName) {
             case 'EditorGroup':
                 let splitData = componentBuilder.splitComponents(data, 'EditorFile');
@@ -243,8 +242,10 @@ export default function Notebook({ name }) {
                     let filename = obj.filename ?? generateFilename()
                     editorData[`${dir}/${filename}`] = obj.data;
                 });
+
+                let codeEditorHeightVh = Math.min(Object.values(editorData)[0].split('\n').length + 15, 35) + 'vh'
                 component = <Box key={lineNumber} mb={15} mt={5}>
-                    <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' files={editorData}
+                    <CodeEditor codeEditorHeight={codeEditorHeightVh} executionResultHeight='8vh' files={editorData}
                         noCompile={args.nocompile === 'true' ?? false} errorOptions={!args.noerrors === 'true' ?? true} noFiles={args.nofiles === 'true' ?? false}> </CodeEditor>
                 </Box>
                 break;
@@ -252,8 +253,12 @@ export default function Notebook({ name }) {
                 return { filename: args.filename, data: data }
 
             case 'Editor':
+                let codeEditorHeightVh2 = Math.min(data.length + 3, 35) + 'vh'
+
                 component = <Box key={lineNumber} mb={15} mt={5}>
-                    <CodeEditor codeEditorHeight='20vh' executionResultHeight='8vh' dir={`${lineNumber}/`} defaultValue={data.trim() ?? '>'} noCompile={args.nocompile === 'true' ?? false} errorOptions={!args.noerrors === 'true' ?? true} noFiles={args.nofiles === 'true' ?? false}> </CodeEditor>
+                    <CodeEditor codeEditorHeight={codeEditorHeightVh2} executionResultHeight='8vh' dir={`${lineNumber}/`}
+                        defaultValue={data.trim() ?? '>'} noCompile={args.nocompile === 'true' ?? false} errorOptions={!args.noerrors === 'true' ?? true}
+                        noFiles={args.nofiles === 'true' ?? false}> </CodeEditor>
                 </Box>
                 break;
 
@@ -268,7 +273,7 @@ export default function Notebook({ name }) {
                 break;
 
             case 'MermaidDiagram':
-                component = MermaidComponent(data);
+                component = MermaidComponent(data, lineNumber);
                 break;
 
             default:
@@ -333,8 +338,10 @@ const reactComponentKey = () => {
 }
 
 
-const MermaidComponent = (diagramStr) => {
-    return <MermaidDiagram chart={diagramStr} />
+const MermaidComponent = (diagramStr, key) => {
+    return <Box mt={key <= 2 ? 0 : 10} mb={5} key={reactComponentKey()}>
+        <MermaidDiagram chart={diagramStr} />
+    </Box>
 
 }
 
