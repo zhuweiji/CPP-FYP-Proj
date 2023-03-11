@@ -7,6 +7,7 @@ import { tooltipClasses } from '@mui/material/Tooltip';
 
 import { NotebookService } from "../services/NotebookService";
 import CodeEditor from "../components/Editor";
+import MermaidDiagram from "../components/MermaidDiagram";
 
 
 const titleRegex = /^(?<!#)#(?<content>[\w\s]+)/
@@ -222,8 +223,6 @@ export default function Notebook({ name }) {
             .map(k => args[k.name] = k.value)
 
 
-
-
         switch (componentName) {
             case 'EditorGroup':
                 let splitData = componentBuilder.splitComponents(data, 'EditorFile');
@@ -266,6 +265,10 @@ export default function Notebook({ name }) {
                 component = <Box key={lineNumber} p={3} backgroundColor='black'>
                     <Typography fontFamily='PT Serif' color='whitesmoke' key={reactComponentKey()} variant="h5" whiteSpace="pre-line" sx={{ ml: 5 }}>{data}</Typography>
                 </Box>
+                break;
+
+            case 'MermaidDiagram':
+                component = MermaidComponent(data);
                 break;
 
             default:
@@ -329,6 +332,11 @@ const reactComponentKey = () => {
     return _reactComponentKey;
 }
 
+
+const MermaidComponent = (diagramStr) => {
+    return <MermaidDiagram chart={diagramStr} />
+
+}
 
 const NotebookHeader = (text, key) => {
     // dont add margin if one of the few items on the page - otherwise there is too much whitespace on top
