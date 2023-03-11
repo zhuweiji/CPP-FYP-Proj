@@ -43,16 +43,6 @@ topics:
         tutorial_instructions: instructions1.txt
         no_tutorial: True
 
-      - name: Static Casting, Const Variables and Literals
-        id: 8
-        tutorial_instructions: instructions1.txt
-        no_tutorial: True
-
-      - name: Namespaces
-        id: 9
-        tutorial_instructions: instructions1.txt
-        no_tutorial: True
-
   - topic_name: Tutorial 2 - Object Oriented Design in C++
     description: Implement the Object Oriented principles in C++ to make your understanding of OOP language agnostic
     img_name: corgi_and_friend.jpg
@@ -64,15 +54,6 @@ topics:
 
       - name: Creating a C++ Object.
         id: 2
-        no_tutorial: True
-
-      - name: Adipisicing laboris consequat consequat irure esse laboris do esse.
-        id: 3
-        no_tutorial: True
-
-      - name: Private or Public?
-        id: 4
-        description: "Encapsulation: Don't air your dirty laundry where others might see them."
         no_tutorial: True
 
       - name: "Inheritance vs Composition: Which to Choose?"
