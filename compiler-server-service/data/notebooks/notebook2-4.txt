@@ -1,0 +1,230 @@
+# Object Relationships
+
+## What are they?
+
+We have seen how classes were designed to reduce problems by encapsulating code into logical components.  \n
+There are some common ways that we combine these components when we code.
+
+In Object-Oriented Programming (OOP), object relationships refer to the ways in which objects can be associated with one another. There are several types of object relationships, including composition, aggregation, and inheritance.
+
+Composition is a relationship where one object is made up of one or more other objects. In this relationship, the composed object is responsible for the creation and destruction of its component objects. For example, a Car object might be composed of an Engine object, a Transmission object, and several Wheel objects. \n
+Aggregation is similar to composition, but the aggregated object is not responsible for the creation and destruction of its component objects. Instead, the component objects exist independently of the aggregated object. For example, a Team object might be an aggregation of several Player objects, but the Player objects can exist independently of the Team object. \n
+Inheritance is a relationship where one class is based on another class, inheriting its properties and behaviors. Inheritance allows for code reuse and can make it easier to create and maintain complex systems. For example, a SavingsAccount class might inherit from a more general BankAccount class, allowing the SavingsAccount class to reuse the code and behaviors of the BankAccount class.
+
+But what does this all mean?\n
+Let's take a look at some examples to see how it all fits together. 
+
+We will contextualise each example with a program it would run in because these concepts are very abstract and highly flexible. \n
+In most cases, you will be able to implement any program with any relationship. However, there is a better and worse way to represent the relationships in code, and choosing the wrong method would incur penalties on the code's readability and maintainability. \n 
+In each case, we will see when a relationship works, when it doesn't, and how it might affect changes we might want to make to the code in the future.
+
+Hopefully by the end, this will all seem obvious.
+
+## Composition
+
+This is the most basic form of object relationship. \n
+If we had to discribe this relationship between two objects, it would be with the words "has-a".
+
+In this case, the program we might use this in would be some Interior Design software. \n
+We have the following specifications for the program:\n
+1. There is furnishing such as Door, Floor  that can be placed in Rooms.
+2. The Room may or may not have a Door or Floor, but if one is installed, then it should be destroyed when the Room is destroyed.
+
+In this case, the lifecycle of a Door is dependent on the Room. If the Door is deleted, the Chair is deleted. 
+
+This is the strictest form of object relationship, composition. Objects bound by composition live and die together, and any changes made on either should significantly affect the other.
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+#include "door.cpp"
+#include "floor.cpp"
+class Room {
+private:
+    Door door;
+    Floor floor;
+
+public:
+    Room() : door(), floor() {
+        // Constructor code for Room class
+    }
+};
+
+int main(){
+    Room livingRoom = Room();
+    return 0;
+}
+</EditorFile>
+
+<EditorFile filename=door.cpp>
+class Door {
+public:
+    Door() {
+        // Constructor code for Door class
+    }
+};
+</EditorFile>
+
+<EditorFile filename=floor.cpp>
+class Floor {
+public:
+    Floor() {
+        // Constructor code for Floor class
+    }
+};
+</EditorFile>
+</EditorGroup>
+
+In code, we can view the composition relationship by the fact that Room directly uses a Door and Floor object as member variables. 
+This makes the Door and Floor component of the Room unchangable and tie them directly to the lifecycle of the Room object. \n
+The comparison to this would be where we have an array of objects (or pointers to objects) which can be removed or added to the Room at any time, and where the Room can be deleted without deleting the objects in the array. 
+
+The best fit for a composition relationship is when one object should not continue to exist if its parent is removed. 
+
+## Aggregation
+
+Aggregation is one of the most commonly used relationships, allowing for a good amount of component reusability. \n
+If we had to describe this relationship between two objects, it would be with the words "part-of".
+
+For example, a Chair might be part-of a Room, and the Room might be part-of a House. \n
+In this case, we could store the Chairs before destroying the Room. We can dynamically add Chairs to the Room at runtime too.
+
+The lifecycle of the Chair does not depend on the lifecycle of the Room. \n
+Whether the Room is destroyed or not, we would probably want to keep the Chair intact, so that we might reuse the Chair elsewhere in another room.
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile filename=room.cpp>#include <vector>
+#include "chair.cpp"
+class Room {
+private:
+    std::vector<Chair*> chairs;
+
+public:
+    Room() {
+        // Constructor code for Room class
+    }
+
+    void addChair(Chair* chair) {
+        chairs.push_back(chair);
+    }
+
+    void removeChair(Chair* chair) {
+        for (auto it = chairs.begin(); it != chairs.end(); it++) {
+            if (*it == chair) {
+                chairs.erase(it);
+                break;
+            }
+        }
+    }
+};
+
+</EditorFile>
+
+<EditorFile filename=chair.cpp>
+class Chair {
+public:
+    Chair() {
+        // Constructor code for Chair class
+    }
+};
+</EditorFile>
+
+
+<EditorFile  filename=main.cpp>
+int main(){
+    return 0;
+}
+</EditorFile>
+</EditorGroup>
+
+## Inheritance
+
+Inheritance is a little more new. 
+If we had to describe this relationship between two objects, it would be with the words "is-a".
+
+<MermaidDiagram>
+flowchart BT
+    A(Shape)
+    B(Triangle)
+    C(Rectangle)
+    D(Isoceles Triangle)
+    E(Equilateral Triangle)
+    B --> A
+    C --> A
+    D --> B
+    E --> B
+</MermaidDiagram>
+
+Inheritance consists of a class being inherited from, called the parent class, base class or super class.
+The class doing the inheriting is called the child class, derived class or subclass.
+
+Inheritance makes sense when child classes are similar to parent classes, but have additional functionality on top of the existing code. \n Parent classes are generally more abstract and generalizable and child classes more concrete and specific. \n
+All of the child classes of Shape are Shapes themselves.
+
+We can imagine that Shape might have the following properties:
+
+<Code>
+Shape
+-------
+Coordinates center \n
+int area
+int perimeter
+</Code>
+
+If we wrote code for the Rectangle class, we would have the same properties as Shape, but with some Rectangle specific members
+
+<Code>
+Rectangle
+-------
+Coordinates center \n
+int area
+int perimeter \n
+int width
+int height
+</Code>
+
+To implement a child class in C++, we use the following syntax
+
+<Code>
+class ChildClass : public ParentClass{
+    ...
+}
+</Code>
+
+We may use the public/private/protected access modifiers to change the visibilty of members of the parent classes. Private parent classes have all their public members set to private in the child class. \n
+A public parent class would ahve all their public members remain public in the child class.
+
+In any case, only public members are imported to the child class.
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iostream>
+class Shape {
+    public:
+        Shape() {}
+        int area();
+        int perimeter();
+};
+class Rectangle : public Shape {
+    public:
+        Rectangle(int width, int height) : width(width), height(height) {}
+        int area() { return width * height; }
+        int perimeter() { return 2 * (width + height); }
+    private:
+        int width, height;
+};
+int main() {
+    Rectangle r = Rectangle(5, 10);
+    std::cout << "Area: " << r.area() << std::endl;
+    std::cout << "Perimeter: " << r.perimeter() << std::endl;
+    return 0;
+}
+</Editor>
+
+### Virtual
+
+The virtual keyword is used to allow derived classes to override a method of the base class.
+
+When a method is declared as virtual in the base class, the compiler knows that the method can be overridden in a derived class. When the method is called on an object of the derived class, the overridden version of the method is called, even if the call is made through a pointer or reference to the base class.
+
+### Upcasting and Downcasting
+
+Upcasting is the process of casting a child class object to its parent class, while downcasting is the process of casting a parent class object to its child class.

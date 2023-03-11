@@ -55,13 +55,13 @@ topics:
         id: 2
         no_tutorial: True
 
-      - name: Object Relationships
+      - name: Clean Code
         id: 3
-        description: ""
         no_tutorial: True
 
-      - name: Clean Code
+      - name: Object Relationships
         id: 4
+        description: ""
         no_tutorial: True
 
       - name: "(SOLID) Single Responsibility Principle"

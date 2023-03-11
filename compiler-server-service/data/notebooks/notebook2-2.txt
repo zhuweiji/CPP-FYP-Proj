@@ -4,7 +4,7 @@
 
 In our programming without OOP thus far, we have learned two broad concepts: variables and functions
 
-A class can contain variables and functions within itself. \n
+A class can contain variables and functions. \n
 When a class contains 
 1. variables - we call them data members or member variables
 2. functions - we call them function members

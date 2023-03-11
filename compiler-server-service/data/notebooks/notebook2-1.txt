@@ -73,37 +73,37 @@ This creates the opportunity for an error where we change one component of the i
 
 <Editor nofiles=false, noerrors=false, nocompile=false >
 #include <iostream>     // std::cout
-    void print_complex(int a, int b){
-        std::cout << "Complex Number " << a << " + " << b << " i";
+void print_complex(int a, int b){
+    std::cout << "Complex Number " << a << " + " << b << " i";
+}
+
+int add_real(int a1, int a2) {
+    return a1+a2;
+    }
+int add_imaginary(int b1, int b2) {
+    return b1+b2;
     }
 
-    int add_real(int a1, int a2) {
-        return a1+a2;
-        }
-    int add_imaginary(int b1, int b2) {
-        return b1+b2;
-        }
+int main() {
+    // complex number z1 = 1 + 1i
+    int a1 = 1;
+    int b1 = 1; 
 
-    int main() {
-        // complex number z1 = 1 + 1i
-        int a1 = 1;
-        int b1 = 1; 
+    // complex number z2 = 2 + 2i
+    int a2 = 2;
+    int b2 = 2;
 
-        // complex number z2 = 2 + 2i
-        int a2 = 2;
-        int b2 = 2;
+    // complex number z3 = -1 + -1i
+    int a3 = -1;
+    int b3 = -1;
 
-        // complex number z3 = -1 + -1i
-        int a3 = -1;
-        int b3 = -1;
+    // z4 = a1 + b2
+    int a4 = add_real(a1,a2);
+    int b4 = add_imaginary(b1,b3);
 
-        // z4 = a1 + b2
-        int a4 = add_real(a1,a2);
-        int b4 = add_imaginary(b1,b3);
-
-        print_complex(a4,b4);
-        return 0;
-    }
+    print_complex(a4,b4);
+    return 0;
+}
  </Editor>
 
 [Do you see the error?]^{We mistakenly added  (a1 + a2) and (b1 + b3), when it should have been (b1 + b2). This might happen more frequently than you expect, especially if we are performing a large number of operations or are dealing with a large number of imaginary numbers.}
@@ -154,47 +154,47 @@ This groups related functionality about Complex Numbers together.
 
 #include "complex.h"
 
-    int main(){
-        std::pair <int,int> z1 (1,1);
-        std::pair <int,int> z2 (2,2);
+int main(){
+    std::pair <int,int> z1 (1,1);
+    std::pair <int,int> z2 (2,2);
 
-        std::pair<int,int> z3 = add_complex(z1,z2);
-        z3 = multiply_complex(z1, z3);
-        print_complex(z3);
-        
-    }
+    std::pair<int,int> z3 = add_complex(z1,z2);
+    z3 = multiply_complex(z1, z3);
+    print_complex(z3);
+    
+}
 </EditorFile>
 
 <EditorFile filename=complex.cpp>
-    #include <iostream>     // std::cout
-    #include <utility>      // std::pair, std::make_pair
+#include <iostream>     // std::cout
+#include <utility>      // std::pair, std::make_pair
 
-    #include "complex.h"
+#include "complex.h"
 
-    void print_complex(std::pair<int,int> z){
-        std::cout << "Complex Number " << z.first << " + " << z.second << " i";
-    }
-    std::pair<int,int> add_complex(std::pair<int,int> z1, std::pair<int,int> z2){
-        return std::pair<int,int> (z1.first + z2.first, z1.second + z2.second);
-    }
-    std::pair<int,int> subtract_complex(std::pair<int,int> z1, std::pair<int,int> z2){
-        return std::pair<int,int> (z2.first - z1.first, z2.second - z1.second );
-    }
-    std::pair<int,int> multiply_complex(std::pair<int,int> z1, std::pair<int,int> z2){
-        int real      = z1.first * z2.first - z1.second * z2.second;
-        int imaginary = z1.first * z2.second + z1.second * z2.first;
-        return std::pair<int,int> (real, imaginary );
-    }
+void print_complex(std::pair<int,int> z){
+    std::cout << "Complex Number " << z.first << " + " << z.second << " i";
+}
+std::pair<int,int> add_complex(std::pair<int,int> z1, std::pair<int,int> z2){
+    return std::pair<int,int> (z1.first + z2.first, z1.second + z2.second);
+}
+std::pair<int,int> subtract_complex(std::pair<int,int> z1, std::pair<int,int> z2){
+    return std::pair<int,int> (z2.first - z1.first, z2.second - z1.second );
+}
+std::pair<int,int> multiply_complex(std::pair<int,int> z1, std::pair<int,int> z2){
+    int real      = z1.first * z2.first - z1.second * z2.second;
+    int imaginary = z1.first * z2.second + z1.second * z2.first;
+    return std::pair<int,int> (real, imaginary );
+}
 
 </EditorFile>
 
 <EditorFile filename=complex.h>
 #include <utility>      // std::pair, std::make_pair
 
-    void print_complex(std::pair<int,int> z);
-    std::pair<int,int> add_complex(std::pair<int,int> z1, std::pair<int,int> z2);
-    std::pair<int,int> subtract_complex(std::pair<int,int> z1, std::pair<int,int> z2);
-    std::pair<int,int> multiply_complex(std::pair<int,int> z1, std::pair<int,int> z2);
+void print_complex(std::pair<int,int> z);
+std::pair<int,int> add_complex(std::pair<int,int> z1, std::pair<int,int> z2);
+std::pair<int,int> subtract_complex(std::pair<int,int> z1, std::pair<int,int> z2);
+std::pair<int,int> multiply_complex(std::pair<int,int> z1, std::pair<int,int> z2);
 
 </EditorFile>
 </EditorGroup>
@@ -225,76 +225,76 @@ location:        point = x, y
 
 #include "complex.h"
 
-    int main(){
-        // complex numbers z1 and z2
-        std::pair <int,int> z1 (1,1);
-        std::pair <int,int> z2 (2,2);
-        
-        // location z = x,y
-        std::pair <int,int> z (1500,-15901);
+int main(){
+    // complex numbers z1 and z2
+    std::pair <int,int> z1 (1,1);
+    std::pair <int,int> z2 (2,2);
+    
+    // location z = x,y
+    std::pair <int,int> z (1500,-15901);
 
-        std::pair<int,int> z3 = add_complex(z1,z);
-        z3 = multiply_complex(z1, z3);
-        print_complex(z3);
-    }
+    std::pair<int,int> z3 = add_complex(z1,z);
+    z3 = multiply_complex(z1, z3);
+    print_complex(z3);
+}
 </EditorFile>
 
 <EditorFile filename=complex.cpp>
-    #include <iostream>     // std::cout
-    #include <utility>      // std::pair, std::make_pair
+#include <iostream>     // std::cout
+#include <utility>      // std::pair, std::make_pair
 
-    #include "complex.h"
+#include "complex.h"
 
-    void print_complex(std::pair<int,int> z){
-        std::cout << "Complex Number " << z.first << " + " << z.second << " i";
-    }
-    std::pair<int,int> add_complex(std::pair<int,int> z1, std::pair<int,int> z2){
-        return std::pair<int,int> (z1.first + z2.first, z1.second + z2.second);
-    }
-    std::pair<int,int> subtract_complex(std::pair<int,int> z1, std::pair<int,int> z2){
-        return std::pair<int,int> (z2.first - z1.first, z2.second - z1.second );
-    }
-    std::pair<int,int> multiply_complex(std::pair<int,int> z1, std::pair<int,int> z2){
-        int real      = z1.first * z2.first - z1.second * z2.second;
-        int imaginary = z1.first * z2.second + z1.second * z2.first;
-        return std::pair<int,int> (real, imaginary );
-    }
+void print_complex(std::pair<int,int> z){
+    std::cout << "Complex Number " << z.first << " + " << z.second << " i";
+}
+std::pair<int,int> add_complex(std::pair<int,int> z1, std::pair<int,int> z2){
+    return std::pair<int,int> (z1.first + z2.first, z1.second + z2.second);
+}
+std::pair<int,int> subtract_complex(std::pair<int,int> z1, std::pair<int,int> z2){
+    return std::pair<int,int> (z2.first - z1.first, z2.second - z1.second );
+}
+std::pair<int,int> multiply_complex(std::pair<int,int> z1, std::pair<int,int> z2){
+    int real      = z1.first * z2.first - z1.second * z2.second;
+    int imaginary = z1.first * z2.second + z1.second * z2.first;
+    return std::pair<int,int> (real, imaginary );
+}
 
 </EditorFile>
 
 <EditorFile filename=complex.h>
 #include <utility>      // std::pair, std::make_pair
 
-    void print_complex(std::pair<int,int> z);
-    std::pair<int,int> add_complex(std::pair<int,int> z1, std::pair<int,int> z2);
-    std::pair<int,int> subtract_complex(std::pair<int,int> z1, std::pair<int,int> z2);
-    std::pair<int,int> multiply_complex(std::pair<int,int> z1, std::pair<int,int> z2);
+void print_complex(std::pair<int,int> z);
+std::pair<int,int> add_complex(std::pair<int,int> z1, std::pair<int,int> z2);
+std::pair<int,int> subtract_complex(std::pair<int,int> z1, std::pair<int,int> z2);
+std::pair<int,int> multiply_complex(std::pair<int,int> z1, std::pair<int,int> z2);
 
 </EditorFile>
 
 <EditorFile filename=location.cpp>
-    #include <utility>      // std::pair, std::make_pair
-    #include <iostream>     // std::cout
-    
-    #include "location.h"
-    
-    void print_location(std::pair<int,int> point){
-        std::cout << "Location " << point.first << " + " << point.second << " i";
-    }
-    std::pair<int,int> move_x(std::pair<int,int> point, int distance){
-        return std::pair<int,int> (point.first + distance, point.second);
-    }
-    std::pair<int,int> move_y(std::pair<int,int> point, int distance){
-        return std::pair<int,int> (point.first, distance + point.second);
-    }
+#include <utility>      // std::pair, std::make_pair
+#include <iostream>     // std::cout
+
+#include "location.h"
+
+void print_location(std::pair<int,int> point){
+    std::cout << "Location " << point.first << " + " << point.second << " i";
+}
+std::pair<int,int> move_x(std::pair<int,int> point, int distance){
+    return std::pair<int,int> (point.first + distance, point.second);
+}
+std::pair<int,int> move_y(std::pair<int,int> point, int distance){
+    return std::pair<int,int> (point.first, distance + point.second);
+}
 </EditorFile>
 
 <EditorFile filename=location.h>
-    #include <utility>      // std::pair, std::make_pair
+#include <utility>      // std::pair, std::make_pair
 
-    void print_location(std::pair<int,int> point);
-    std::pair<int,int> move_x(std::pair<int,int> point, int distance);
-    std::pair<int,int> move_y(std::pair<int,int> point, int distance);
+void print_location(std::pair<int,int> point);
+std::pair<int,int> move_x(std::pair<int,int> point, int distance);
+std::pair<int,int> move_y(std::pair<int,int> point, int distance);
 </EditorFile>
 </EditorGroup>
 

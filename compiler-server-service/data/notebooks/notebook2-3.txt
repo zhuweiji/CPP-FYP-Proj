@@ -1,25 +1,9 @@
-# Object Relationships
+# Clean Code
 
-## What are they?
+The rationale we have given for the concept of classes and functions in code thus far is to promote re-usability and organization. \n
+In fact, this is the primary challenge in software design. The ultimate end goal is to ensure that the number of bugs in our code is minimized while the ease of adding and modifying code is maximised.
 
-We have seen how classes were designed to reduce problems by encapsulating code into logical components.  \n
-There are some common ways that we combine these components when we code.
-
-A relationship between several classes 
-
-<MermaidDiagram>
-erDiagram
-          CUSTOMER }|..|{ DELIVERY-ADDRESS : has
-          CUSTOMER ||--o{ ORDER : places
-          CUSTOMER ||--o{ INVOICE : "liable for"
-          DELIVERY-ADDRESS ||--o{ ORDER : receives
-          INVOICE ||--|{ ORDER : covers
-          ORDER ||--|{ ORDER-ITEM : includes
-          PRODUCT-CATEGORY ||--|{ PRODUCT : contains
-          PRODUCT ||--o{ ORDER-ITEM : "ordered in"
-</MermaidDiagram>
-
-
-# Composition
-
-Composition relationships 
+We will introduce three different groups of concepts in the next few chapters: \n
+1. Relationships
+2. Design Principles
+3. Design Patterns
