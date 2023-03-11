@@ -6,8 +6,8 @@ topics:
 
     tutorials:
       - name: Hello World!
+        description: "Learn to write your first C++ code!"
         id: 1
-        notebook: notebook1.txt
 
         tutorial_instructions: instructions1.txt
         expectedConsoleOutput: Hello CPP!
@@ -15,32 +15,31 @@ topics:
         prewritten_tests: ""
 
       - name: Variable and List Instantialization
+        description: "Learn about the different ways you can instantiate a variable in C++"
         id: 2
-        notebook: notebook2.txt
         no_tutorial: True
 
       - name: Loops and Control Structures
         id: 3
-        notebook: notebook3.txt
         no_tutorial: True
 
       - name: Preprocessor Directives (#)
         id: 4
-        notebook: notebook1.txt
         no_tutorial: True
 
       - name: Forward Declarations And Header Files
         id: 5
-        notebook: notebook1.txt
         no_tutorial: True
 
       - name: "Exercise: Use Predefined Code To Create A Calculator"
         id: 6
-        tutorial_instructions: instructions1.txt
 
       - name: Data Types
         id: 7
-        tutorial_instructions: instructions1.txt
+        no_tutorial: True
+
+      - name: Pointers
+        id: 8
         no_tutorial: True
 
   - topic_name: Tutorial 2 - Object Oriented Design in C++
@@ -56,9 +55,13 @@ topics:
         id: 2
         no_tutorial: True
 
-      - name: "Inheritance vs Composition: Which to Choose?"
-        id: 5
+      - name: Object Relationships
+        id: 3
         description: ""
+        no_tutorial: True
+
+      - name: Clean Code
+        id: 4
         no_tutorial: True
 
       - name: "(SOLID) Single Responsibility Principle"

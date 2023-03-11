@@ -1,1 +1,14 @@
-# hello!
+# Object Relationships
+
+## What are they?
+
+We have seen how classes were designed to reduce problems by encapsulating code into logical components.  \n
+There are some common ways that we combine these components when we code.
+
+A relationship between several classes 
+
+
+
+# Composition
+
+Composition relationships 
