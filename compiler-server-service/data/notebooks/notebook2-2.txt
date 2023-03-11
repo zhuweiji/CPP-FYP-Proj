@@ -83,12 +83,12 @@ For example, take the `BackAccountUser`  class that we mentioned previously.
 
 
 Much of the rationale for creating classes in the first place was to minimize confusion and provide clarity to code. 
-A large degree of the benefit of using objects and classes is that they provide an encapsulated logical entity that will behave as expected whenever we see or use it in the code.
+The benefit of using objects and classes is that they provide an encapsulated logical entity that will behave as expected whenever we see or use it in the code.
 
 ### Story Time
 
-Imagine if we had the following class `BankAccountUser`  which has the money data member and some function members that change the amount of money that the User has. \n
-Bank Account holders cannot have their balances go below zero in this bank. 
+Imagine if we had the following class `BankAccountUser`  which has the money attribute and some function members that change the amount of money that the User has. \n
+Bank Account holders cannot have their balances go below zero in this bank (you can't withdraw more than you have). 
 
 <Code>
 // amount of money the user has in the bank.
@@ -131,6 +131,7 @@ int main(){
     Mary.deposit(5000*100);
     Mary.withdraw(3000*100);
 
+    // Mary buys a fancy bag
     Mary.money -= 3000 * 100;
 
     std::cout << Mary.money;
@@ -163,14 +164,13 @@ class BankAccountUser{
 </EditorFile>
 </EditorGroup>
 
-Great! It complies, it runs, what could go wrong?
+Even though the code compiles, Mary's balance fell below zero, and there was no error raised.\nIn this case, Mary managed to purchase her bag and the payment app may have lost the money unless they can claim it back from Mary.
 
-[Explanation.]^{Because the writer of the code didn't use the withdraw() function, the user's balance could go less than zero, and there would be no indication that anything was wrong. The withdraw() function implements a check on the balance of the BackAccountUser which performs a check on whether a withdrawal can be made or not based on real-world logic. In fact, by directly manipulating the data member BankAccountUser.money in this way, anyone could just arbitrarily change the value as and when they like in their code, which would break our mental understanding of a BankAccountUser object.}
-
+[More Information]^{Because the writer of the code didn't use the withdraw() function, the user's balance could go less than zero, and there would be no indication that anything was wrong. The withdraw() function implements a check on the balance of the BackAccountUser which performs a check on whether a withdrawal can be made or not based on real-world logic. In fact, by directly manipulating the data member BankAccountUser.money in this way, anyone could just arbitrarily change the value as and when they like in their code, which would break our mental understanding of a BankAccountUser object.}
 
 
 This is why we introduce the concepts of public and private members. \n
-There are some public members (i.e. data or function members) which are exposed and can be changed by anyone at anytime.
+There can be public members (i.e. data or function members) which are exposed and can be accessed or changed by anyone at anytime.
 
 <Code>
 Mary.money = 1000000
@@ -182,6 +182,7 @@ Anything that is not a function member of the class itself attempting to use a p
 <EditorGroup nofiles=false, noerrors=false, nocompile=false>
 <EditorFile filename=main.cpp>
 #include "BankAccountUser.cpp"
+#include <iostream>
 int main(){
     BankAccountUser Mary = BankAccountUser {};
     Mary.deposit(5000*100);
@@ -192,6 +193,7 @@ int main(){
     std::cout << Mary.money;
 
     return 0;
+}
 </EditorFile>
 
 <EditorFile  filename=BankAccountUser.cpp>
