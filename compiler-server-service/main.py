@@ -10,6 +10,7 @@ from pathlib import Path
 from compiler_server_service.routers import (
     cpp_handlers,
     notebook_handlers,
+    openai_handlers,
     tutorial_handlers,
     user_handlers,
 )
@@ -46,6 +47,8 @@ app.include_router(cpp_handlers.router)
 app.include_router(tutorial_handlers.router)
 app.include_router(user_handlers.router)
 app.include_router(notebook_handlers.router)
+app.include_router(openai_handlers.router)
+
 
 
 
