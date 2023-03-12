@@ -2,7 +2,7 @@ import json
 import logging
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Optional, Union
+from typing import List, Optional, Tuple, Union
 
 from compiler_server_service.routers.templates import BasicResponse
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
@@ -33,8 +33,8 @@ def get_tutorial_detail(topicId:int, tutorialId: int, user_id:Optional[str]=None
     @dataclass 
     class Result(BasicResponse):
         default_code:                    Union[str, dict] = ''
-        previous_tutorial_topicid_tutid: tuple[int, int] = (None, None)
-        next_tutorial_topicid_tutid    : tuple[int, int ] = (None, None)
+        previous_tutorial_topicid_tutid: Tuple[int, int] = (None, None)
+        next_tutorial_topicid_tutid    : Tuple[int, int ] = (None, None)
         diagram:                         str = ''
         instruction_notebook_name:       str = ''
         no_tutorial                     : bool = False
@@ -45,7 +45,7 @@ def get_tutorial_detail(topicId:int, tutorialId: int, user_id:Optional[str]=None
     
     if not tutorial: 
         result.errors = 'tutorial not found'
-        raise HTTPException(status_code=404, detail=result)
+        raise HTTPException(status_code=404)
     
     result.default_code = tutorial.default_code
     result.no_tutorial = tutorial.no_tutorial
@@ -69,7 +69,7 @@ def get_tutorials(user_id:Optional[str]=None):
     
     @dataclass 
     class Result(BasicResponse):
-        tutorials_completed: list[CompletedTutorial__OnlyId] = field(default_factory=lambda: [])
+        tutorials_completed: List[CompletedTutorial__OnlyId] = field(default_factory=lambda: [])
         data: list = field(default_factory=lambda: [])
         
     
