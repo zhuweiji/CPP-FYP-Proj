@@ -12,7 +12,7 @@ import './Homepage.css'
 export default function Homepage(props) {
     const navigate = useNavigate();
     const redirectToTutorialList = useCallback(() => navigate('/tutorials', { replace: false }), [navigate]);
-    const redirectToGamesPage = useCallback(() => navigate('/games', { replace: false }), [navigate]);
+    const redirectToGamesPage = useCallback(() => navigate('/coding-conundrum', { replace: false }), [navigate]);
     const redirectToIDE = useCallback(() => navigate('/ide', { replace: false }), [navigate]);
 
     return (

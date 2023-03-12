@@ -33,10 +33,16 @@ import UserService from '../services/UserService'
 import CodeEditor from "../components/Editor";
 
 import { useNavigate } from 'react-router-dom'
+import { GameDataService } from '../services/GameDataService'
 
 export default function CodingConumdrumPage() {
 
     const [gptText, setGptText] = useState("Lorem sit deserunt aliquip excepteur ex do aliquip dolor esse labore elit magna mollit id. Commodo sit amet non deserunt tempor eiusmod excepteur minim minim sunt reprehenderit voluptate veniam. Amet dolor ea anim nostrud do occaecat dolor veniam sunt reprehenderit elit reprehenderit ea tempor. Sit officia laborum dolore eiusmod quis occaecat dolore tempor sunt ea.Consequat aute sit id reprehenderit proident amet ea laboris nulla quis id labore occaecat.Magna nostrud laborum ut eiusmod ipsum consequat tempor tempor consectetur proident veniam elit minim.Labore ipsum id nisi laboris tempor ad. minim amet dolor nulla exercitation commodo ad nulla excepteur non.Voluptate non veniam Lorem sit minim irure nisi veniam.Officia ad ex commodo dolor non sint ea dolor quis ipsum do ad.Nulla officia consequat elit eiusmod nostrud ipsum nisi adipisicing occaecat ipsum sint pariatur. Incididunt do dolor dolore dolore veniam adipisicing dolor amet pariatur.Ipsum qui nostrud dolor est ipsum enim non enim excepteur dolore.Eiusmod cillum excepteur non veniam pariatur amet magna dolor eu proident irure amet ipsum nulla.Non irure laboris cupidatat ut qui consectetur nisi.Sint proident commodo aute officia consectetur voluptate ad consectetur.Culpa Lorem ex dolor deserunt irure in magna quis.");
+
+    async function generatePrompt() {
+        let data = await GameDataService.getPrompt();
+        setGptText(data.trim());
+    }
 
     return <>
         <Grid container >
@@ -49,16 +55,17 @@ export default function CodingConumdrumPage() {
                     <Stack direction="row"
                         // justifyContent="space-between"
                         alignItems="center" spacing={2}>
-                        <Avatar alt="AI Overlord" sx={{ p: '1rem', m: 1 }}>
+                        <Avatar alt="AI Overlord" sx={{ p: 1.5, m: 1 }}>
                             <SmartToyTwoToneIcon />
                         </Avatar>
                         <Typography variant='h5'>ChatGPT Says:</Typography>
 
                     </Stack>
 
-                    <Box sx={{ height: '50vh', p: 5 }} >
-                        <Typography >{gptText}</Typography>
+                    <Box sx={{ height: '50vh', p: 5, overflowY: 'scroll' }} >
+                        <Typography sx={{ whiteSpace: 'pre-line' }}>{gptText}</Typography>
                     </Box>
+                    <Button onClick={generatePrompt}>Generate New Prompt</Button>
 
                     <Box sx={{ height: '45vh', pl: 10 }}>
                         <Stack direction="row" spacing={2}>
@@ -73,7 +80,6 @@ export default function CodingConumdrumPage() {
                         <Avatar sx={{ mb: 2 }}>H</Avatar>
                         <Avatar sx={{ mb: 2 }}>H</Avatar>
                         <Avatar sx={{ mb: 2 }}>H</Avatar>
-
                     </Box>
                 </Stack>
             </Grid>
