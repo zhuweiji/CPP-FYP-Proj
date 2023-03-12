@@ -1,0 +1,53 @@
+# Liskov Substitution Principle
+
+The Liskov Substitution Principle (LSP) is a principle of object-oriented design that states that if a class A is a subtype of class B, then objects of class B may be replaced with objects of class A without affecting the correctness of the program.
+
+In other words, any subclass of a class should be usable in place of its superclass without any unexpected behavior or errors. This principle is important because it allows for code reuse and modularity, making it easier to extend and maintain large codebases.
+
+To follow the Liskov Substitution Principle, subclasses should not add new behaviors or change the preconditions and postconditions of the methods defined in the superclass. If a subclass needs to override a method, it should only weaken the preconditions and strengthen the postconditions, but not vice versa.
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iostream>
+class Rectangle {
+protected:
+    int width, height;
+public:
+    Rectangle(int width, int height) : width(width), height(height) {}
+    virtual int getWidth() const { return width; }
+    virtual void setWidth(int width) { this->width = width; }
+    virtual int getHeight() const { return height; }
+    virtual void setHeight(int height) { this->height = height; }
+    int area() const { return width * height; }
+};
+
+class Square : public Rectangle {
+public:
+    Square(int size) : Rectangle(size, size) {}
+    void setWidth(int width) override {
+        this->width = this->height = width;
+    }
+    void setHeight(int height) override {
+        this->width = this->height = height;
+    }
+};
+
+void process(Rectangle& r) {
+    int w = r.getWidth();
+    r.setHeight(10);
+    std::cout << "Expected area = " << (w * 10) << ", got " << r.area() << std::endl;
+}
+
+int main() {
+    Rectangle r(5, 2);
+    process(r);
+
+    Square s(5);
+    process(s);
+}
+ </Editor>
+
+In this example, we have a Rectangle class and a Square class, where Square is a subclass of Rectangle. The Square class overrides the setWidth() and setHeight() methods to ensure that both the width and height of a square are always equal.
+
+However, when we pass a Square object to the process() function, which expects a Rectangle object, we get unexpected results. This violates the Liskov Substitution Principle, as the Square object cannot be used as a substitute for a Rectangle object without affecting the correctness of the program.
+
+To fix this violation of the Liskov Substitution Principle, we should not use inheritance to model the relationship between Rectangle and Square, as they have different behaviors. Instead, we could create a separate Square class that does not inherit from Rectangle, or create a new hierarchy that defines a separate interface for square shapes.

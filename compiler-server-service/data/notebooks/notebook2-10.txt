@@ -1,0 +1,21 @@
+# YAGNI
+
+We have covered many design principles and concepts that will help you with organising, modularizing and compartmentalizing your code. \n
+These are all important principles and will help to reduce the maintainance burden and refactoring difficulty of your code.
+
+Before we end this chapter off, I would like to discuss the concept of YAGNI.
+
+YAGNI (short for "You Ain't Gonna Need It") is a principle of software development that advises against adding features or functionality to a program until they are actually needed. The idea behind YAGNI is that adding unnecessary code or features can lead to increased complexity, longer development times, and more difficult maintenance.
+
+With all the tools you have at hand, sometimes it might be easy to overcomplicate the design of your program to \n
+1. Adhere to some predefined software design principles
+2. Create infinitely extendable software 
+3. Write complex code to show off your monstrous software design expertise
+
+It is important to learn the techniques of software design, but software design is a balancing act and getting a product out is just as important as the code inside the product.
+
+By overdesigning the product, more uneccessary complexity is sometimes introduced.
+
+[Uncle Bob's writeup about this](https://martinfowler.com/bliki/Yagni.html)
+
+[Enterprise Hello World](https://gist.github.com/lolzballs/2152bc0f31ee0286b722)

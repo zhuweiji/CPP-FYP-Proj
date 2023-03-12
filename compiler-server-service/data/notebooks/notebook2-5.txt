@@ -1,0 +1,256 @@
+# SOLID
+
+The SOLID design principles are a set of five principles that were introduced by Robert C. Martin to help developers design better software systems that are easier to maintain, extend, and modify. 
+
+## A brief history
+
+The SOLID principles were introduced by Robert C. Martin (also known as "Uncle Bob") in the early 2000s, as part of his work on object-oriented design and software architecture. Martin developed the principles as a way to help developers create more maintainable and flexible software systems. \n
+The SOLID principles were well-received because they provided a clear set of guidelines for designing software that is easier to understand, modify, and extend. Prior to the introduction of the SOLID principles, there was a lack of consensus around how to design object-oriented software, and developers often struggled with issues such as tight coupling, rigid class hierarchies, and the brittleness of systems as they grew in size and complexity.
+
+By providing a set of principles that emphasized modularity, flexibility, and abstraction, the SOLID principles helped to address these issues and provided a common language and set of best practices for developers to follow. As a result, the SOLID principles have become widely adopted in the software development industry, and they are often taught in computer science programs and used in software design and architecture discussions.
+
+Here's a brief explanation of each principle:\n
+Single Responsibility Principle (SRP): A class should have only one reason to change. This means that a class should have only one responsibility, and it should be focused on that responsibility. \n
+Open-Closed Principle (OCP): A class should be open for extension but closed for modification. This means that you should be able to extend the behavior of a class without modifying its source code. \n
+Liskov Substitution Principle (LSP): Subtypes should be substitutable for their base types. This means that you should be able to use an object of a subclass wherever an object of its superclass is expected, without causing any problems. \n
+Interface Segregation Principle (ISP): Clients should not be forced to depend on interfaces they do not use. This means that you should break down larger interfaces into smaller, more specific ones, so that clients only need to depend on the interfaces that they need. \n
+Dependency Inversion Principle (DIP): High-level modules should not depend on low-level modules. Both should depend on abstractions. This means that you should design your software so that higher-level modules depend on abstract interfaces, rather than concrete implementations. \n
+
+Together, these principles form the acronym SOLID, and they provide a set of guidelines for designing software systems that are easier to understand, maintain, and extend over time.
+
+We'll take a look at each of them and just as we have done throughout this course, give you the motivation behind why you might use them when you are designing software
+
+# Single Responsibility Principle
+
+Let's try to design an E-Commerce platform. Users can sign up to your application to buy items from your website.
+
+You're tasked to create a Customer object to encapsulate the code for dealing with Customers. You come up with the following:
+
+<Code>
+Attributes
+-------------
+private:
+    std::string Customer.name
+    std::string Customer.email
+    std::string Customer.phone \n
+</Code>
+
+You're provided with some template code to \n
+1. send emails (when the company would like to update the customer)
+2. take payments (when customers make a payment). \n
+Your customer class must perform these two functionality. Other template code is also provided for other developers, but you don't need to use them.
+
+
+
+<Code>
+bool sendEmail(std::string emailTo, std::string subject, std::string message); // Send an email to an email address 
+bool takePayment(PaymentDetails p);                                            // Process payments when given a PaymentDetails object  \n
+bool sendSMS(std::string phoneNumber, std::string message);
+bool makePayment(PaymentDetails p);
+bool changePaymentDetails(std::string details);
+</Code>
+
+How would you implement write your Customer class? \n
+Here's an editor to play around in. Give it a try!
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+#include "provided_code.h"
+int main(){
+    return 0;
+}
+</EditorFile>
+
+<EditorFile filename=provided_code.h>
+#ifndef provided_code_h
+#define provided_code_h
+#include <string>
+
+struct PaymentDetails{
+    std::string paymentProvider; // can be "Stripe", "ApplePay" or "Paypal"
+    int amountCents;
+    std::string data;
+};
+
+bool sendEmail(std::string emailTo, std::string subject, std::string message);
+bool takePayment(PaymentDetails p);
+bool sendSMS(std::string phoneNumber, std::string message);
+bool makePayment(PaymentDetails p);
+bool changePaymentDetails(std::string details);
+#endif
+
+</EditorFile>
+
+<EditorFile filename=provided_code.cpp>
+#include <string>
+#include "provided_code.h"
+
+
+
+bool sendEmail(std::string emailTo, std::string subject, std::string message){
+    return true;
+}
+bool takePayment(PaymentDetails p){
+    return true;
+}
+
+bool sendSMS(std::string phoneNumber, std::string message){
+    return true;
+}
+bool makePayment(PaymentDetails p){
+    return true;
+}
+bool changePaymentDetails(std::string details){
+    return true;
+}
+</EditorFile>
+</EditorGroup>
+
+
+If your solution looks like this:
+
+<Code>
+Customer
+-------------
+private:
+    std::string name
+    std::string email
+    std::string phone \n
+
+-------------
+public:
+    bool send_email(EmailAddress s, std::string message)  
+    bool take_payment(TransactionDetails t)               
+</Code>
+
+The Single Responsibility Principle says that your class should be smaller.
+
+In this example, the Customer class has two responsibilities: sending emails and processing payments. This violates the SRP, as the class should have only one reason to change. If the requirements for sending emails or processing payments change, the Customer class would need to be modified, which goes against the principle of cohesion and separation of concerns. \n
+A better approach would be to split the responsibilities of the Customer class into two separate classes: one for sending emails and another for processing payments. This would ensure that each class has only one responsibility, and any changes to either functionality can be made without affecting the other.
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+#include <string>
+#include "provided_code.h"
+class Customer {
+    public:
+        Customer(std::string name, std::string email, std::string phone)
+            : name_(name), email_(email), phone_(phone) {}
+        std::string GetName() const {
+            return name_;
+        }
+        std::string GetEmail() const {
+            return email_;
+        }
+        std::string GetPhone() const {
+            return phone_;
+        }
+    private:
+        std::string name_;
+        std::string email_;
+        std::string phone_;
+};
+class NotificationProvider {
+    public:
+        void sendNewEmail(Customer customer, std::string subject, std::string message) {
+            sendEmail(customer.GetEmail(), subject, message);
+        }
+
+        void sendNewSMS(Customer customer, std::string message){
+            sendSMS(customer.GetPhone(), message);
+        }
+};
+class PaymentProcessor {
+    public:
+        void takePaymentStripe(Customer customer, int amountCents){
+            PaymentDetails p = PaymentDetails{"Stripe", amountCents, customer.GetName()};
+            takePayment(p);
+        }
+
+        // ...
+    };
+int main(){
+    return 0;
+}
+</EditorFile>
+
+
+<EditorFile filename=provided_code.h>
+#ifndef provided_code_h
+#define provided_code_h
+#include <string>
+
+struct PaymentDetails{
+    std::string paymentProvider; // can be "Stripe", "ApplePay" or "Paypal"
+    int amountCents;
+    std::string data;
+};
+
+bool sendEmail(std::string emailTo, std::string subject, std::string message);
+bool takePayment(PaymentDetails p);
+bool sendSMS(std::string phoneNumber, std::string message);
+bool makePayment(PaymentDetails p);
+bool changePaymentDetails(std::string details);
+#endif
+
+</EditorFile>
+
+<EditorFile filename=provided_code.cpp>
+#include <string>
+#include "provided_code.h"
+
+
+
+bool sendEmail(std::string emailTo, std::string subject, std::string message){
+    return true;
+}
+bool takePayment(PaymentDetails p){
+    return true;
+}
+
+bool sendSMS(std::string phoneNumber, std::string message){
+    return true;
+}
+bool makePayment(PaymentDetails p){
+    return true;
+}
+bool changePaymentDetails(std::string details){
+    return true;
+}
+</EditorFile>
+</EditorGroup>
+
+
+The key is the idea of abstraction.\n
+Because sending emails and taking payments is a complex functionality that is unrelated to Customers and their data, their functionality should be encapsulated elsewhere, not in the Customer class.
+
+While it's true that the idea of Customers and Sending Emails are intertwined, the reverse is not true. Emails can be sent to anyone, and in fact, the functionality of sending notifications (comprising of emails, SMS and other forms of notifications) could be easily reused in other areas of the application.\n
+Developers could be notified if the server is going down, suppliers could be notified by the company about new types of products they would like to sell, and so on.
+
+<MermaidDiagram>
+classDiagram
+  direction BT
+
+    PaymentProcessor
+    NotificationProvider
+
+    Customer
+    Developers
+    Suppliers
+    Management
+
+    
+    
+    Customer ..> PaymentProcessor
+    Customer ..> NotificationProvider
+
+    Developers ..> NotificationProvider
+
+    Suppliers ..> PaymentProcessor
+    Suppliers ..> NotificationProvider
+
+    Management ..> NotificationProvider
+
+    
+
+</MermaidDiagram>

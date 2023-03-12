@@ -519,6 +519,51 @@ int main(){
 </EditorFile>
 </EditorGroup>
 
+## Stack vs Heap allocation of new Objects
+
+In C++, you can allocate memory for an object either on the stack or on the heap. Here are some guidelines for when to use each:
+
+Use stack allocation when the object is small and has a short lifetime. \n
+1. Stack allocation is fast, because the memory is automatically managed by the program's execution environment, without the overhead of dynamic memory allocation.
+2. Stack allocation is also safer, because the memory is automatically deallocated when the object goes out of scope, which prevents memory leaks.
+3. Heap allocation:
+
+Use heap allocation when the object is large or has a long lifetime. \n
+1. Heap allocation is slower than stack allocation, because it requires dynamic memory allocation and deallocation, which can be expensive.
+2. Heap allocation also requires manual memory management, which can be error-prone if not done correctly. You need to remember to free the memory manually using delete when you're done with the object, otherwise, you will cause a memory leak.
+3. Heap allocation is also required for dynamic polymorphism, where you want to create objects of different classes that share a common interface and store them in the same container.
+
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+// Define a class for a Person
+class Person {
+public:
+    string name;
+    int age;
+
+    void introduce() {
+        cout << "Hi, my name is " << name << " and I'm " << age << " years old.\n";
+    }
+};
+
+int main() {
+    // Create a Person object on the stack
+    Person alice = {"Alice", 25};
+    alice.introduce(); // Output: "Hi, my name is Alice and I'm 25 years old."
+
+    // Create a Person object on the heap using new
+    Person* bob = new Person{"Bob", 30};
+    bob->introduce(); // Output: "Hi, my name is Bob and I'm 30 years old."
+
+    // Delete the dynamically allocated object
+    delete bob;
+}
+</Editor>
+
+In this example, we define a Person class with two data members (name and age) and a method (introduce). We then create an object of this class on the stack by declaring a variable of type Person.\n
+We also create another object of the same class on the heap using the new operator, which returns a pointer to the dynamically allocated memory. We use the arrow operator -> to access the introduce method of the bob pointer. Finally, we free the dynamically allocated memory using the delete operator.
+
+
 ## Hidden 'this' Pointer
 
 For most usecases, there is no need to access the `this`  pointer in a C++ class.

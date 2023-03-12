@@ -34,6 +34,14 @@ In this case, the lifecycle of a Door is dependent on the Room. If the Door is d
 
 This is the strictest form of object relationship, composition. Objects bound by composition live and die together, and any changes made on either should significantly affect the other.
 
+<MermaidDiagram>
+classDiagram
+    direction BT
+    Door --* Room
+    Floor --* Room
+    Window --* Room
+</MermaidDiagram>
+
 <EditorGroup nofiles=false, noerrors=false, nocompile=false>
 <EditorFile  filename=main.cpp>
 #include "door.cpp"
@@ -91,6 +99,14 @@ In this case, we could store the Chairs before destroying the Room. We can dynam
 The lifecycle of the Chair does not depend on the lifecycle of the Room. \n
 Whether the Room is destroyed or not, we would probably want to keep the Chair intact, so that we might reuse the Chair elsewhere in another room.
 
+<MermaidDiagram>
+classDiagram
+    direction BT
+    Chair --o Room
+    Table --o Room
+    Lamp --o Room
+</MermaidDiagram>
+
 <EditorGroup nofiles=false, noerrors=false, nocompile=false>
 <EditorFile filename=room.cpp>#include <vector>
 #include "chair.cpp"
@@ -142,16 +158,12 @@ Inheritance is a little more new.
 If we had to describe this relationship between two objects, it would be with the words "is-a".
 
 <MermaidDiagram>
-flowchart BT
-    A(Shape)
-    B(Triangle)
-    C(Rectangle)
-    D(Isoceles Triangle)
-    E(Equilateral Triangle)
-    B --> A
-    C --> A
-    D --> B
-    E --> B
+classDiagram
+    direction BT
+    Triangle --|> Shape
+    Rectangle --|> Shape
+    Isoceles Triangle --|> Triangle
+    Equilateral Triangle --|> Triangle
 </MermaidDiagram>
 
 Inheritance consists of a class being inherited from, called the parent class, base class or super class.
@@ -227,4 +239,41 @@ When a method is declared as virtual in the base class, the compiler knows that 
 
 ### Upcasting and Downcasting
 
-Upcasting is the process of casting a child class object to its parent class, while downcasting is the process of casting a parent class object to its child class.
+Upcasting and downcasting are used when dealing with inheritance in C++.
+
+Upcasting is the process of converting a derived class reference or pointer to a base class reference or pointer. This is always allowed because the derived class is a type of the base class. For example, if you have a Dog class that inherits from an Animal class, you can always treat a Dog object as an Animal object because a Dog is an Animal. This conversion can be done implicitly, meaning you don't have to do anything special to make it happen.
+
+Downcasting is the opposite process, where you convert a base class reference or pointer to a derived class reference or pointer. This is not always allowed because not all Animal objects are Dog objects. For example, you might have a Cat class that also inherits from Animal. If you have an Animal object that is actually a Cat object, you can't treat it as a Dog object. This conversion must be done explicitly using a cast operator, such as static_cast or dynamic_cast, to tell the compiler that you know what you're doing and that the conversion is safe.
+
+Here's an example that demonstrates upcasting and downcasting using references:
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iostream>
+using namespace std;
+
+class Base {
+public:
+    virtual void print() { cout << "Base" << endl; }
+};
+
+class Derived : public Base {
+public:
+    void print() override { cout << "Derived" << endl; }
+};
+
+int main() {
+    Derived d;
+    Base& b = d; // Upcasting
+    b.print(); // Prints "Derived"
+
+    Base b2;
+    Derived& d2 = static_cast<Derived&>(b2); // Downcasting
+    d2.print(); // Prints "Base"
+    return 0;
+}
+</Editor>
+
+
+Upcasting and downcasting can be useful in situations where you have a collection of objects of different types that all inherit from a common base class. You can store them in a container of base class pointers or references and then use upcasting and downcasting to call the appropriate functions on the objects.
+
+In summary, upcasting is always allowed and can be done implicitly, while downcasting is not always allowed and must be done explicitly using a cast operator.

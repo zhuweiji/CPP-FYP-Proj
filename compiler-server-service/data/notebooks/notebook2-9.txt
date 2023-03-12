@@ -1,0 +1,150 @@
+# Dependency Injection Principle
+
+The Dependency Injection (DI) principle is a design pattern that promotes loosely coupled code and helps manage dependencies between objects. It works by allowing objects to be created and configured externally, rather than having them create their own dependencies directly.
+
+Spoken simply, we aim to reduce the use of Composition where possible because of the coupled lifecycle between the two objects. Typically with objects linked via composition, a change in one object neccessitates a change in the other object.
+If many objects are linked via composition, a change in one part of the codebase will ripple to many unrelated components.
+
+Suppose we have a class Logger that depends on an object of the class ConsoleOutput to write log messages to the console:
+
+<Code>
+class ConsoleOutput {
+public:
+    void write(const std::string& message) {
+        std::cout << message << std::endl;
+    }
+}; \n
+
+class Logger {
+public:
+    void log(const std::string& message) {
+        ConsoleOutput output;
+        output.write(message);
+    }
+};
+
+</Code>
+
+In this code, the Logger class creates its own instance of ConsoleOutput inside the log() method, rather than depending on an external instance of ConsoleOutput to be passed in. This creates a tight coupling between Logger and ConsoleOutput, making it difficult to change or test the code. 
+
+Here are some ways designing the code in the above fashion might make it harder to change or test code:\n
+1. Difficulty changing the output mechanism: If we later decide that we want to change the way that log messages are output (e.g., to a file instead of the console), we would need to modify the Logger class directly, which could be difficult if it is used in many places throughout the codebase. This would violate the Open-Closed Principle, which states that code should be open for extension but closed for modification. \n
+2. Difficulty testing the Logger class in isolation: When we want to test the Logger class in isolation, we would also need to test the ConsoleOutput class, which could make our tests more complex and slower. If ConsoleOutput has any external dependencies (e.g., a database connection), our tests could also become more fragile and dependent on those external dependencies. \n
+3. Difficulty using the Logger class in different contexts: If we want to use the Logger class in a context where we don't have access to the console (e.g., in a headless server environment), we would need to modify the Logger class to use a different output mechanism, which could again violate the Open-Closed Principle.
+
+We can rewrite the class to use DI by passing a completed ConsoleOutput class to the Logger class to use, creating a weaker link between the two classes.
+
+### Constructor Injection
+
+<Code>
+class ConsoleOutput {
+public:
+    void write(const std::string& message) {
+        std::cout << message << std::endl;
+    }
+}; \n
+
+class Logger {
+private:
+    ConsoleOutput* output_;
+public:
+    Logger(ConsoleOutput* output) : output_(output) {}
+
+    void log(const std::string& message) {
+        output_->write(message);
+    }
+};
+</Code>
+
+In the above code, Logger depends on ConsoleOutput through a pointer to the output_ member variable. We can then create and configure the dependencies externally, and pass them to the Logger constructor as needed:
+
+<Code>
+int main(){
+    ConsoleOutput console_output;
+    Logger logger(&console_output);
+
+    logger.log("Hello, world!");
+
+    return 0;
+}
+</Code>
+
+Here is an editor with the code above:
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+#include "logger.cpp"
+int main() {
+    ConsoleOutput console_output;
+    Logger logger(&console_output);
+
+    logger.log("Hello, world!");
+
+    return 0;
+}
+
+</EditorFile>
+
+
+<EditorFile filename=logger.cpp>
+#ifndef logger_cpp
+#define logger_cpp
+#include <iostream>
+
+class ConsoleOutput {
+public:
+    void write(const std::string& message) {
+        std::cout << message << std::endl;
+    }
+};
+
+class Logger {
+private:
+    ConsoleOutput* output_;
+public:
+    Logger(ConsoleOutput* output) : output_(output) {}
+
+    void log(const std::string& message) {
+        output_->write(message);
+    }
+};
+#endif
+</EditorFile>
+
+</EditorGroup>
+
+### Setter Injection
+
+In this method, we can change the output of the Logger at runtime, without having to create a new instance of the Logger class as compared to when using Constructor Injection.
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+class Logger {
+private:
+    ConsoleOutput* output_;
+public:
+    Logger() : output_(nullptr) {}
+
+    void set_output(ConsoleOutput* output) {
+        output_ = output;
+    }
+
+    void log(const std::string& message) {
+        if (output_ != nullptr) {
+            output_->write(message);
+        }
+    }
+};
+
+int main() {
+    ConsoleOutput console_output;
+    Logger logger;
+    logger.set_output(&console_output);
+
+    logger.log("Hello, world!");
+
+    return 0;
+}
+ </Editor>
+
+This is not to say that Composition is always wrong or that Setter Injection is the preferred way to create a relationship between two clasess. \n
+In some cases, such as in our ComplexNumber class, you do want the lifecycle of `int RealNumber`  to be tied to the parent class.

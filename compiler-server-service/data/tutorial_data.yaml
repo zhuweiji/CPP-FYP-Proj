@@ -65,30 +65,27 @@ topics:
         no_tutorial: True
 
       - name: "(SOLID) Single Responsibility Principle"
-        id: 6
+        id: 5
         description: Don't build anything that does everything.
         no_tutorial: True
 
       - name: "(SOLID) Open-Closed Principle (OCP)"
-        id: 7
+        id: 6
         no_tutorial: True
 
       - name: "(SOLID) Liskov Substitution Principle (LSP)"
-        id: 8
+        id: 7
         no_tutorial: True
 
       - name: "(SOLID) Interface Segregation Principle (ISP)"
-        id: 9
+        id: 8
         no_tutorial: True
 
       - name: "(SOLID) Dependency Injection Principle (DIP)"
+        id: 9
+
+      - name: "YAGNI"
         id: 10
-
-      - name: ""
-        id: 11
-
-      - name: ""
-        id: 12
 
 
   - topic_name: Tutorial 3 - Conceptual Representations to Code

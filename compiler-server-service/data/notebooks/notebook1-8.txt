@@ -1,0 +1,105 @@
+# Pointers
+
+
+Pointers are a fundamental concept in C++, and they allow you to work with memory in a more low-level way than other languages. Here's an introduction to pointers in C++, covering the essential concepts.
+
+[Here is a C to English translator to help you decipher some of the pointer stuff if you get lost](https://cdecl.org/)
+
+### What is a pointer?
+
+A pointer is a variable that holds the memory address of another variable. In other words, it "points" to the location in memory where the variable is stored. Pointers are declared using the * operator, and the memory address of a variable is obtained using the & operator.
+
+### Declaring and initializing pointers:
+
+To declare a pointer, you specify the data type of the variable it points to, followed by the * operator, and then the name of the pointer variable. For example, here's how you can declare a pointer to an integer variable:
+
+<Code>
+int* ptr;
+</Code>
+
+To initialize a pointer, you can assign it the memory address of a variable using the & operator. For example, to initialize the pointer ptr with the memory address of the integer variable x, you can do:
+
+<Code>
+int x = 10;
+int* ptr = &x;
+</Code>
+
+Using pointers:
+Once you have a pointer, you can use it to access the variable it points to using the * operator. For example, to assign a new value to the variable x using the pointer ptr, you can do:
+
+<Code>
+*ptr = 20;
+</Code>
+
+This changes the value of x to 20. Note that the * operator is used to "dereference" the pointer, which means accessing the value at the memory address it points to.
+
+### Null pointers: 
+
+Sometimes you may want to declare a pointer without initializing it. In this case, the pointer will contain a random memory address, which could cause undefined behavior if you try to dereference it. To avoid this, you can initialize the pointer to a null pointer using the value nullptr, which represents a pointer that does not point to any valid memory address. For example:
+
+<Code>
+int* ptr = nullptr;
+</Code>
+
+### Pointer arithmetic:
+
+Pointer arithmetic allows you to perform arithmetic operations on pointers, such as incrementing or decrementing the memory address it points to. For example:
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iostream>
+int main() {
+    int arr[] = {1, 2, 3, 4, 5};
+    int* ptr = &arr[0];
+    std::cout << *ptr << std::endl; // Output: 1
+    ptr++;
+    std::cout << *ptr << std::endl; // Output: 2
+    return 0;
+}</Editor>
+
+In this example, we create an integer array arr, and initialize the pointer ptr to point to the first element of the array using the address-of operator &. We then print the value of the first element of the array using the pointer ptr, and increment the pointer using the ++ operator. We print the value of the second element of the array using the incremented pointer.
+
+### Dynamic memory allocation:
+
+One of common use of pointers in C++ is for dynamic memory allocation using the new operator. This allows you to allocate memory at runtime, and create objects that live on the heap. For example, to dynamically allocate an integer variable, you can do:
+
+<Code>
+int* ptr = new int;
+*ptr = 10;
+</Code>
+
+### Deallocating memory
+
+This creates a new integer variable on the heap, and initializes it to the value 10. The memory for this variable will persist until it is explicitly deallocated using the delete operator. For example:
+
+<Code>
+delete ptr;
+</Code>
+
+Here's an example program that illustrates some of these concepts we have covered:
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+#include <iostream>
+
+int main() {
+  int num = 42;
+  int *ptr = &num;
+
+  std::cout << "Value of num: " << num << std::endl;
+  std::cout << "Address of num: " << &num << std::endl;
+
+  std::cout << "Value of ptr: " << ptr << std::endl;
+  std::cout << "Address of ptr: " << &ptr << std::endl;
+  std::cout << "Value at address pointed to by ptr: " << *ptr << std::endl;
+
+  *ptr = 100;
+
+  std::cout << "Value of num after dereferencing ptr: " << num << std::endl;
+
+  int *null_ptr = nullptr;
+  if (null_ptr == nullptr) {
+    std::cout << "null_ptr is a null pointer." << std::endl;
+  }
+
+  return 0;
+}
+ </Editor>

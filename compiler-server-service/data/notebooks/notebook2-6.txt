@@ -1,0 +1,83 @@
+# Open-Closed Principle
+
+The Open-Closed Principle (OCP) is one of the SOLID principles of Object-Oriented Programming (OOP). It states that software entities (classes, modules, functions, etc.) should be open for extension but closed for modification. In other words, you should be able to add new functionality to a system without changing its existing code.
+
+Here's an example that violates the Open-Closed Principle:
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+class Order {
+public:
+  virtual double calculateTotal() = 0;
+};
+
+class RegularOrder : public Order {
+public:
+  double calculateTotal() override {
+    // calculate total for a regular order
+  }
+};
+
+class DiscountedOrder : public Order {
+public:
+  double calculateTotal() override {
+    // calculate total for a discounted order
+  }
+};
+
+// client code
+int main() {
+  Order* order = getOrder(); // get order based on user input or other logic
+  double total;
+  if (dynamic_cast<RegularOrder*>(order)) {
+    total = order->calculateTotal();
+  }
+  else if (dynamic_cast<DiscountedOrder*>(order)) {
+    total = order->calculateTotal() * 0.9; // apply 10% discount
+  }
+  // ... other order types
+}
+ </Editor>
+
+ In this example, we have an Order base class and two derived classes: RegularOrder and DiscountedOrder. Each class has a calculateTotal() function that is responsible for calculating the total cost of the order. However, the client code violates the Open-Closed Principle by explicitly checking the type of the order and applying a different discount based on its type. This means that if we were to add a new order type to the system, we would have to modify the existing client code to handle it.
+
+Instead, we could apply the Open-Closed Principle by modifying the Order hierarchy to include a separate Discount class hierarchy that is responsible for applying discounts:
+
+<Editor nofiles=false, noerrors=false, nocompile=false >
+class Order {
+public:
+  virtual double calculateTotal() = 0;
+};
+
+class RegularOrder : public Order {
+public:
+  double calculateTotal() override {
+    // calculate total for a regular order
+  }
+};
+
+class DiscountedOrder : public Order {
+public:
+  virtual double applyDiscount(double total) = 0;
+  double calculateTotal() override {
+    double total = // calculate total for a discounted order
+    return applyDiscount(total);
+  }
+};
+
+class TenPercentDiscount : public DiscountedOrder {
+public:
+  double applyDiscount(double total) override {
+    return total * 0.9; // apply 10% discount
+  }
+};
+
+// client code
+int main() {
+  Order* order = getOrder(); // get order based on user input or other logic
+  double total = order->calculateTotal(); // discounts are handled by the order object
+}
+ </Editor>
+
+ In this example, we've added a Discount base class that includes a virtual applyDiscount() function. We then modify the Order hierarchy to include a calculateTotal() function that calls the applyDiscount() function of the Discount object. Finally, we create a concrete derived class of the Discount object that implements the applyDiscount() function to apply a 10% discount.
+
+By separating the discounting responsibilities into a separate Discount hierarchy and using polymorphism, we've applied the Open-Closed Principle and created a more flexible and extensible system. We can now add new order types and new discount implementations without modifying the existing code.
