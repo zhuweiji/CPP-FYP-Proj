@@ -9,6 +9,8 @@ To follow the Interface Segregation Principle, we should break down large interf
 Here's an example to illustrate the Interface Segregation Principle:
 
 <Editor nofiles=false, noerrors=false, nocompile=false >
+#include <stdexcept>
+
 class Machine {
 public:
     virtual void print() = 0;
@@ -88,7 +90,11 @@ public:
         // copy implementation
     }
 };
- </Editor>
+
+int main(){
+    return 0;
+}
+</Editor>
 
 <MermaidDiagram>
 classDiagram
@@ -192,6 +198,10 @@ public:
         // copy implementation
     }
 };
+
+int main(){
+    return 0;
+}
 </Editor>
 
 <MermaidDiagram>
