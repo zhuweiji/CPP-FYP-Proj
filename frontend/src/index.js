@@ -20,6 +20,7 @@ import UserPage from './pages/UserPage';
 import LoginPage from './pages/Login';
 import CreateAccountPage from './pages/CreateAccountPage';
 import SimpleGame from './pages/SimpleGame';
+import CodingConumdrumPage from './pages/CodingConundrum';
 
 const router = createBrowserRouter([
   {
@@ -28,7 +29,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   }, {
     path: "tutorials",
-    element: <TutorialList/>,
+    element: <TutorialList />,
   }, {
     path: "tutorial/:topicId/:tutorialId",
     element: <TutorialPage />,
@@ -43,7 +44,7 @@ const router = createBrowserRouter([
     element: <UnderConstruction />,
   }, {
     path: 'notebook/:topicId/:tutorialId',
-    element: <NotebookPage/>,
+    element: <NotebookPage />,
   }, {
     path: 'my-page',
     element: <UserPage />,
@@ -56,8 +57,11 @@ const router = createBrowserRouter([
   }, {
     path: 'simple-game',
     element: <SimpleGame />,
+  }, {
+    path: 'coding-conundrum',
+    element: <CodingConumdrumPage />
   }
-  
+
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -72,6 +76,6 @@ root.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-// collect good coding practices (code) / avoid bad ones 
-// choose one of two blocks of code, one that fulfils the condition and one that doesnt - some kind 
+// collect good coding practices (code) / avoid bad ones
+// choose one of two blocks of code, one that fulfils the condition and one that doesnt - some kind
 // 
