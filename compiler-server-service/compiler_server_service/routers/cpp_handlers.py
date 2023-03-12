@@ -58,7 +58,7 @@ def parse_incoming_codegroup(code_data: dict):
 
 
 @router.get('/')
-def compiler_status(request: Request):
+async def compiler_status(request: Request):
     return BasicResponse(message="we're up!")
 
 
@@ -67,7 +67,7 @@ class POST__Compile_Run_Multiple(BaseModel):
 
 @router.post('/compile_and_run')
 @limiterobj.limit('10/minute')
-def handle_compile_and_run_multiple(request: Request, data: POST__Compile_Run_Multiple):
+async def handle_compile_and_run_multiple(request: Request, data: POST__Compile_Run_Multiple):
     all_code = parse_incoming_codegroup(data.all_code)
     compile_result = CPP_Compiler.write_compile_run(all_code=all_code)
 
@@ -80,7 +80,7 @@ class POST__Compile_Run(BaseModel):
     
 @router.post('/compile_and_run_noerr')
 @limiterobj.limit('10/minute')
-def handle_compile_and_run(request: Request, data: POST__Compile_Run):
+async def handle_compile_and_run(request: Request, data: POST__Compile_Run):
     all_code = parse_incoming_codegroup(data.all_code)
     compile_result = CPP_Compiler.write_compile_run(all_code=all_code, werrrors=False)
 
@@ -94,7 +94,7 @@ class POST__Compile_Grade(POST_BODY):
 
 @router.post('/grade_code', status_code=status.HTTP_200_OK)
 @limiterobj.limit('10/minute')
-def handle_compile_and_grade(request: Request, response: Response, data: POST__Compile_Grade):
+async def handle_compile_and_grade(request: Request, response: Response, data: POST__Compile_Grade):
     """Grades a user's code - 
         1. Checks console output if the user's code against provided model output
         2. Runs code against provided doctests to check 

@@ -27,7 +27,7 @@ router = APIRouter(
 )
 
 @router.get('/tutorial')
-def get_tutorial_detail(topicId:int, tutorialId: int, user_id:Optional[str]=None):
+async def get_tutorial_detail(topicId:int, tutorialId: int, user_id:Optional[str]=None):
     """returns relevant information about the tutorial"""
     
     @dataclass 
@@ -64,7 +64,7 @@ def get_tutorial_detail(topicId:int, tutorialId: int, user_id:Optional[str]=None
     return result
 
 @router.get('/tutorials')
-def get_tutorials(user_id:Optional[str]=None):
+async def get_tutorials(user_id:Optional[str]=None):
     # TutorialDataLoader.topic_data_list
     
     @dataclass 

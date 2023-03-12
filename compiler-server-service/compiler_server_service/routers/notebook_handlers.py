@@ -18,7 +18,7 @@ router = APIRouter(
 
 
 @router.get('/{notebook_id}')
-def compiler_status(request: Request, notebook_id:str):
+async def compiler_status(request: Request, notebook_id:str):
     notebook_name = notebook_id 
     notebook_data = NotebookDAO.get_notebook_by_name(notebook_name)
     
