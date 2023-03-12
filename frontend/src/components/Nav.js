@@ -67,7 +67,7 @@ const ResponsiveAppBar = (props) => {
     const pages_and_links = !props.hideLinks ?
         [
             { 'page': 'Tutorials', 'link': '/tutorials' },
-            { 'page': 'Instructions', 'link': '/instructions' },
+            // { 'page': 'Instructions', 'link': '/instructions' },
             { 'page': 'Challenges', 'link': '/games' },
             { 'page': 'Editor', 'link': '/ide' },
 
