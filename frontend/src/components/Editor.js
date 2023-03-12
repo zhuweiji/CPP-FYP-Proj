@@ -7,7 +7,7 @@ import Editor from "@monaco-editor/react";
 import CodeIcon from '@mui/icons-material/Code';
 
 
-import { Stack, Box, Button, Tooltip, Typography, IconButton, Pagination, CircularProgress, TextField, FormControl } from '@mui/material';
+import { Stack, Box, Button, Tooltip, Typography, IconButton, Pagination, CircularProgress, TextField, FormControl, Alert } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -442,7 +442,13 @@ function CodeEditor(props) {
 
 
                         <Stack direction="row" alignItems="center">
-                            <Typography style={{ fontFamily: "Inconsolata" }}>{postCompileMessages}</Typography>
+                            {
+                                postCompileMessages &&
+                                <Alert severity="error">{postCompileMessages}</Alert>
+                            }
+
+
+                            {/* <Typography style={{ fontFamily: "Inconsolata" }}></Typography> */}
 
                             {getThrottledIcon()}
                             {getCompilerStatusIcon()}
