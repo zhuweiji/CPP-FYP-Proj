@@ -66,7 +66,7 @@ export default function OnlyNotebookPage() {
                 onClick={() => navigate(`/tutorial/${topicId}/${tutorialId}`)}
                 startIcon={<DoubleArrowIcon />}
             >
-                Skip
+                Next
             </Button>
             {/* </Fade> */}
 
