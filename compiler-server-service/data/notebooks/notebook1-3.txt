@@ -71,6 +71,8 @@ and checks it against some possible values `case POSSIBLE_VALUE:\n\t//some code\
 
 The code under the default label executes if none of the cases match.
 
+### Fallthrough
+
 Make sure to include the `break;` keyword under every case, or all the code underneath will execute as well.
 
 [More info]^{This behavior is called fallthrough, and you might want to utilise it in some cases, but it is usually unexpected and it might be an anti-practice to rely on it too often.}
@@ -92,10 +94,7 @@ Make sure to include the `break;` keyword under every case, or all the code unde
     return 0;
 } </Editor>
 
-
-
-
-
+### Types
 
 The switch statement can only be used to check integers or values which can be converted to integer types or enumerated types. This means that it cannot be used for strings, floats and pointers.
 
