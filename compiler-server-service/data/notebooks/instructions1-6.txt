@@ -3,4 +3,4 @@
 Now, we're going to put the things we have learnt so far to work
 
 
-<Grading></Grading>
+<Grading>Woops, this page isn't complete yet. Please move on to the next Tutorial!</Grading>
