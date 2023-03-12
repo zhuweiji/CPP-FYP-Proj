@@ -2,92 +2,48 @@
 
 There are several ways to initialize (create) a variable.
 
-<Editor nofiles=true, noerrors=false, nocompile=false >#include <iostream>
-int main() {
-    int a;         // no initializer (default initialization)
+### Default Initialization
 
-    int b = 5;     // initializer after equals sign (copy initialization)
-    int c { 6 };   // initializer in braces (direct list initialization)
-    int d {};      // initializer is empty braces (value initialization)
+By default, built-in data types such as int, float, and double are not initialized to any particular value. This means that they will contain whatever data happened to be stored in that memory location before. For example:
 
-    int e( 7 );    // initializer in parenthesis (direct initialization)
-    int f = { 8 }; // initializer in braces after equals sign (copy list initialization)
+<Code>
+int num;
+float f;
+double d;
+</Code>
 
+Depending on the C++ compiler you use, the variables num, f, and d will either contain \n
+1. garbage values
+2. a reasonable default like zero for integrals (ints, floats)
 
-    return 0;
-}
-</Editor>
+It is best to zero initialize your variables using one of the methods described below in most cases.
 
+### Value Initialization
 
+<Code>
+int num = 42;
+float f = 3.14f;
+double d = 3.14159265359;
+</Code>
 
-[Best Practice]
-Try to initialize variables with a value if possible.
+### Uniform Initialization
 
+C++11 introduced a new syntax for initializing variables called uniform initialization. This syntax uses curly braces to enclose the initialization expression:
 
-## Copy Initialization 
+<Code>
+int num{42};
+float f{3.14f};
+double d{3.14159265359};
+</Code>
 
-`int b = 5;`
+Uniform initialization can be used to initialize complex objects such as arrays, structures, and classes, as well as built-in data types. It has the advantage of being more concise and consistent than other initialization syntaxes.
 
-This is the format that is most like other programming languages you may have seen.
+On this site, we will sometimes interchange between Uniform (Brace) Initialization and Value Initialization. 
 
-The value of 5 is copied into b after the variable is created. 
+There are differences between the various forms of initialization, but they shouldn't be too important for this course.
 
+### More information 
 
-## Brace Initialization 
+[learncpp](https://www.learncpp.com/cpp-tutorial/variable-assignment-and-initialization/)
 
-`int c{5};`
-
-This is similar to the above, except that it also disallows narrowing conversions. \
-Narrowing conversions are when data is converted to another type (such as float to int) and a loss in information occurs.
-
-If you try to initialize a variable with a value that the variable cannot safely hold, a compiler error results.
-
-<Editor nofiles=true, noerrors=false, nocompile=false >#include <iostream>
-int main() {
-    int yourMoney__millions { 1.5 };  
-    std::cout << yourMoney__millions;
-
-    return 0;
-} </Editor>
-
-<Editor nofiles=true, noerrors=false, nocompile=false >#include <iostream>
-int main() {
-    int yourMoney__millions = 1.5;  
-    std::cout << yourMoney__millions;
-    
-    return 0;
-} </Editor>
-
-
-
-## Default Initialization
-
-`int a;`
-
-This creates a variable with no value.
-
-If forget to assign this value before using it, then your program will exhibit undefined behavior.
-
-Code implementing undefined behavior may exhibit any of the following symptoms: \n
-Your program produces different results every time it is run.
-Your program consistently produces the same incorrect result.
-Your program behaves inconsistently (sometimes produces the correct result, sometimes not).
-Your program seems like its working but produces incorrect results later in the program.
-Your program crashes, either immediately or later.
-Your program works on some compilers but not others.
-Your program works until you change some other seemingly unrelated code. [2]
-
-With the compiler we are using, the value is zero-initialized (it will have a default value of 0), although the behavior may change depending on the compiler.
-
-<Editor nofiles=false, noerrors=false, nocompile=false >#include <iostream>
-    int main() {
-    int a;
-    std::cout << a << '\n';
-    a = a+1;
-    std::cout << a << '\n';
-    return 0;
-} </Editor>
-
-### Attributions and Extra Info
-
-Read up more here: [Undefined behavior](https://www.learncpp.com/cpp-tutorial/uninitialized-variables-and-undefined-behavior/) 
+[stackoverflow](https://stackoverflow.com/questions/1051379/is-there-a-difference-between-copy-initialization-and-direct-initialization)
