@@ -18,7 +18,7 @@ export default function Homepage(props) {
     return (
         <Box component='div'>
             <ButtonAppBar hideLinks={true}></ButtonAppBar>
-            <Grid container spacing={1}  style={{ backgroundColor: blueGrey[900], height: '100vh', }}>
+            <Grid container spacing={1} style={{ backgroundColor: blueGrey[900], height: '100vh', }}>
                 <Grid item md={4}>
                     <div className="columnOne" onClick={redirectToTutorialList}>
                         <Grid
@@ -26,7 +26,7 @@ export default function Homepage(props) {
                             direction="column"
                             alignItems="center"
                             rowSpacing={5}
-                            sx={{padding:"2rem"}}
+                            sx={{ padding: "2rem" }}
                         >
                             <Grid item>
                                 <Typography variant="h2" >Guided Tutorials</Typography>
@@ -50,7 +50,7 @@ export default function Homepage(props) {
                             sx={{ padding: "2rem" }}
                         >
                             <Grid item>
-                                <Typography variant="h2">Interactive Games</Typography>
+                                <Typography variant="h2">Challenges</Typography>
 
                             </Grid>
                             <Grid item>
