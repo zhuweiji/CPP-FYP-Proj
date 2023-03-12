@@ -89,7 +89,7 @@ class CPP_Compiler:
     
     
     @classmethod
-    def write_compile_run(cls, all_code:Union[str, LogicalCodeFile, list[LogicalCodeFile]], other_files:List[Union[str, Path]]=(), add_custom_headers:bool=False, werrrors=True):
+    def write_compile_run(cls, all_code:Union[str, LogicalCodeFile, List[LogicalCodeFile]], other_files:List[Union[str, Path]]=(), add_custom_headers:bool=False, werrrors=True):
         """takes some code, creates a temporary directory to store the compilation output in and tries to run it"""
         if isinstance(all_code,str): all_code = [LogicalCodeFile(code=all_code, filename=None)]
         elif isinstance(all_code, LogicalCodeFile): all_code = [all_code]
@@ -105,7 +105,7 @@ class CPP_Compiler:
             return CPP_Compiler.run_cpp_executable(Path(tmp_dir_path)/"output.exe")
     
     @classmethod
-    def write_and_compile(cls, code_files: Union[str, LogicalCodeFile, list[LogicalCodeFile]], temp_dir_path: str, other_files:List[Union[str, Path]]=(),
+    def write_and_compile(cls, code_files: Union[str, LogicalCodeFile, List[LogicalCodeFile]], temp_dir_path: str, other_files:List[Union[str, Path]]=(),
                           executable_filepath:Union[Path,str]='output.exe', add_custom_headers:bool=False, werrors=True):
         """Writes some C++ code into a temporary file, then compiles and runs it
         Can include other files to be compiled together with the C++ code as well"""

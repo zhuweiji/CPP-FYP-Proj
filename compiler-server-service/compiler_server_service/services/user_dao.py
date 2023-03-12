@@ -2,7 +2,7 @@ import inspect
 import logging
 import uuid
 from dataclasses import asdict, dataclass, field
-from typing import ClassVar, Union
+from typing import ClassVar, List, Union
 
 from compiler_server_service.services.db_dao import DB_DAO
 
@@ -21,7 +21,7 @@ class CompletedTutorial__OnlyId:
 class UserData:
     name: str
     id: int = field(default_factory=lambda: str(uuid.uuid4()))
-    tutorials_completed: list[CompletedTutorial__OnlyId] = field(default_factory=lambda: [])
+    tutorials_completed: List[CompletedTutorial__OnlyId] = field(default_factory=lambda: [])
     
     table_name: ClassVar[str] = 'Users'
     

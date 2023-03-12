@@ -3,7 +3,7 @@ import os
 from dataclasses import dataclass, field
 from itertools import count
 from pathlib import Path
-from typing import Any, List, Union
+from typing import Any, Dict, List, Union
 
 import yaml
 from compiler_server_service.utilities import (
@@ -48,15 +48,15 @@ class TopicData:
     topic_name : str
     description: str
     img_name   : str
-    tutorials  : list[TutorialData]
+    tutorials  : List[TutorialData]
     
     def __repr__(self) -> str:
         return f'Topic id: {self.topicId} {self.topic_name}'
     
     
 class TutorialDAO:
-    topic_data_list: list[TopicData] = []
-    all_topics_data: dict[int, TopicData] = {}
+    topic_data_list: List[TopicData] = []
+    all_topics_data: Dict[int, TopicData] = {}
     all_topic_ids = []
     
     with open(TUTORIAL_DATA_FILE_PATH.with_suffix('.yaml')) as f:

@@ -5,7 +5,7 @@ check console output
 
 import logging
 import os
-from typing import Literal, Union
+from typing import List, Literal, Union
 
 from compiler_server_service.services.cpp_compiler.cpp_compiler_revised import (
     CPP_Compiler,
@@ -27,7 +27,7 @@ log = logging.getLogger(__name__)
 
 
 class Grader:
-    def check_console_output(topicId:int, tutorialId:int, code:list[LogicalCodeFile]) -> Union[Literal[True], str]:
+    def check_console_output(topicId:int, tutorialId:int, code:List[LogicalCodeFile]) -> Union[Literal[True], str]:
         if not (tutorial_data := TutorialDAO.find_tutorial(topicId=topicId, tutorialId=tutorialId)): raise TutorialDataNotFound
         if not (expected_output := tutorial_data.expectedConsoleOutput): return True # if no console output is explicitly written in the data, then the code is always right
         
@@ -37,7 +37,7 @@ class Grader:
         return True if compile_result.stdout.strip() == expected_output.strip() else f'Your console output: <{compile_result.stdout.strip()}> does not match <{expected_output.strip()}>'
         
     
-    def check_doctest(topicId:int, tutorialId:int, code: list[LogicalCodeFile]) -> Union[Literal[True], str]:
+    def check_doctest(topicId:int, tutorialId:int, code: List[LogicalCodeFile]) -> Union[Literal[True], str]:
         # should find all file related to this tutorial in compiler-server-service\cpp_source_files\guided_tutorials\ and compile with the code
         prewritten_tests = TutorialDAO.get_prewritten_test_files(topicId=topicId, tutorialId=tutorialId)
         if not prewritten_tests: return True
