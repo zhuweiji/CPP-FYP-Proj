@@ -11,6 +11,7 @@ import FormControl from '@mui/material/FormControl'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import SmartToyTwoToneIcon from '@mui/icons-material/SmartToyTwoTone';
+import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 
 import TopNavBar from '../components/Nav'
 import {
@@ -31,6 +32,12 @@ import {
     Tabs,
     Tab,
 } from '@mui/material'
+
+import {
+    red, grey, purple, deepPurple, indigo, blue, lightBlue, cyan, teal, green, lightGreen, lime, yellow, amber, orange
+} from '@mui/material/colors';
+
+
 import UserService from '../services/UserService'
 import CodeEditor from "../components/Editor";
 
@@ -42,13 +49,14 @@ const USER_POINTS_KEY_NAME = 'CodingConumdrumPoints'
 
 export default function CodingConumdrumPage() {
 
-    const [gptText, setGptText] = useState("Lorem sit deserunt aliquip excepteur ex do aliquip dolor esse labore elit magna mollit id. Commodo sit amet non deserunt tempor eiusmod excepteur minim minim sunt reprehenderit voluptate veniam. Amet dolor ea anim nostrud do occaecat dolor veniam sunt reprehenderit elit reprehenderit ea tempor. Sit officia laborum dolore eiusmod quis occaecat dolore tempor sunt ea.Consequat aute sit id reprehenderit proident amet ea laboris nulla quis id labore occaecat.Magna nostrud laborum ut eiusmod ipsum consequat tempor tempor consectetur proident veniam elit minim.Labore ipsum id nisi laboris tempor ad. minim amet dolor nulla exercitation commodo ad nulla excepteur non.Voluptate non veniam Lorem sit minim irure nisi veniam.Officia ad ex commodo dolor non sint ea dolor quis ipsum do ad.Nulla officia consequat elit eiusmod nostrud ipsum nisi adipisicing occaecat ipsum sint pariatur. Incididunt do dolor dolore dolore veniam adipisicing dolor amet pariatur.Ipsum qui nostrud dolor est ipsum enim non enim excepteur dolore.Eiusmod cillum excepteur non veniam pariatur amet magna dolor eu proident irure amet ipsum nulla.Non irure laboris cupidatat ut qui consectetur nisi.Sint proident commodo aute officia consectetur voluptate ad consectetur.Culpa Lorem ex dolor deserunt irure in magna quis.");
+    const [gptText, setGptText] = useState("");
     const [channelTextData, setChannelTextData] = useState([]);
     const [timeRemaining, setTimeRemaining] = useState(120);
     const [gameStateManager, setGameStateManager] = useState(null);
     const [thisPlayer, setThisPlayer] = useState(null);
     const [gamePlayers, setGamePlayers] = useState([new UserData('john', '', '50', '10')]);
     const [backendConnection, setBackendConnection] = useState(null);
+    const [loadingGPT, setLoadingGPT] = useState(false);
 
     const [tabValue, setTabValue] = useState(0);
 
@@ -62,7 +70,9 @@ export default function CodingConumdrumPage() {
             console.log(messages)
             let data = JSON.parse(messages)
             if (data['prompt']) {
+                setTime();
                 setGptText(data['prompt'])
+                setLoadingGPT(false);
             }
             // console.log(messages)
 
@@ -71,6 +81,7 @@ export default function CodingConumdrumPage() {
 
         startNewRound() {
             console.log('start new round called')
+            setLoadingGPT(true);
             let message = `${this.user.username} would like to start a new round.`
             this.send(message)
         }
@@ -113,9 +124,15 @@ export default function CodingConumdrumPage() {
 
 
     function setTime() {
-        // setInterval(() => {
-        //     setTimeRemaining((i) => i - 1);
-        // }, 1000)
+        let intervalId = setInterval(() => {
+            setTimeRemaining((i) => {
+                if (i - 1 <= 0) {
+                    clearInterval(intervalId);
+                }
+                return i - 1;
+            });
+
+        }, 1000)
     }
 
     function initiateGameState() {
@@ -147,7 +164,6 @@ export default function CodingConumdrumPage() {
 
     useState(() => {
         initiateGameState();
-        setTime();
     }, [])
 
 
@@ -159,29 +175,47 @@ export default function CodingConumdrumPage() {
         <TopNavBar fixed></TopNavBar>
 
         <Grid container mt={8} >
-            <Grid item xs={5}>
+            <Grid item xs={5}
+                sx={{
+                    // backgroundColor: grey[800],
+                    // color: "#e8eaed",
+                }}
+            >
                 <Stack
                     direction="column"
                 // justifyContent="flex-end"
                 // alignItems="center"
                 >
                     <Stack direction="row"
-                        justifyContent="space-around"
-                        alignItems="center" spacing={2} pt={2} pr={10}>
-                        <Typography variant='h5' ml={5} key='timeleft'>Time left: {timeRemaining} seconds</Typography>
+                        justifyContent="space-between"
+                        // alignItems="center"
+                        spacing={2} pt={5} pr={10}>
+                        <Stack direction="column" >
+                            <Typography fontFamily='PT Serif' ml={5} key='timeleft'>Time remaining this round:</Typography>
+                            <Typography fontFamily='PT Serif' variant='h5' ml={5} key='timeleft'>{timeRemaining} seconds</Typography>
+                        </Stack>
+
+                        {
+                            loadingGPT && <CircularProgress color="secondary" />
+                        }
+
+
 
                         <Stack direction="row" >
-                            <Avatar alt="AI Overlord" sx={{ p: 1.5, m: 1 }}>
+                            {/* <Avatar alt="AI Overlord" sx={{ p: 1.5, m: 1, bgcolor: red[600] }}>
                                 <SmartToyTwoToneIcon />
-                            </Avatar>
-                            <Typography variant='h6'>ChatGPT Says:</Typography>
+                            </Avatar> */}
+                            {/* <Typography fontFamily='PT Serif' variant='h6'>ChatGPT Says:</Typography> */}
                         </Stack>
 
                     </Stack>
 
                     {/* ChatGPT prompt question */}
                     <Box sx={{ height: '40vh', p: 5, overflowY: 'scroll' }} key={reactComponentKey()} >
-                        <Typography sx={{ whiteSpace: 'pre-line' }}>{gptText}</Typography>
+                        {
+                            gptText ? <Typography sx={{ whiteSpace: 'pre-line' }}>{gptText}</Typography> :
+                                <Typography variant="h5" fontFamily='PT Serif'>Press Start New Round to start a round when you're ready</Typography>
+                        }
                     </Box>
                     <Button onClick={startNewRound}>Start New Round</Button>
 
@@ -194,14 +228,14 @@ export default function CodingConumdrumPage() {
                             </Tabs>
                         </Box>
                         <TabPanel value={tabValue} index={0} >
-                            <Box sx={{ pl: 5, height: '20vh', overflowY: 'auto' }} key={reactComponentKey()} >
+                            <Box sx={{ pl: 5, height: '15vh', overflowY: 'auto' }} key={reactComponentKey()} >
                                 {
                                     gamePlayers.map((data) => userAvatarDisplay(data, reactComponentKey()))
                                 }
                             </Box>
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
-                            <Box sx={{ pl: 5, height: '20vh', overflowY: 'auto' }} key={reactComponentKey()} >
+                            <Box sx={{ pl: 5, height: '15vh', overflowY: 'auto' }} key={reactComponentKey()} >
                                 {
                                     channelTextData.map((i) => {
                                         return <Typography key={reactComponentKey()}>{i}</Typography>
@@ -229,7 +263,7 @@ export default function CodingConumdrumPage() {
 const userAvatarDisplay = (userData, key) => {
     return <Stack direction="row" spacing={2} key={key}>
         <Tooltip title={userData.username} >
-            <Avatar sx={{ mb: 2 }}>userData.username</Avatar>
+            <Avatar sx={{ mb: 2, bgcolor: grey[900] }} ><AccessibilityNewIcon /></Avatar>
         </Tooltip>
         <Chip label={`${userData.roundPoints} points | ${userData.totalPoints} total`} variant="outlined" />
     </Stack>
