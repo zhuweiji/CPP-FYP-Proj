@@ -1,7 +1,7 @@
 import SETTINGS from "./settings"
 
 
-export default class UserDataFetch {
+export default class UserDataService {
     static HOST_URL = SETTINGS.HOST_URL;
 
     static async login(username) {
@@ -18,7 +18,7 @@ export default class UserDataFetch {
                     body: JSON.stringify(data)
                 })
 
-            if (result.status === 404){
+            if (result.status === 404) {
                 return false;
             }
             return result.json();
@@ -42,11 +42,11 @@ export default class UserDataFetch {
                     body: JSON.stringify(data)
                 })
 
-            if (result.status === 201){
+            if (result.status === 201) {
                 return result.json();
-            } else if (result.status === 409){
-                return {'error': 'username already exists'};
-            } else{
+            } else if (result.status === 409) {
+                return { 'error': 'username already exists' };
+            } else {
                 return false;
             }
 
@@ -94,11 +94,19 @@ export default class UserDataFetch {
     //     }
     // }
 
-    static getUserId(){
+    static setUserDataValue(k, v) {
+        return localStorage.setItem(k, v) || null;
+    }
+
+    static getUserDataValue(k) {
+        return localStorage.getItem(k) || null;
+    }
+
+    static getUserId() {
         return localStorage.getItem('userid') || -1;
     }
 
-    static setUserId(value){
+    static setUserId(value) {
         return localStorage.setItem('userid', value);
 
     }
@@ -107,12 +115,12 @@ export default class UserDataFetch {
         return localStorage.getItem('username') || '';
     }
 
-    static setUserName(value){
+    static setUserName(value) {
         return localStorage.setItem('username', value);
 
     }
 
-    static logout(){
+    static logout() {
         localStorage.removeItem('username');
         localStorage.removeItem('userid');
     }

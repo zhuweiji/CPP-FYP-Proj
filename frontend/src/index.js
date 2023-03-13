@@ -20,7 +20,7 @@ import UserPage from './pages/UserPage';
 import LoginPage from './pages/Login';
 import CreateAccountPage from './pages/CreateAccountPage';
 import SimpleGame from './pages/SimpleGame';
-import CodingConumdrumPage from './pages/CodingConundrum';
+import CodingConumdrumPage from './pages/CodingConundrumPage';
 
 const router = createBrowserRouter([
   {
