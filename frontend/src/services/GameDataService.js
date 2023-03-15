@@ -7,7 +7,7 @@ class GameDataService {
     // creates a websocket connection to the backend CodingConnundrum endpoint
     static startConnection(handleFunc) {
         // let url = `${this.HOST_URL.replace("http", "ws")}games/start`
-        let url = 'ws://localhost:8080/games/start'
+        let url = 'ws://localhost:8080/games/codingconundrum'
         let ws = new WebSocket(url)
         ws.onmessage = handleFunc;
         return ws;

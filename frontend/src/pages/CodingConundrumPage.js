@@ -55,7 +55,6 @@ export default function CodingConumdrumPage() {
     const [gameStateManager, setGameStateManager] = useState(null);
     const [thisPlayer, setThisPlayer] = useState(null);
     const [gamePlayers, setGamePlayers] = useState([new UserData('john', '', '50', '10')]);
-    const [backendConnection, setBackendConnection] = useState(null);
     const [loadingGPT, setLoadingGPT] = useState(false);
 
     const [tabValue, setTabValue] = useState(0);
@@ -63,37 +62,47 @@ export default function CodingConumdrumPage() {
     class GameStateManager {
         constructor(user) {
             this.user = user;
-            this.connection = GameDataService.startConnection(this.responseHandler);
+            this.connection = GameDataService.startConnection(this.websocketIncomingMessageHandler);
+            this.connection.onerror = (e) => {
+                alert('Could not establish a connection with the compiler server. Please refresh the page or try again later.')
+            }
         }
-        responseHandler(event) {
+        websocketIncomingMessageHandler(event) {
             let messages = event.data;
             console.log(messages)
             let data = JSON.parse(messages)
-            if (data['prompt']) {
+            if (data['RoundCreatedMessage']) {
+                let contents = data['RoundCreatedMessage']
                 setTime();
-                setGptText(data['prompt'])
+                setGptText(contents['prompt'])
                 setLoadingGPT(false);
             }
-            // console.log(messages)
-
-            // setChannelTextData(messages['converted_stream_data'].map(i => i.content))
+            else {
+                let contents = data[Object.keys(data)[0]]
+                let newChannelData = contents['content'];
+                setChannelTextData((i) => [...i, newChannelData])
+            }
         }
+
+        // game-specific methods that update the state on the backend
 
         startNewRound() {
             console.log('start new round called')
             setLoadingGPT(true);
-            let message = `${this.user.username} would like to start a new round.`
+            let message = `[gamestate]: ${this.user.username} would like to start a new round.`
             this.send(message)
         }
 
         joinRoom() {
-            let message = `${this.user.username} has joined.`
+            let message = `[gamestate]: ${this.user.username} has joined.`
             this.send(message)
         }
         leaveGame() {
-            let message = `${this.user.username} has left.`
+            let message = `[gamestate]: ${this.user.username} has left.`
             this.send(message)
         }
+
+        // wrappers around WebSocket connections to improve reliability (should these go somewhere else?)
 
         send(message, callback) {
             this.waitForConnection(() => {
@@ -158,18 +167,11 @@ export default function CodingConumdrumPage() {
         window.addEventListener('beforeunload', () => {
             gameStateManager.leaveGame()
         })
-
-
     }
 
-    useState(() => {
+    useEffect(() => {
         initiateGameState();
     }, [])
-
-
-
-
-
 
     return <Box>
         <TopNavBar fixed></TopNavBar>
@@ -192,7 +194,7 @@ export default function CodingConumdrumPage() {
                         spacing={2} pt={5} pr={10}>
                         <Stack direction="column" >
                             <Typography fontFamily='PT Serif' ml={5} key='timeleft'>Time remaining this round:</Typography>
-                            <Typography fontFamily='PT Serif' variant='h5' ml={5} key='timeleft'>{timeRemaining} seconds</Typography>
+                            <Typography fontFamily='Segoe UI' variant='h5' ml={5} key='timeleft2'>{timeRemaining} seconds</Typography>
                         </Stack>
 
                         {
@@ -212,34 +214,48 @@ export default function CodingConumdrumPage() {
 
                     {/* ChatGPT prompt question */}
                     <Box sx={{ height: '40vh', p: 5, overflowY: 'scroll' }} key={reactComponentKey()} >
-                        {
-                            gptText ? <Typography sx={{ whiteSpace: 'pre-line' }}>{gptText}</Typography> :
-                                <Typography variant="h5" fontFamily='PT Serif'>Press Start New Round to start a round when you're ready</Typography>
-                        }
+                        <Typography fontFamily='Open Sans' sx={{ whiteSpace: 'pre-line' }}>
+                            {gptText || "Press Start New Round to start a round when you're ready"}
+                        </Typography>
                     </Box>
                     <Button onClick={startNewRound}>Start New Round</Button>
 
-                    <Box key={reactComponentKey()} >
+                    <Box key={reactComponentKey()}  >
 
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <Tabs value={tabValue} onChange={(event, value) => { setTabValue(value) }} aria-label="basic tabs example">
-                                <Tab label="Players" {...a11yProps(0)} />
-                                <Tab label="Messages" {...a11yProps(1)} />
+                                <Tab label="Messages" {...a11yProps(0)} />
+                                <Tab label="Players" {...a11yProps(1)} />
                             </Tabs>
                         </Box>
                         <TabPanel value={tabValue} index={0} >
-                            <Box sx={{ pl: 5, height: '15vh', overflowY: 'auto' }} key={reactComponentKey()} >
+                            <Box sx={{ height: '20vh', overflowY: 'auto' }} key={reactComponentKey()} >
                                 {
-                                    gamePlayers.map((data) => userAvatarDisplay(data, reactComponentKey()))
+                                    channelTextData.map((i) => {
+                                        return <Box mr={5} minHeight='1.3rem' key={reactComponentKey()}>
+                                            <Typography align='center' fontFamily="Segoe UI" key={reactComponentKey()}
+                                                sx={{
+                                                    color: '#fff',
+                                                    backgroundColor: "#3f51b5",
+                                                    borderTopLeftRadius: 5,
+                                                    borderTopRightRadius: 10,
+                                                    borderBottomLeftRadius: 5,
+                                                    pl: 2,
+                                                    pr: 2,
+                                                    mb: 1,
+                                                    fontSize: '0.8rem',
+                                                }}
+                                            >{i}</Typography>
+                                        </Box>
+
+                                    })
                                 }
                             </Box>
                         </TabPanel>
-                        <TabPanel value={tabValue} index={1}>
-                            <Box sx={{ pl: 5, height: '15vh', overflowY: 'auto' }} key={reactComponentKey()} >
+                        <TabPanel value={tabValue} index={1} >
+                            <Box sx={{ pl: 5, height: '20vh', overflowY: 'auto' }} key={reactComponentKey()} >
                                 {
-                                    channelTextData.map((i) => {
-                                        return <Typography key={reactComponentKey()}>{i}</Typography>
-                                    })
+                                    gamePlayers.map((data) => userAvatarDisplay(data, reactComponentKey()))
                                 }
                             </Box>
                         </TabPanel>

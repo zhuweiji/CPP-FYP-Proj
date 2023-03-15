@@ -1,7 +1,7 @@
 import asyncio
 import os
 from dataclasses import dataclass, field
-from typing import Callable, Union
+from typing import Callable, Coroutine, Union
 
 import aioredis
 import async_timeout
@@ -40,28 +40,22 @@ class RedisDAO:
         await cls.redis.publish(channel, message)
     
     @classmethod
-    async def subscribe(cls, handler:Callable, channel_name):
+    async def subscribe(cls, handler:Coroutine, channel_name):
+        """Create a coroutine to subscribe to Redis PubSub"""
         pubsub = cls.redis.pubsub()
         await pubsub.subscribe(channel_name)
         
         while True:
-            try:
-                async with async_timeout.timeout(1):
-                    message = pubsub.get_message(ignore_subscribe_messages=True)
-                    log.info(message)
-                    message = await message
-                    log.info(message)
-                    
-                    if message is not None:
-                        print(f"(Reader) Message Received: {message}")
-                        if message["data"].decode() == cls.CHANNEL_STOPWORD:
-                            print("(Reader) STOP")
-                            break
-                        else:
-                            handler(message)
-                    await asyncio.sleep(0.1)
-            except asyncio.TimeoutError:
-                pass
+            message = pubsub.get_message(ignore_subscribe_messages=True)
+            message = await message
+            
+            if message is not None:
+                # decode from redis pubsub format (dict: bytes)
+                message = {k:
+                    v.decode() if isinstance(v, bytes) else v
+                    for k,v in message.items()}
+                await handler(message)
+            await asyncio.sleep(0.5)
         
         # while True:
         #     log.info('waiting for message on channel')
