@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, forwardRef, useImperativeHandle } from 'react'
 
 import IconButton from '@mui/material/IconButton'
 import Input from '@mui/material/Input'
@@ -51,13 +51,14 @@ export default function CodingConumdrumPage() {
 
     const [gptText, setGptText] = useState("");
     const [channelTextData, setChannelTextData] = useState([]);
-    const [timeRemaining, setTimeRemaining] = useState(120);
     const [gameStateManager, setGameStateManager] = useState(null);
     const [thisPlayer, setThisPlayer] = useState(null);
     const [gamePlayers, setGamePlayers] = useState([new UserData('john', '', '50', '10')]);
     const [loadingGPT, setLoadingGPT] = useState(false);
 
     const [tabValue, setTabValue] = useState(0);
+
+    const timerRef = useRef();
 
     class GameStateManager {
         constructor(user) {
@@ -73,7 +74,14 @@ export default function CodingConumdrumPage() {
             let data = JSON.parse(messages)
             if (data['RoundCreatedMessage']) {
                 let contents = data['RoundCreatedMessage']
-                setTime();
+                let start_time = new Date(parseFloat(contents['start_time']) * 1000)
+                let round_duration = parseInt(contents['round_duration'])
+                let end_time = new Date(start_time.getTime() + round_duration * 1000)
+
+                let seconds_left = parseInt(
+                    (end_time.getTime() - new Date().getTime()) / 1000);
+
+                timerRef.current.startTimer(seconds_left);
                 setGptText(contents['prompt'])
                 setLoadingGPT(false);
             }
@@ -131,19 +139,6 @@ export default function CodingConumdrumPage() {
         gameStateManager.startNewRound();
     }
 
-
-    function setTime() {
-        let intervalId = setInterval(() => {
-            setTimeRemaining((i) => {
-                if (i - 1 <= 0) {
-                    clearInterval(intervalId);
-                }
-                return i - 1;
-            });
-
-        }, 1000)
-    }
-
     function initiateGameState() {
         let userid = UserDataService.getUserId();
         let username = UserDataService.getUserName();
@@ -192,10 +187,7 @@ export default function CodingConumdrumPage() {
                         justifyContent="space-between"
                         // alignItems="center"
                         spacing={2} pt={5} pr={10}>
-                        <Stack direction="column" >
-                            <Typography fontFamily='PT Serif' ml={5} key='timeleft'>Time remaining this round:</Typography>
-                            <Typography fontFamily='Segoe UI' variant='h5' ml={5} key='timeleft2'>{timeRemaining} seconds</Typography>
-                        </Stack>
+                        <TimerComponent ref={timerRef} />
 
                         {
                             loadingGPT && <CircularProgress color="secondary" />
@@ -321,6 +313,32 @@ function TabPanel(props) {
         </div>
     );
 }
+
+const TimerComponent = forwardRef((props, ref) => {
+    const [timeRemaining, setTimeRemaining] = useState(120);
+
+    useImperativeHandle(ref, () => ({
+        startTimer(seconds) {
+            setTimeRemaining(seconds)
+            let intervalId = setInterval(() => {
+                setTimeRemaining((i) => {
+                    if (i - 1 <= 0) {
+                        clearInterval(intervalId);
+                    }
+                    return i - 1;
+                });
+
+            }, 1000)
+        }
+    }))
+
+
+    return <Stack direction="column" >
+        <Typography fontFamily='PT Serif' ml={5} key='timeleft'>Time remaining this round:</Typography>
+        <Typography fontFamily='Segoe UI' variant='h5' ml={5} key='timeleft2'>{timeRemaining} seconds</Typography>
+    </Stack>
+
+})
 
 function a11yProps(index) {
     return {
