@@ -52,6 +52,8 @@ game_manager = CodingConundrumManager(connection_manager)
 async def coding_conundrum_websocket_endpoint(websocket: WebSocket):
     await connection_manager.connect(websocket)
     
+    await game_manager.handle_new_connection(websocket)
+    
     try:
         while True:
             data = await websocket.receive_text()

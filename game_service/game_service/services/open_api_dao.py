@@ -18,13 +18,18 @@ Please format the description nicely in text so that it is easy to read.
 
 
 async def generate_prompt(prompt:str = default_prompt):
-  log.info('generating new prompt')
-  response = openai.Completion.create(
+  def openai_create():
+    return openai.Completion.create(
     model="text-davinci-003",
     prompt=prompt,
     temperature=0.3,
     max_tokens=300
   )
+  
+  # pattern for wrapping a blocking task
+  coro = asyncio.to_thread(openai_create)
+  task = asyncio.create_task(coro)
+  response = await task
   
   response_body = response.get('choices', None)
   if not response_body:
@@ -37,6 +42,9 @@ async def generate_prompt(prompt:str = default_prompt):
   response_text = first_response_obj.get('text', "")
     
   return response_text
+
+
+
       
 async def evaluate_code(code: str):
     async with aiohttp.ClientSession() as session:

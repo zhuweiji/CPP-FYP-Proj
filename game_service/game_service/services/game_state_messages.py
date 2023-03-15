@@ -55,22 +55,24 @@ class RoundStartingMessage(ConvertedMessage):
 class RoundCreatedMessage(ConvertedMessage):
     content    : Union[str, None] = None
     start_time : Union[float, None] = None
+    round_duration: str = None
     prompt     : str = None
     
-    message_pattern: ClassVar[str] = rf"Started a game at (.+) with prompt (.+)"
+    message_pattern: ClassVar[str] = rf"Started a game at (.+) for (\d+)\s?seconds with prompt (.+)"
 
     def __post_init__(self):
-        search = re.match(self.message_pattern, self.content)
+        search = re.match(self.message_pattern, self.content, re.DOTALL)
         self.start_time = float(search.group(1)) if search is not None else 'Unknown'
-        self.start_time = search.group(2) if search is not None else 'Could not find prompt'
+        self.round_duration = int(search.group(2)) if search is not None else '120'
+        
+        self.prompt = search.group(3) if search is not None else 'Could not find prompt'
         
     @classmethod
-    def create(cls, start_time, prompt:str):
+    def create(cls, start_time,round_duration, prompt:str):
         """Create a new RoundCreatedMessage object at the current time"""
         # uhh does postinit run here?
-        return cls(content=f"Started a game at {start_time} with prompt {prompt}",
-                   start_time=start_time,
-                   prompt=prompt)
+        return cls(content=f"Started a game at {start_time} for {round_duration}seconds with prompt {prompt}",
+        )
 
 @dataclass
 class RoundEndedMessage(ConvertedMessage):

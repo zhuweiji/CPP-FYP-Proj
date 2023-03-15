@@ -31,6 +31,12 @@ class CodingConundrumManager:
         
         self.connectionManager = connectionManager
         
+    async def handle_new_connection(self, connection):
+        if self.round_started:
+            await self.connectionManager.send_personal_message(
+                RoundCreatedMessage.create(self.round_start_time, self.round_duration__seconds, self.round_prompt).wrap_for_serialization(), connection
+            )
+        
     async def handle_incoming_message(self, message:str):
         message_queue = []
         is_state_message = False
@@ -71,7 +77,8 @@ class CodingConundrumManager:
         self.creating_round_in_progress = True
         
         try:
-            game_prompt = await generate_prompt()
+            # game_prompt = await generate_prompt()
+            game_prompt = 'aa'
             log.info(game_prompt)
             self.round_started = True
             self.round_start_time = time.time()
@@ -80,7 +87,9 @@ class CodingConundrumManager:
             t = asyncio.create_task(self.setup_end_round())
             
             await self.connectionManager.broadcast(
-                RoundCreatedMessage.create(self.round_start_time, self.round_prompt).wrap_for_serialization()
+                RoundCreatedMessage.create(self.round_start_time,
+                                           self.round_duration__seconds,
+                                           self.round_prompt).wrap_for_serialization()
             )
             
             await t 
