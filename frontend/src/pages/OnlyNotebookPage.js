@@ -8,6 +8,7 @@ import { useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import Notebook from '../components/Notebook'
 import { NotebookService } from '../services/NotebookService'
+import TutorialDataFetch from '../services/TutorialDataFetch'
 
 export default function OnlyNotebookPage() {
     // get the path of this page (to get the tutorialId of the page)
@@ -63,7 +64,10 @@ export default function OnlyNotebookPage() {
             {/* <Fade in={myfunc}> */}
             <Button
                 sx={{ position: 'fixed', top: 90, right: 16 }}
-                onClick={() => navigate(`/tutorial/${topicId}/${tutorialId}`)}
+                onClick={() => {
+                    navigate(`/tutorial/${topicId}/${tutorialId}`);
+                    TutorialDataFetch.markTutorialCompleted(topicId, tutorialId);
+                }}
                 startIcon={<DoubleArrowIcon />}
             >
                 Next
@@ -82,7 +86,11 @@ export default function OnlyNotebookPage() {
                     variant='contained'
                     size='large'
                     sx={{ mt: 10, mb: 20, minWidth: '40vw', minHeight: 100 }}
-                    onClick={() => navigate(`/tutorial/${topicId}/${tutorialId}`)}
+                    onClick={() => {
+                        navigate(`/tutorial/${topicId}/${tutorialId}`);
+                        TutorialDataFetch.markTutorialCompleted(topicId, tutorialId);
+
+                    }}
                 >
                     Next!
                 </Button>

@@ -54,4 +54,36 @@ export default class TutorialDataFetch {
             console.error(error);
         }
     }
+
+    static async markTutorialCompleted(topicId, tutorialId) {
+        let url = `${this.HOST_URL}tutorials/mark_tutorial`
+        let user_id = UserService.getUserId();
+
+        if (!user_id || !topicId || !tutorialId) {
+            return;
+        }
+
+        console.log(user_id, topicId, tutorialId)
+
+        let data = {
+            user_id: user_id,
+            topicId: topicId,
+            tutorialId: tutorialId,
+        }
+
+        try {
+            let result = await fetch(url,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+            return result;
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
 }

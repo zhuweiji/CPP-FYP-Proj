@@ -4,7 +4,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
-from compiler_server_service.routers.templates import BasicResponse
+from compiler_server_service.routers.templates import POST_BODY, BasicResponse
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
 from compiler_server_service.services.tutorial_dao import TopicData, TutorialDAO
 from compiler_server_service.services.user_dao import (
@@ -12,7 +12,7 @@ from compiler_server_service.services.user_dao import (
     UserData,
 )
 from compiler_server_service.utilities import safe_get
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Response, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -51,8 +51,6 @@ async def get_tutorial_detail(topicId:int, tutorialId: int, user_id:Optional[str
     result.no_tutorial = tutorial.no_tutorial
     result.instruction_notebook_name = tutorial.tutorial_instructions
     
-    log.info(result)
-    
     previous_tutorial = TutorialDAO.get_previous_tutorial_of_tutorial(topicId=topicId, tutorialId=tutorialId)
     if previous_tutorial:
         result.previous_tutorial_topicid_tutid = (TutorialDAO.get_topicId_of_tutorial(previous_tutorial), previous_tutorial.id)
@@ -81,4 +79,26 @@ async def get_tutorials(user_id:Optional[str]=None):
             result.tutorials_completed = user.tutorials_completed
     
     return result
+
+class POST__Mark_Tutorial_Completed(POST_BODY):
+    topicId:int
+    tutorialId: int
+
+@router.post('/mark_tutorial', status_code=status.HTTP_200_OK)     
+async def mark_tutorial_completed(request: Request, response: Response, data: POST__Mark_Tutorial_Completed):
+    result = BasicResponse()
+    
+    if data.user_id:
+        if not (user := UserData.find_by_id(data.user_id)):
+            log.warning(f'could not find userid for user who completed tutorial data {data.user_id}')
+            response.status_code = status.HTTP_404_NOT_FOUND
+            return result
         
+        add_tutorial_result = user.add_completed_tutorial(CompletedTutorial__OnlyId(topic_id=data.topicId, tutorial_id=data.tutorialId))
+        log.info(add_tutorial_result)
+        if add_tutorial_result:
+            response.status_code = status.HTTP_201_CREATED
+        else:
+            raise HTTPException(status_code=500, detail= "Could not save the user's completed tutorial to db")
+        
+    return result
