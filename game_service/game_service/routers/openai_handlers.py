@@ -20,6 +20,7 @@ router = APIRouter(
 )
 
 @router.get('/generate')
+@limiterobj.limit('2/minute')
 async def generate_prompt_handler():
     prompt = await generate_prompt()
     return BasicResponse(message=prompt)
