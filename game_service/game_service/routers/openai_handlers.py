@@ -34,7 +34,7 @@ class OpenAPIEvaluateResponse(BasicResponse):
     score: int = 0
 
 @router.post('/evalute')
-@limiterobj.limit('5/minute')
+@limiterobj.limit('2/minute')
 async def evaluate_code_handler(request: Request, data: POST__Evaluate_Code):
     filenames_to_code = data.all_code
     prompt            = data.prompt
