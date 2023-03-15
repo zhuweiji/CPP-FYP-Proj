@@ -53,7 +53,7 @@ export default function CodingConumdrumPage() {
     const [channelTextData, setChannelTextData] = useState([]);
     const [gameStateManager, setGameStateManager] = useState(null);
     const [thisPlayer, setThisPlayer] = useState(null);
-    const [gamePlayers, setGamePlayers] = useState([new UserData('john', '', '50', '10')]);
+    const [gamePlayers, setGamePlayers] = useState(new Set());
     const [loadingGPT, setLoadingGPT] = useState(false);
 
     const [tabValue, setTabValue] = useState(0);
@@ -74,16 +74,27 @@ export default function CodingConumdrumPage() {
             let data = JSON.parse(messages)
             if (data['RoundCreatedMessage']) {
                 let contents = data['RoundCreatedMessage']
+                setGptText(contents['prompt'])
+                setLoadingGPT(false);
+
+                let score = data['score']
+
                 let start_time = new Date(parseFloat(contents['start_time']) * 1000)
                 let round_duration = parseInt(contents['round_duration'])
                 let end_time = new Date(start_time.getTime() + round_duration * 1000)
 
                 let seconds_left = parseInt(
                     (end_time.getTime() - new Date().getTime()) / 1000);
-
                 timerRef.current.startTimer(seconds_left);
-                setGptText(contents['prompt'])
-                setLoadingGPT(false);
+            } else if (data['JoinMessage']) {
+                let contents = data['JoinMessage'];
+
+                let joined_user = contents['joined_user']
+                setGamePlayers((i) => new Set([...i, new UserData(joined_user, '', '', '')]))
+
+                let newChannelData = contents['content'];
+                setChannelTextData((i) => [...i, newChannelData])
+
             }
             else {
                 let contents = data[Object.keys(data)[0]]
@@ -188,13 +199,9 @@ export default function CodingConumdrumPage() {
                         // alignItems="center"
                         spacing={2} pt={5} pr={10}>
                         <TimerComponent ref={timerRef} />
-
                         {
                             loadingGPT && <CircularProgress color="secondary" />
                         }
-
-
-
                         <Stack direction="row" >
                             {/* <Avatar alt="AI Overlord" sx={{ p: 1.5, m: 1, bgcolor: red[600] }}>
                                 <SmartToyTwoToneIcon />
@@ -207,8 +214,34 @@ export default function CodingConumdrumPage() {
                     {/* ChatGPT prompt question */}
                     <Box sx={{ height: '40vh', p: 5, overflowY: 'scroll' }} key={reactComponentKey()} >
                         <Typography fontFamily='Open Sans' sx={{ whiteSpace: 'pre-line' }}>
-                            {gptText || "Press Start New Round to start a round when you're ready"}
+                            {gptText || "A round has not started.\n"}
                         </Typography>
+                        {
+                            !gptText && <Box>
+                                <Typography fontFamily='Open Sans' variant='h6' sx={{ pt: 5 }}>
+                                    Here are some rules:
+                                </Typography>
+                                <Typography fontFamily='Open Sans' sx={{ pt: 1 }}>
+                                    When a new round starts, ChatGPT will generate a scenario for which you must create code that best fits the prompt.
+                                </Typography>
+
+                                <Typography fontFamily='Open Sans' sx={{ pt: 1 }}>
+                                </Typography>
+
+                                <Typography fontFamily='Open Sans' sx={{ pt: 0 }}>
+                                    You can compile your code as many times as you wish, but can only send it for evaluation once.
+                                </Typography>
+
+                                <Typography fontFamily='Open Sans' sx={{ pt: 5 }}>
+
+                                    Press Start New Round to start a new round if you're ready.
+                                </Typography>
+
+
+                            </Box>
+
+
+                        }
                     </Box>
                     <Button onClick={startNewRound}>Start New Round</Button>
 
@@ -247,7 +280,7 @@ export default function CodingConumdrumPage() {
                         <TabPanel value={tabValue} index={1} >
                             <Box sx={{ pl: 5, height: '20vh', overflowY: 'auto' }} key={reactComponentKey()} >
                                 {
-                                    gamePlayers.map((data) => userAvatarDisplay(data, reactComponentKey()))
+                                    Array.from(gamePlayers).map((data) => userAvatarDisplay(data, reactComponentKey()))
                                 }
                             </Box>
                         </TabPanel>
@@ -258,7 +291,7 @@ export default function CodingConumdrumPage() {
 
             {/* right half of the page */}
             <Grid item xs={7}>
-                <CodeEditor />
+                <CodeEditor openAIEvaluate={gptText && true} prompt={gptText} />
             </Grid>
 
         </Grid>
@@ -315,7 +348,7 @@ function TabPanel(props) {
 }
 
 const TimerComponent = forwardRef((props, ref) => {
-    const [timeRemaining, setTimeRemaining] = useState(120);
+    const [timeRemaining, setTimeRemaining] = useState(0);
 
     useImperativeHandle(ref, () => ({
         startTimer(seconds) {

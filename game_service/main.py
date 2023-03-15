@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 os.environ.update(dotenv_values())
 
-from game_service.routers import game_handlers
+from game_service.routers import game_handlers, openai_handlers
 
 tags_metadata = [
     {
@@ -42,9 +42,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(
-    game_handlers.router
-)
+app.include_router(game_handlers.router)
+app.include_router(openai_handlers.router)
 
 
 @app.get('/')

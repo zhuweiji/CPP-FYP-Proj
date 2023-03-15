@@ -14,6 +14,7 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import ErrorIcon from '@mui/icons-material/Error';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
+import SmartToySharpIcon from '@mui/icons-material/SmartToySharp';
 
 import {
     CodeCompileService,
@@ -55,6 +56,8 @@ function CodeEditor(props) {
 
     const [showDeleteError, setShowDeleteError] = useState(false);
     const [showFilenameError, setShowFilenameError] = useState(false);
+
+    const [openAIEvaluated, setOpenAIEvaluated] = useState(false);
 
     let currDir;
     if (props.files) {
@@ -282,6 +285,27 @@ function CodeEditor(props) {
         }
     }
 
+    async function openAIEvalute() {
+        let all_code = getAllEditorValues();
+        setOpenAIEvaluated(true);
+
+        let result = await CodeCompileService.openAIEvaluateCode(all_code, props.prompt);
+        console.log(result)
+        if (result.error) {
+            console.error(result.error)
+        }
+        if (result.status === CompileResultStatuses.ERROR) {
+            setPostCompileMessages('There was an error compiling your code.')
+        }
+
+        let displayedOutput = result.message;
+
+        setExecutionResults([...executionResults, displayedOutput]);
+        setDisplayedExecutionResult(displayedOutput);
+
+
+    }
+
     async function testConnectionToCompilerServer() {
         let probeResults = await CodeCompileService.check_connection();
 
@@ -404,6 +428,14 @@ function CodeEditor(props) {
                             <Button color="success" variant="outlined" size="large" endIcon={<DoneAllRoundedIcon />} onClick={() => handleCompilation(true)} disabled={!isEditorReady} justify="flex-end" >
                                 Grade
                             </Button>
+                        }
+
+                        {
+                            (props.openAIEvaluate ?? false) && !openAIEvaluated &&
+                            <Button color="error" variant="outlined" size="large" endIcon={<SmartToySharpIcon />} onClick={() => openAIEvalute()} disabled={!isEditorReady} justify="flex-end" >
+                                Evaluate Code
+                            </Button>
+
                         }
 
 

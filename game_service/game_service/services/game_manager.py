@@ -21,7 +21,7 @@ logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', le
 log = logging.getLogger(__name__)
 
 class CodingConundrumManager:
-    round_duration__seconds = 120
+    round_duration__seconds = 240
     
     def __init__(self, connectionManager) -> None:
         self.round_started = False
@@ -77,8 +77,8 @@ class CodingConundrumManager:
         self.creating_round_in_progress = True
         
         try:
-            # game_prompt = await generate_prompt()
-            game_prompt = 'aa'
+            game_prompt = await generate_prompt()
+            # game_prompt = 'aa'
             log.info(game_prompt)
             self.round_started = True
             self.round_start_time = time.time()
