@@ -16,6 +16,7 @@ from compiler_server_service.routers import (
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
@@ -67,7 +68,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get('/')
+# app.add_middleware(HTTPSRedirectMiddleware)
+
+
+@app.get('')
 def root():
     return BasicResponse(message="we're up!")
 

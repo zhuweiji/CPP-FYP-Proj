@@ -22,6 +22,8 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 start       = "scripts:start"
 startreload = "scripts:startreload"
+startssl    = "scripts:startssl"
+
 test        = "scripts:test"
 tests       = "scripts:test"
 healthcheck = "scripts:healthcheck"
