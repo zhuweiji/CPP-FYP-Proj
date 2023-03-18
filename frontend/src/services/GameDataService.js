@@ -2,7 +2,7 @@ import SETTINGS from "./settings"
 import UserDataFetch from "./UserService";
 
 class GameDataService {
-    static HOST_URL = SETTINGS.HOST_URL;
+    static HOST_URL = SETTINGS.HOST_URL + SETTINGS.GAME_SERVICE_PORT;
 
     // creates a websocket connection to the backend CodingConnundrum endpoint
     static startConnection(handleFunc) {

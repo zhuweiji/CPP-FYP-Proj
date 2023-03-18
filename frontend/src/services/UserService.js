@@ -2,7 +2,7 @@ import SETTINGS from "./settings"
 
 
 export default class UserDataService {
-    static HOST_URL = SETTINGS.HOST_URL;
+    static HOST_URL = SETTINGS.HOST_URL + SETTINGS.COMPILER_SERVICE_PORT;
 
     static async login(username) {
         const data = {

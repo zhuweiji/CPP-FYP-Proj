@@ -18,7 +18,7 @@ class CompileResult {
 }
 
 class CodeCompileService {
-    static HOST_URL = SETTINGS.HOST_URL;
+    static HOST_URL = SETTINGS.HOST_URL + SETTINGS.COMPILER_SERVICE_PORT;
     static lastConnectionCheckTime;
     static lastConnectionCheckResult;
 

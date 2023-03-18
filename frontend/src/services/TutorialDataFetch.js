@@ -3,7 +3,7 @@ import SETTINGS from "./settings"
 import UserService from "./UserService";
 
 export default class TutorialDataFetch {
-    static HOST_URL = SETTINGS.HOST_URL;
+    static HOST_URL = SETTINGS.HOST_URL + SETTINGS.COMPILER_SERVICE_PORT;
 
 
     static async getTutorialInformation(topicId, tutorialId) {
