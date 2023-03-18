@@ -240,6 +240,8 @@ function CodeEditor(props) {
             return
         }
 
+        console.log(result.status)
+
 
         if (result.status === CompileResultStatuses.THROTTLED) {
             setCompilerServerStatus(CompilerServerStatuses.THROTTLED);

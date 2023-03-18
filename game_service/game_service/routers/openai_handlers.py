@@ -21,7 +21,7 @@ router = APIRouter(
 
 @router.get('/generate')
 @limiterobj.limit('2/minute')
-async def generate_prompt_handler():
+async def generate_prompt_handler(request: Request):
     prompt = await generate_prompt()
     return BasicResponse(message=prompt)
 
@@ -44,9 +44,9 @@ async def evaluate_code_handler(request: Request, data: POST__Evaluate_Code):
     
     result = await evaluate_code(joined_code, prompt)
     
-    search  =  re.search(r'score:\s*(\d+)\/10')
+    s  =  re.search(r'score:\s*(\d+)\/10', result)
     try:
-        score = int(search.group(1)) if search is not None else 0
+        score = int(s.group(1)) if s is not None else 0
     except ValueError:
         score = 0
     return OpenAPIEvaluateResponse(message=result, score=score)

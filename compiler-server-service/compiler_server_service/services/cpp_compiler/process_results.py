@@ -15,6 +15,7 @@ class CompilationErrorTypes(Enum):
     NO_WINMAIN   = -1
     FILE_NOT_FOUND_ERROR = 1
     NOT_DEFINED  = 2
+    NO_SEMICOLON = 3
 
 
 class ProcessResult:
@@ -75,6 +76,7 @@ class CompilationResult(ProcessResult):
             CompilationErrorTypes.FILE_NOT_FOUND_ERROR: self.failed_because_file_not_found_error,
             CompilationErrorTypes.NOT_DEFINED : self.failed_because_not_defined,
             CompilationErrorTypes.NO_WINMAIN  : self.failed_because_no_winmain,
+            CompilationErrorTypes.NO_SEMICOLON: self.failed_because_no_semicolon,
         }
         
         if self.success: return None
@@ -82,6 +84,11 @@ class CompilationResult(ProcessResult):
         for error_reason, checking_func in error_reason_dict.items():
             if checking_func(): return error_reason
         return CompilationErrorTypes.UNKNOWN
+    
+    def failed_because_no_semicolon(self):
+        stderr_val = self.stderr if self.stderr else ""
+        if isinstance(stderr_val, bytes): stderr_val = stderr_val.decode()
+        return "expected ';' before" in stderr_val.lower()
     
     def failed_because_file_not_found_error(self):
         stderr_val = self.stderr if self.stderr else ""

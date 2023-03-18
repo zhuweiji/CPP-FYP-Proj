@@ -82,8 +82,6 @@ class CodeCompileService {
                     },
                     body: JSON.stringify(data)
                 })
-            backendResult = await backendResult.json();
-            result.message = backendResult.message;
             if (backendResult.status === 200) {
                 result.status = CompileResultStatuses.SUCCESS
             } else if (backendResult.status === 429) {
@@ -92,6 +90,9 @@ class CodeCompileService {
                 result.status = CompileResultStatuses.ERROR;
                 result.errors = backendResult.errors
             }
+            backendResult = await backendResult.json();
+            result.message = backendResult.message;
+
 
             return result;
 
