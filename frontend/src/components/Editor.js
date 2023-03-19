@@ -288,6 +288,8 @@ function CodeEditor(props) {
     }
 
     async function openAIEvalute() {
+        setIsEditorReady(false);
+
         let all_code = getAllEditorValues();
         setOpenAIEvaluated(true);
 
@@ -305,6 +307,7 @@ function CodeEditor(props) {
         setExecutionResults([...executionResults, displayedOutput]);
         setDisplayedExecutionResult(displayedOutput);
 
+        setIsEditorReady(true);
 
     }
 

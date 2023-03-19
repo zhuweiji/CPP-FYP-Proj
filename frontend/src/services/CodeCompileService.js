@@ -18,12 +18,14 @@ class CompileResult {
 }
 
 class CodeCompileService {
-    static HOST_URL = SETTINGS.HOST_URL + SETTINGS.COMPILER_SERVICE_PORT;
+    static COMPILER_SERVICE_URL = SETTINGS.HOST_URL + SETTINGS.COMPILER_SERVICE_PORT;
+    static GAME_SERVICE_URL = SETTINGS.HOST_URL + SETTINGS.GAME_SERVICE_PORT;
+
     static lastConnectionCheckTime;
     static lastConnectionCheckResult;
 
     static async openAIEvaluateCode(allCode, prompt) {
-        let url = `${this.HOST_URL}terminator/evalute`;
+        let url = `${this.GAME_SERVICE_URL}terminator/evalute`;
 
         const data = {
             'all_code': allCode,
@@ -71,7 +73,7 @@ class CodeCompileService {
 
         let result = new CompileResult();
 
-        let url = errorOptions ? `${this.HOST_URL}cpp/compile_and_run` : `${this.HOST_URL}cpp/compile_and_run_noerr`
+        let url = errorOptions ? `${this.COMPILER_SERVICE_URL}cpp/compile_and_run` : `${this.COMPILER_SERVICE_URL}cpp/compile_and_run_noerr`
 
         try {
             let backendResult = await fetch(url,
@@ -114,7 +116,7 @@ class CodeCompileService {
         let result = new CompileResult();
 
         try {
-            let backendResult = await fetch(`${this.HOST_URL}cpp/grade_code`,
+            let backendResult = await fetch(`${this.COMPILER_SERVICE_URL}cpp/grade_code`,
                 {
                     method: 'POST',
                     headers: {
@@ -159,7 +161,7 @@ class CodeCompileService {
 
     static async __check_connection() {
         try {
-            let result = await fetch(`${this.HOST_URL}cpp/`,
+            let result = await fetch(`${this.COMPILER_SERVICE_URL}cpp/`,
                 {
                     method: 'GET',
                 })
