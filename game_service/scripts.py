@@ -11,7 +11,7 @@ def start_process(command):
         log.info("Keyboard Interrupt: Halting Program.")
         
 
-PORT = 8080
+PORT = 8081
 
 def start():
     start_process(f'uvicorn main:app --port {PORT} --host 0.0.0.0')
@@ -26,4 +26,4 @@ def test():
     start_process('pytest')
     
 def healthcheck():
-    start_process('curl', '--fail', 'https://localhost:8080', '||', 'exit 1')
+    start_process(f'curl --fail https://localhost:{PORT} || exit 1')

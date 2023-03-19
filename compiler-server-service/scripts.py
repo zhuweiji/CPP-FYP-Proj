@@ -26,4 +26,4 @@ def test():
     start_process('pytest')
     
 def healthcheck():
-    start_process('curl', '--fail', 'https://localhost:8080', '||', 'exit 1')
+    start_process(f'curl --fail https://localhost:{PORT} || exit 1')
