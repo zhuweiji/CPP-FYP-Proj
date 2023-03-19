@@ -57,7 +57,8 @@ origins = [
     "https://cpp-fyp-proj.vercel.app",
     "https://p01--compiler-server--m98yzdkgzrwc.code.run/",
     "https://p01--compiler-server--m98yzdkgzrwc.code.run/cpp/",
-    "https://18.141.204.202:8080"
+    "https://18.141.204.202:8080/",
+    "https://18.141.204.202:8080/cpp/",
 
 ]
 
