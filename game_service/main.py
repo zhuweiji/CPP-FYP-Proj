@@ -27,12 +27,10 @@ app = FastAPI(
 )
 
 origins = [
-    "http://localhost",
     "http://localhost:3000",
     "https://cpp-fyp-proj.vercel.app",
+    "https://cpp-fyp-proj-git-codingconundrum-zhuweiji.vercel.app",
     "https://cpp-fyp-proj-git-codingconundrum-zhuweiji.vercel.app/",
-    
-
 ]
 
 app.add_middleware(

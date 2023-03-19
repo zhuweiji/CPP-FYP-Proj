@@ -51,9 +51,9 @@ app.include_router(notebook_handlers.router)
 
 
 origins = [
-    "http://localhost",
     "http://localhost:3000",
     "https://cpp-fyp-proj.vercel.app",
+    "https://cpp-fyp-proj-git-codingconundrum-zhuweiji.vercel.app",
     "https://cpp-fyp-proj-git-codingconundrum-zhuweiji.vercel.app/",
 ]
 
