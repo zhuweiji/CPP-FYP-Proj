@@ -1,0 +1,91 @@
+---
+challenges:
+  - code: |
+      "#include <iostream>
+
+      int main() {
+          int x = 10;
+          int y = 5;
+          int z = x + y;
+          std::cout << "The value of z is: " << z << std::endl
+          return 0;
+      }"
+    writeup: The syntax error in this code is the missing semicolon (;) at the end of the std::cout statement.
+  - code: |
+      "#include <iostream>
+
+      int main() {
+            int x = 10;
+            int y = 5;
+            int z = x + y;
+            std::cout << "The value of z is: " << z << std::endl;
+            if (z > 10)
+            {
+                std::cout << "z is greater than 10" << std::endl;
+            }
+            else
+                std::cout << "z is less than or equal to 10" << std::endl;
+                return 0;
+        }"
+    writeup: The syntax error in this code is the missing opening brace ({) after the else statement.
+  - code: |
+      "#include <iostream>
+
+      int main() {
+          int num1 = 10;
+          int num2 = 0;
+          int result = num1 / num2;
+          std::cout << "The result is: " << result << std::endl;
+          return 0;
+      }"
+    writeup: The bug in this code is a divide-by-zero error, since the num2 variable is initialized to zero and then used as the divisor in the division operation that calculates result. This would cause a runtime error when the code is executed.
+
+  - code: |
+      "#include <iostream>
+
+      int main() {
+          int myArray[5] = {1, 2, 3, 4, 5};
+          int size = sizeof(myArray) / sizeof(myArray[0]);
+          for (int i = 0; i <= size; i++) {
+              std::cout << myArray[i] << std::endl;
+          }
+          return 0;
+      }"
+    writeup: The bug in this code is an out-of-bounds array access error in the for loop, since the loop variable i is allowed to take on the value size (which is the number of elements in the myArray array) on its final iteration. This would cause the loop to attempt to access an element that doesn't exist in the array, leading to undefined behavior.
+  - code: |
+      "#include <iostream>
+
+      int main() {
+          int x = 10;
+          int y = 5;
+          if (x > y)
+              std::cout << "x is greater than y" << std::endl;
+          else if (x = y)
+              std::cout << "x is equal to y" << std::endl;
+          else
+              std::cout << "x is less than y" << std::endl;
+          return 0;
+      }"
+    writeup: The bug in this code is a logic error in the second if statement, where the assignment operator = is used instead of the comparison operator ==. This means that the condition x = y will always be true, regardless of the values of x and y, which would cause the program to output the wrong message.
+  - code: |
+      "#include <iostream>
+
+      class Person {
+      public:
+          std::string name;
+          int age;
+          void sayHello() {
+              std::cout << "Hello, my name is " << name << " and I am " << age << " years old." << std::endl;
+          }
+      };
+
+      int main() {
+          Person person1;
+          person1.sayHello();
+          return 0;
+      }"
+    writeup: The bug in this code is a logic error in the sayHello() method of the Person class, where the name and age member variables are accessed without checking if they have been initialized. If either name or age are uninitialized or contain garbage values, this would cause the program to output unexpected results. A better approach would be to initialize name and age in the constructor of the Person class, or to use getter methods to access them.
+
+
+
+

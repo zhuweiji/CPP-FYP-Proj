@@ -20,7 +20,7 @@ import UserPage from './pages/UserPage';
 import LoginPage from './pages/Login';
 import CreateAccountPage from './pages/CreateAccountPage';
 import SimpleGame from './pages/SimpleGame';
-import CodingConumdrumPage from './pages/CodingConundrum';
+import CodingConumdrumPage from './pages/CodingConundrumPage';
 
 const router = createBrowserRouter([
   {
@@ -66,9 +66,9 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  // <React.StrictMode>
+  <RouterProvider router={router} />
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

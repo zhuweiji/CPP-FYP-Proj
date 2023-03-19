@@ -2,30 +2,39 @@ import SETTINGS from "./settings"
 import UserDataFetch from "./UserService";
 
 class GameDataService {
-    static HOST_URL = SETTINGS.HOST_URL;
+    static HOST_URL = SETTINGS.HOST_URL + SETTINGS.GAME_SERVICE_PORT;
 
-    static async getPrompt() {
-        let url = `${this.HOST_URL}terminator/generate`
-        let response = await fetch(url,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-        if (response.status !== 200) {
-            console.warn('failed to get prompt from chatgpt backend')
-            return ""
-        }
-
-        let data = await response.json();
-
-        if (data['errors']) {
-            console.warn(`error message while getting prompt ${data['errors']}`)
-        }
-        return data['message'];
+    // creates a websocket connection to the backend CodingConnundrum endpoint
+    static startConnection(handleFunc) {
+        let url = `${this.HOST_URL.replace("https", "wss")}games/codingconundrum`
+        // let url = 'ws://localhost:8080/games/codingconundrum'
+        let ws = new WebSocket(url)
+        ws.onmessage = handleFunc;
+        return ws;
     }
+
+    // static async getPrompt() {
+    //     let url = `${this.HOST_URL}terminator/generate`
+    //     let response = await fetch(url,
+    //         {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //         });
+
+    //     if (response.status !== 200) {
+    //         console.warn('failed to get prompt from chatgpt backend')
+    //         return ""
+    //     }
+
+    //     let data = await response.json();
+
+    //     if (data['errors']) {
+    //         console.warn(`error message while getting prompt ${data['errors']}`)
+    //     }
+    //     return data['message'];
+    // }
 
 }
 

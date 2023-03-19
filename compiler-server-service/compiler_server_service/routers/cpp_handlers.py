@@ -107,6 +107,7 @@ async def handle_compile_and_grade(request: Request, response: Response, data: P
     try:
         all_code = parse_incoming_codegroup(data.all_code)
         
+        # TODO: compilation should be moved outside of Grader - why is compilation and running being run twice ??
         console_check_output = Grader.check_console_output(topicId=data.topicId, tutorialId=data.tutorialId, code=all_code)
         if console_check_output is not True:
             result.message = console_check_output

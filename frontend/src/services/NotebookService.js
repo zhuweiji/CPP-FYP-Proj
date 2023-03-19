@@ -3,7 +3,7 @@ import SETTINGS from "./settings"
 
 
 export class NotebookService {
-    static HOST_URL = SETTINGS.HOST_URL;
+    static HOST_URL = SETTINGS.HOST_URL + SETTINGS.COMPILER_SERVICE_PORT;
 
     // static cache = new Map();
 

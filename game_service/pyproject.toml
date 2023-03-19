@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "game-service"
+version = "0.1.0"
+description = ""
+authors = ["Zhu Weiji <zhuweiji1997@gmail.com>"]
+readme = "README.md"
+packages = [{include = "game_service"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = {extras = ["all"], version = "^0.94.1"}
+aiohttp = "^3.8.4"
+openai = "^0.27.2"
+slowapi = "^0.1.7"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry.scripts]
+start       = "scripts:start"
+startreload = "scripts:startreload"
+startssl    = "scripts:startssl"
+
+test        = "scripts:test"
+tests       = "scripts:test"
+healthcheck = "scripts:healthcheck"

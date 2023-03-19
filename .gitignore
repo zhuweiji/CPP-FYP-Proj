@@ -356,3 +356,5 @@ node_modules
 psd
 thumb
 sketch
+compiler-server-service/key.pem
+compiler-server-service/cert.pem

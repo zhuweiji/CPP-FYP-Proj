@@ -18,11 +18,52 @@ class CompileResult {
 }
 
 class CodeCompileService {
-    static HOST_URL = SETTINGS.HOST_URL;
+    static HOST_URL = SETTINGS.HOST_URL + SETTINGS.COMPILER_SERVICE_PORT;
     static lastConnectionCheckTime;
     static lastConnectionCheckResult;
 
-    static async compile_and_run(allCode, errorOptions=true) {
+    static async openAIEvaluateCode(allCode, prompt) {
+        let url = `${this.HOST_URL}terminator/evalute`;
+
+        const data = {
+            'all_code': allCode,
+            'prompt': prompt,
+            'user_id': UserDataFetch.getUserId(),
+        }
+        let result = new CompileResult();
+
+
+        try {
+            let backendResult = await fetch(url,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+            backendResult = await backendResult.json();
+            console.log(backendResult)
+            result.message = backendResult.message;
+            if (backendResult.status === 200) {
+                result.status = CompileResultStatuses.SUCCESS
+            } else if (backendResult.status === 429) {
+                result.status = CompileResultStatuses.THROTTLED;
+            } else if (backendResult.status === 500) {
+                result.status = CompileResultStatuses.ERROR;
+                result.errors = backendResult.errors
+            }
+
+            return result;
+
+        } catch (error) {
+            console.log("Error when sending code for compilation")
+            console.error(error);
+        }
+
+    }
+
+    static async compile_and_run(allCode, errorOptions = true) {
         const data = {
             'all_code': allCode,
             'user_id': UserDataFetch.getUserId(),
@@ -41,16 +82,17 @@ class CodeCompileService {
                     },
                     body: JSON.stringify(data)
                 })
-            backendResult = await backendResult.json();
-            result.message = backendResult.message;
-            if (backendResult.status === 200){
+            if (backendResult.status === 200) {
                 result.status = CompileResultStatuses.SUCCESS
             } else if (backendResult.status === 429) {
                 result.status = CompileResultStatuses.THROTTLED;
-            } else if (backendResult.status === 500){
+            } else if (backendResult.status === 500) {
                 result.status = CompileResultStatuses.ERROR;
                 result.errors = backendResult.errors
             }
+            backendResult = await backendResult.json();
+            result.message = backendResult.message;
+
 
             return result;
 
@@ -66,7 +108,7 @@ class CodeCompileService {
             'tutorialId': tutorialId,
             'all_code': allCode,
             'user_id': UserDataFetch.getUserId(),
-            
+
         }
 
         let result = new CompileResult();
@@ -101,14 +143,14 @@ class CodeCompileService {
         }
     }
 
-    static async check_connection(){
+    static async check_connection() {
         const currentTimeInSeconds = () => new Date().getTime() / 1000;
 
         if (this.lastConnectionCheckTime && this.lastConnectionCheckResult &&
-            currentTimeInSeconds() - this.lastConnectionCheckTime < 5){
-                return this.lastConnectionCheckResult;
-            }
-        
+            currentTimeInSeconds() - this.lastConnectionCheckTime < 5) {
+            return this.lastConnectionCheckResult;
+        }
+
 
         this.lastConnectionCheckResult = this.__check_connection();
         this.lastConnectionCheckTime = currentTimeInSeconds();
@@ -140,4 +182,4 @@ export {
     CodeCompileService,
     CompileResultStatuses,
     CompileResult,
-} ;
+};

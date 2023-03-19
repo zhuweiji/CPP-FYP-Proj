@@ -244,7 +244,7 @@ export default function Notebook({ name }) {
                 });
 
                 let codeEditorHeightVh = Math.min(Object.values(editorData)[0].split('\n').length + 15, 35) + 'vh'
-                component = <Box key={lineNumber} mb={15} mt={5}>
+                component = <Box key={reactComponentKey()} mb={15} mt={5}>
                     <CodeEditor codeEditorHeight={codeEditorHeightVh} executionResultHeight='8vh' files={editorData}
                         noCompile={args.nocompile === 'true' ?? false} errorOptions={!args.noerrors === 'true' ?? true} noFiles={args.nofiles === 'true' ?? false}> </CodeEditor>
                 </Box>
@@ -255,7 +255,7 @@ export default function Notebook({ name }) {
             case 'Editor':
                 let codeEditorHeightVh2 = Math.min(data.length + 3, 35) + 'vh'
 
-                component = <Box key={lineNumber} mb={15} mt={5}>
+                component = <Box key={reactComponentKey()} mb={15} mt={5}>
                     <CodeEditor codeEditorHeight={codeEditorHeightVh2} executionResultHeight='8vh' dir={`${lineNumber}/`}
                         defaultValue={data.trim() ?? '>'} noCompile={args.nocompile === 'true' ?? false} errorOptions={!args.noerrors === 'true' ?? true}
                         noFiles={args.nofiles === 'true' ?? false}> </CodeEditor>
@@ -267,7 +267,7 @@ export default function Notebook({ name }) {
                 break;
 
             case 'Grading':
-                component = <Box key={lineNumber} p={3} backgroundColor='black'>
+                component = <Box key={reactComponentKey()} p={3} backgroundColor='black'>
                     <Typography fontFamily='PT Serif' color='whitesmoke' key={reactComponentKey()} variant="h5" whiteSpace="pre-line" sx={{ ml: 5 }}>{data}</Typography>
                 </Box>
                 break;
@@ -347,7 +347,7 @@ const MermaidComponent = (diagramStr, key) => {
 
 const NotebookHeader = (text, key) => {
     // dont add margin if one of the few items on the page - otherwise there is too much whitespace on top
-    return <Box mt={key <= 2 ? 0 : 10} mb={5} key={key}>
+    return <Box mt={key <= 2 ? 0 : 10} mb={5} key={reactComponentKey()}>
         <Divider >
             <Typography fontFamily='PT Serif' color='black' key={reactComponentKey()} variant="h2" mt={5} mb={5} p={10} whiteSpace="pre-line">{text}</Typography>
         </Divider>
@@ -356,7 +356,7 @@ const NotebookHeader = (text, key) => {
 
 const NotebookHeader2 = (text, key) => {
     // dont add margin if one of the few items on the page - otherwise there is too much whitespace on top
-    return <Box mt={key <= 2 ? 0 : 10} mb={5} key={key}>
+    return <Box mt={key <= 2 ? 0 : 10} mb={5} key={reactComponentKey()}>
         <Typography fontFamily='Playfair Display' color='black' key={reactComponentKey()} variant="h3" mt={5} mb={4} whiteSpace="pre-line">{text}</Typography>
         <Divider></Divider>
     </Box>
@@ -364,7 +364,7 @@ const NotebookHeader2 = (text, key) => {
 
 const NotebookHeader3 = (text, key) => {
     // dont add margin if one of the few items on the page - otherwise there is too much whitespace on top
-    return <Box mt={key <= 2 ? 0 : 10} mb={5} key={key}>
+    return <Box mt={key <= 2 ? 0 : 10} mb={5} key={reactComponentKey()}>
         <Typography fontFamily='Playfair Display' color='black' key={reactComponentKey()} variant="h4" mt={5} mb={4} whiteSpace="pre-line">{text}</Typography>
         <Divider></Divider>
     </Box>
