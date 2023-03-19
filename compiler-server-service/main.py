@@ -56,7 +56,8 @@ origins = [
     "http://localhost:8080",
     "https://cpp-fyp-proj.vercel.app",
     "https://p01--compiler-server--m98yzdkgzrwc.code.run/",
-    "https://p01--compiler-server--m98yzdkgzrwc.code.run/cpp/"
+    "https://p01--compiler-server--m98yzdkgzrwc.code.run/cpp/",
+    "https://18.141.204.202:8080"
 
 ]
 
@@ -71,7 +72,7 @@ app.add_middleware(
 # app.add_middleware(HTTPSRedirectMiddleware)
 
 
-@app.get('')
+@app.get('/')
 def root():
     return BasicResponse(message="we're up!")
 
