@@ -59,6 +59,11 @@ export default function CodingConumdrumPage() {
     const [tabValue, setTabValue] = useState(0);
 
     const timerRef = useRef();
+    const navigate = useNavigate();
+
+    if (UserDataService.getUserId() === -1) {
+        navigate('/login', { replace: true });
+    }
 
     class GameStateManager {
         constructor(user) {
