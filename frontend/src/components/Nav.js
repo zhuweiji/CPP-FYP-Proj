@@ -22,7 +22,7 @@ import UserService from '../services/UserService';
 
 
 
-const settings = ['Profile', 'Logout'];
+const settings = ['Logout'];
 
 const ResponsiveAppBar = (props) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
