@@ -52,7 +52,8 @@ function CodeEditor(props) {
 
     const [isEditorReady, setIsEditorReady] = useState(false);
     const [wasThrottled, setWasThrottled] = useState(false);
-    const [newEditorFilename, setnewEditorFilename] = useState('');
+
+    const [newEditorFilename, setnewEditorFilename] = useState(''); // text in the create new file text box
 
     const [showDeleteError, setShowDeleteError] = useState(false);
     const [showFilenameError, setShowFilenameError] = useState(false);
@@ -169,6 +170,9 @@ function CodeEditor(props) {
                 result[filenameOfModel] = model.getValue();
             });
 
+        console.log(result)
+        console.log(relDir)
+
         let resultObj = {}
         // filter out files that are not in this editor component (they are in other editor components, but monaco keeps a global store of all files)
 
@@ -233,14 +237,12 @@ function CodeEditor(props) {
         }
 
 
-        console.log('result = ', result)
         if (!result) {
             setPostCompileMessages('There was an error compiling your code. ')
             setIsEditorReady(true);
             return
         }
 
-        console.log(result.status)
 
 
         if (result.status === CompileResultStatuses.THROTTLED) {
@@ -294,7 +296,6 @@ function CodeEditor(props) {
         setOpenAIEvaluated(true);
 
         let result = await CodeCompileService.openAIEvaluateCode(all_code, props.prompt);
-        console.log(result)
         if (result.error) {
             console.error(result.error)
         }
@@ -347,10 +348,13 @@ function CodeEditor(props) {
             setShowFilenameError(false);
 
             let newfile = {}
-            newfile[relDir + newEditorFilename] = ''
+
+            let newFilename = relDir + '/' + newEditorFilename
+            newfile[newFilename] = ''
+            console.log(newfile)
 
             setEditorFile({ ...editorFile, ...newfile });
-            setCurrentEditorFilename(relDir + newEditorFilename);
+            setCurrentEditorFilename(newFilename);
             setnewEditorFilename('');
         }
     }
@@ -367,7 +371,7 @@ function CodeEditor(props) {
             return;
         }
         setShowDeleteError(false);
-        let { [relDir + currentEditorFilename]: _, ...rest } = editorFile;
+        let { [currentEditorFilename]: _, ...rest } = editorFile;
         setEditorFile(rest);
         setCurrentEditorFilename(Object.keys(editorFile)[0]);
     }
