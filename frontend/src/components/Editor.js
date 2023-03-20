@@ -20,6 +20,7 @@ import {
     CodeCompileService,
     CompileResultStatuses
 } from "../services/CodeCompileService";
+import UserDataService from "../services/UserService";
 
 
 
@@ -295,6 +296,8 @@ function CodeEditor(props) {
         let all_code = getAllEditorValues();
         setOpenAIEvaluated(true);
 
+        UserDataService.setUserDataValue(props.prompt, true);
+
         let result = await CodeCompileService.openAIEvaluateCode(all_code, props.prompt);
         if (result.error) {
             console.error(result.error)
@@ -440,7 +443,7 @@ function CodeEditor(props) {
                         }
 
                         {
-                            (props.openAIEvaluate ?? false) && !openAIEvaluated &&
+                            (props.openAIEvaluate ?? false) && !openAIEvaluated && !UserDataService.getUserDataValue(props.prompt) &&
                             <Button color="error" variant="outlined" size="large" endIcon={<SmartToySharpIcon />} onClick={() => openAIEvalute()} disabled={!isEditorReady} justify="flex-end" >
                                 Evaluate Code
                             </Button>
