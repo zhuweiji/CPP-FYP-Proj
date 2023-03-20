@@ -67,7 +67,7 @@ async def evaluate_code(code: str, prompt:str):
             model="text-davinci-003",
             prompt=code_evaluation_prompt_base(code,prompt),
             temperature=0.6,
-            max_tokens=120,
+            max_tokens=200,
         )
 
     # pattern for wrapping a blocking task
