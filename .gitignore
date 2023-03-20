@@ -358,3 +358,5 @@ thumb
 sketch
 compiler-server-service/key.pem
 compiler-server-service/cert.pem
+game_service/key.pem
+game_service/cert.pem

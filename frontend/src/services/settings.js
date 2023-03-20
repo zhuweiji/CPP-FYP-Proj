@@ -1,8 +1,8 @@
 export default class SETTINGS {
-    static HOST_URL = "https://18.141.204.202"
+    static HOST_URL = "https://18.141.204.202.nip.io"
 
-    static COMPILER_SERVICE_PORT = ':8080/';
-    static GAME_SERVICE_PORT = ':8081/';
+    static COMPILER_SERVICE_PORT = '/';
+    static GAME_SERVICE_PORT = '/';
     // static HOST_URL = "https://p01--compiler-server--m98yzdkgzrwc.code.run/";
-    // static HOST_URL = "http://localhost:8080/"
+    // static HOST_URL = "https://localhost"
 }

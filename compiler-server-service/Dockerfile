@@ -27,4 +27,5 @@ COPY . /app
 
 HEALTHCHECK CMD poetry run healthcheck
 
-ENTRYPOINT poetry run startssl
+# run a http server
+ENTRYPOINT poetry run start

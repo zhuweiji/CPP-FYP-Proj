@@ -54,7 +54,9 @@ origins = [
     "http://localhost:3000",
     "https://cpp-fyp-proj.vercel.app",
     "https://cpp-fyp-proj-git-codingconundrum-zhuweiji.vercel.app",
-    "https://cpp-fyp-proj-git-codingconundrum-zhuweiji.vercel.app/",
+    # "https://cpp-fyp-proj-git-codingconundrum-zhuweiji.vercel.app/",
+    # regex origins should be added via the allow_origin_regex param
+    # "https://cpp-fyp-proj-*.vercel.app",
 ]
 
 app.add_middleware(
