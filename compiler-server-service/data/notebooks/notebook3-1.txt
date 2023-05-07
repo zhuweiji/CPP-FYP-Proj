@@ -1,0 +1,118 @@
+# Understanding The Project
+
+In this module, we'll be looking at how we can build our own system scalably, using good design.
+
+
+
+The system to be built is a Final Year Project Management System (FYPMS) that allows students, supervisors, and the FYP coordinator to manage and allocate final year projects for students. \n
+The application is a Command Line Interface (CLI) application and is not to be developed using a database or JSON/XML.
+
+### System Requirements
+
+The users can log in to the system using their NTU network user ID and password. \n
+The system allows students to view available projects and request a project allocation from the FYP coordinator. Once a project is allocated, the student can request changes to the project title and deregister from the FYP. \n
+The supervisors can create projects, modify the title of their submitted projects, view their projects and requests, and approve or reject student requests. \n
+A supervisor can also transfer a student to a replacement supervisor. \n
+The FYP coordinator can view all projects, allocate projects to students, deregister students, generate project details reports, and approve or reject supervisor and student requests. \n
+
+The system involves multiple entities such as students, supervisors, and the FYP coordinator, and their relationships are managed using various operations and actions such as project creation, allocation, deregistration, request approval or rejection, and view requests and history.
+
+### System Design
+
+Here is an example of a class diagram of the classes which would compose the system.
+
+<MermaidDiagram>
+classDiagram
+    class System {
+        -Project[] projects
+        -Faculty[] faculties
+        -Student[] students
+        -FYPCoordinator[] coordinatorList
+
+        +void loadProjectsFromFile()
+        +void loadFacultyFromFile()
+        +void loadStudentsFromFile()
+        +void loadCoordinatorsFromFile()
+        
+        +void saveProjectsToFile()
+        +void saveFacultyToFile()
+        +void saveStudentsToFile()
+        +void saveCoordinatorsToFile()
+    }
+    class Project {
+        -int projectID
+        -String projectName
+        -String projectDescription
+        -String projectStatus
+        -Faculty projectSupervisor
+        -Student projectStudent
+        
+        +Project(int projectID, String projectName, String projectDescription, Faculty projectSupervisor)
+        +String getProjectName()
+        +void setProjectName(String projectName)
+        +String getProjectDescription()
+        +void setProjectDescription(String projectDescription)
+        +String getProjectStatus()
+        +void setProjectStatus(String projectStatus)
+        +Faculty getProjectSupervisor()
+        +void setProjectSupervisor(Faculty projectSupervisor)
+        +Student getProjectStudent()
+        +void setProjectStudent(Student projectStudent)
+    }
+    class Faculty {
+        -String userID
+        -String facultyName
+        +Faculty(String userID, String facultyName)
+        +String getUserID()
+        +void setUserID(String userID)
+        +String getFacultyName()
+        +void setFacultyName(String facultyName)
+    }
+    class Student {
+        -String userID
+        -String studentName
+        +Student(String userID, String studentName)
+        +String getUserID()
+        +void setUserID(String userID)
+        +String getStudentName()
+        +void setStudentName(String studentName)
+    }
+    class FYPCoordinator {
+        -String userID
+        -String coordinatorName
+        +FYPCoordinator(String userID, String coordinatorName)
+        +String getUserID()
+        +void setUserID(String userID)
+        +String getCoordinatorName()
+        +void setCoordinatorName(String coordinatorName)
+    }
+
+
+</MermaidDiagram>
+
+Their relationships can be modelled using the diagram below.
+
+<MermaidDiagram>
+%%{init: {"flowchart" : { "curve" : "linear" }}}%%
+
+classDiagram
+    class System {
+    }
+    class Project {
+    }
+    class Faculty {
+    }
+    class Student {
+    }
+    class FYPCoordinator {
+    }
+    System "1" --> "1..*" Project
+    System "1" --> "1..*" Faculty
+    System "1" --> "1..*" Student
+    System "1" --> "1..*" FYPCoordinator
+    Project "0..1" --> "1" Faculty : assigned to
+    Project "0..1" --> "0..1" Student : assigned student
+</MermaidDiagram>
+
+Take a moment re-read through the specifications of the systems, and think about how you mightimplement the system. Did our class diagram match up to what you might expect? \n
+We'll be going through more details in the following chapters.

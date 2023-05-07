@@ -16,6 +16,6 @@ It is important to learn the techniques of software design, but software design 
 
 By overdesigning the product, more uneccessary complexity is sometimes introduced.
 
-[Uncle Bob's writeup about this](https://martinfowler.com/bliki/Yagni.html)
+[Robert C. Martin's, (aka Uncle Bob) writeup about this](https://martinfowler.com/bliki/Yagni.html)
 
 [Enterprise Hello World](https://gist.github.com/lolzballs/2152bc0f31ee0286b722)

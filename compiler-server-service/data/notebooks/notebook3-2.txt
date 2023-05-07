@@ -1,0 +1,242 @@
+# Building Out the Classes
+
+We'll be using your knowledge of the relationships between classes in this portion of the tutorial. Do you remember the following relationships? \n
+1. Composition
+2. Aggregation
+3. Inheritance
+
+Don't worry if you can't really nail down the specifics of each. You can go through the tutorial on Object Relationships again, but we'll have a short summary here.
+
+Do remember that these relationships are somewhat abstract and implicit. For example, just looking at the code, unless you know how to implement these relationships like the back of your hand, it might otherwise be difficult to know which relationship you are looking at.
+
+It may be helpful to picture how you want these classes to behave as you're going through the tutorial.
+
+## Composition
+
+When you create two classes in the following fashion:
+
+You can only access the component through an object of A. The component is created with A and destroyed with A. 
+
+We typically use this for components which are intrinsically linked to their parent object. 
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+#include <iostream>
+
+#include "classes.cpp"
+int main(){
+    A a = A(5);
+    std::cout << "The value of a's component is: " << a.component << '\n';
+    return 0;
+}
+</EditorFile>
+
+<EditorFile filename=classes.cpp>
+class A{
+    public:
+        int component;
+        A(int v){
+            component = v;
+        };
+};
+
+</EditorFile>
+</EditorGroup>
+
+A project's projectID is one example of this. A Project must always have a projectID, and it can be renamed, but the projectID should always be tagged to the Project (we shouldn't be able to save the projectID into another variable, make it the member variable of another class, or otherwise mess around with it. The string projectID should only be used to denote the ID of a project, and nothing else).
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+#include <iostream>
+
+#include "classes.cpp"
+int main(){
+    Project project = Project();
+    std::cout << "" << project.projectId << '\n';
+    return 0;
+}
+</EditorFile>
+
+<EditorFile filename=classes.cpp>
+#ifndef CLASSES_CPP
+#define CLASSES_CPP
+#include "uuid.h"
+#include <string>
+
+class Project{
+    public:
+        std::string projectId;
+        Project(){
+            projectId = uuid::generate_uuid_v4();
+        };
+};
+#endif
+</EditorFile>
+
+<EditorFile filename=uuid.h>
+#ifndef UUID_H
+#define UUID_H
+#include <random>
+#include <sstream>
+namespace uuid {
+    std::string generate_uuid_v4();
+}
+
+#endif
+
+</EditorFile>
+
+<EditorFile filename=uuid.cpp>
+#include <random>
+#include <sstream>
+#include "uuid.h"
+
+
+namespace uuid {
+    static std::random_device              rd;
+    static std::mt19937                    gen(rd());
+    static std::uniform_int_distribution<> dis(0, 15);
+    static std::uniform_int_distribution<> dis2(8, 11);
+
+    std::string generate_uuid_v4() {
+        std::stringstream ss;
+        int i;
+        ss << std::hex;
+        for (i = 0; i < 8; i++) {
+            ss << dis(gen);
+        }
+        ss << "-";
+        for (i = 0; i < 4; i++) {
+            ss << dis(gen);
+        }
+        ss << "-4";
+        for (i = 0; i < 3; i++) {
+            ss << dis(gen);
+        }
+        ss << "-";
+        ss << dis2(gen);
+        for (i = 0; i < 3; i++) {
+            ss << dis(gen);
+        }
+        ss << "-";
+        for (i = 0; i < 12; i++) {
+            ss << dis(gen);
+        };
+        return ss.str();
+    }
+}
+</EditorFile>
+</EditorGroup>
+
+
+
+
+## Aggregation
+
+This relationship is where two objects may be linked, but it is also possible that the two objects may no longer be associated but both objects are still being used for some purpose.
+
+A parent may have one or more children, but even if the parent gives up the child for adoption or the child decides to leave home, the child still remains as its own entity. (Morbidly, if the parent dies, the child should not die along with it.)
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>#include <vector>
+#include <string> 
+
+class Child{};
+class Parent {
+private:
+    std::vector<Child*> children;
+public:
+    void addChild(Child* child) {
+        children.push_back(child);
+    }
+
+    void removeChild(Child* child){
+        for (auto it = children.begin(); it != children.end(); ++it) {
+            if (*it == child) {
+                children.erase(it);
+                break;
+            }
+        }
+    }
+};
+
+int main(){
+    return 0;
+    Parent parent = Parent();
+
+}
+
+</EditorFile>
+</EditorGroup>
+
+This would be similar to a Project and its Supervisor. If the project is cancelled, completed, or removed, the Supervisor should not be deleted from the system as well, as they may still be in charge of other projects.
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>#include <vector>
+#include <string> 
+
+class Supervisor{};
+class Project {
+private:
+    Supervisor& supervisor;
+public:
+    Project(Supervisor& s){
+        supervisor = s;
+    }
+};
+
+int main(){
+    return 0;
+    Project project = Project();
+}
+
+</EditorFile>
+</EditorGroup>
+
+## Inheritance
+
+
+
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=system.h>
+#ifndef SYSTEM_H
+#define SYSTEM_H
+
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+class Project{};
+class Faculty{};
+class Student{};
+class FYPCoordinator{};
+
+class System {
+private:
+    vector<Project> projectList;
+    vector<Faculty> facultyList;
+    vector<Student> studentList;
+    vector<FYPCoordinator> coordinatorList;
+
+public:
+    void loadProjectsFromFile() {}
+    void loadFacultyFromFile() {}
+    void loadStudentsFromFile() {}
+    void loadCoordinatorsFromFile() {}
+
+    void saveProjectsToFile() {}
+    void saveFacultyToFile() {}
+    void saveStudentsToFile() {}
+
+    void saveCoordinatorsToFile() {}
+};
+
+#endif
+</EditorFile>
+<EditorFile filename=main.cpp>
+int main(){
+    return 0;
+}
+</EditorFile>
+</EditorGroup>
