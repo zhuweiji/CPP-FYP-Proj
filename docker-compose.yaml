@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  compiler-server:
+    build: ./compiler-server-service/
+    env_file:
+    - ./compiler-server-service/.env
+    ports:
+      - "8080:8080"
+  game-server:
+    build: ./game_service/
+    env_file:
+    - ./game_service/.env
+    ports:
+      - "8081:8081"
