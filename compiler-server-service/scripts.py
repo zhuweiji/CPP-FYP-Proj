@@ -17,7 +17,7 @@ def start():
     start_process(f'uvicorn main:app --port {PORT} --host 0.0.0.0')
 
 def startreload():
-    start_process(f'uvicorn main:app --port {PORT} --host 0.0.0.0')
+    start_process(f'uvicorn main:app --port {PORT} --host 0.0.0.0 --reload')
     
 def startssl():
     start_process(f'uvicorn main:app --port {PORT} --host 0.0.0.0 --ssl-keyfile=./key.pem --ssl-certfile=./cert.pem')
