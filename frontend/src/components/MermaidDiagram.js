@@ -4,10 +4,10 @@ import mermaid from "mermaid";
 import './MermaidDiagram.css'
 
 mermaid.initialize({
-    startOnLoad: true,
-    theme: "dark",
-    securityLevel: "loose",
-    themeCSS: `
+  startOnLoad: true,
+  theme: "dark",
+  securityLevel: "loose",
+  themeCSS: `
     g.classGroup rect {
       fill: #282a36;
       stroke: #6272a4;
@@ -52,18 +52,23 @@ mermaid.initialize({
       stroke: #f8f8f2;
       stroke-width: 1;
     }`,
-    fontFamily: "Fira Code"
+  fontFamily: "Fira Code"
 });
 
 export default class MermaidDiagram extends React.Component {
-    componentDidMount() {
-        mermaid.contentLoaded();
-    }
-    render() {
-        return(<>
-            <div className="mermaidContainer">
-                <div className="mermaid">{this.props.chart}</div>;
-            </div>
-        </>) 
-    }
+  constructor(props) {
+    super(props);
+    this.myRef = React.createRef();
+  }
+  componentDidMount() {
+    mermaid.contentLoaded();
+  }
+  render() {
+    console.log(this.myRef)
+    return <>
+      <div className="mermaidContainer">
+        <div className="mermaid" ref={this.myRef}>{this.props.chart}</div>;
+      </div>
+    </>
+  }
 }

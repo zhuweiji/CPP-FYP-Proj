@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 
 
 import { styled } from '@mui/material/styles';
@@ -8,6 +8,7 @@ import { tooltipClasses } from '@mui/material/Tooltip';
 import { NotebookService } from "../services/NotebookService";
 import CodeEditor from "../components/Editor";
 import MermaidDiagram from "../components/MermaidDiagram";
+import { renderToString } from 'react-dom/server'
 
 
 const titleRegex = /^(?<!#)#(?<content>[\w\s]+)/
@@ -339,8 +340,17 @@ const reactComponentKey = () => {
 
 
 const MermaidComponent = (diagramStr, key) => {
+    let diagram = <MermaidDiagram chart={diagramStr} />
+
+    // console.log(diagramRef)
+
+
+
+    // document.getElementById('mermaid-1683384884002')
+    // let svgblob = new Blob([d.outerHTML], { type: 'image/svg+xml;charset=utf-8' })
+    // URL.createObjectURL(svgBlob);
     return <Box mt={key <= 2 ? 0 : 10} mb={5} key={reactComponentKey()}>
-        <MermaidDiagram chart={diagramStr} />
+        {diagram}
     </Box>
 
 }

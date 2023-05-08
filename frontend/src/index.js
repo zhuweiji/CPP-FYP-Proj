@@ -21,6 +21,7 @@ import LoginPage from './pages/Login';
 import CreateAccountPage from './pages/CreateAccountPage';
 import SimpleGame from './pages/SimpleGame';
 import CodingConumdrumPage from './pages/CodingConundrumPage';
+import PyIDEPage from './pages/HiddenOnlyPyIDEPage'
 
 const router = createBrowserRouter([
   {
@@ -60,7 +61,12 @@ const router = createBrowserRouter([
   }, {
     path: 'coding-conundrum',
     element: <CodingConumdrumPage />
-  }
+  },
+
+  {
+    path: 'hidden-py',
+    element: <PyIDEPage />
+  },
 
 ]);
 

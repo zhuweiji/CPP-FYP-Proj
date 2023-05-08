@@ -14,7 +14,6 @@ from compiler_server_service.services.user_dao import (
 from fastapi import APIRouter, HTTPException, Request, Response, status
 from pydantic import BaseModel
 
-logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
@@ -23,7 +22,7 @@ ROUTE_PREFIX = '/cpp'
 
 router = APIRouter(
     prefix=ROUTE_PREFIX,
-    tags=['Compiler Service'],
+    tags=['CPP Compiler Service'],
 )
 
 def create_file_to_null_stdcin():
