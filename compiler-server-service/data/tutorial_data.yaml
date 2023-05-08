@@ -42,7 +42,7 @@ topics:
         id: 8
         no_tutorial: True
 
-  - topic_name: Tutorial 2 - Object Oriented Design in C++
+  - topic_name: Object Oriented Design in C++
     description: Implement the Object Oriented principles in C++ to make your understanding of OOP language agnostic
     img_name: corgi_and_friend.jpg
 
@@ -108,23 +108,28 @@ topics:
   #       id: 7
 
 
-  # - topic_name: Capstone Project - Building STARs, the Course Registration platform
-  #   description: Solidify your understanding by building an entire project from start to end
-  #   img_name: mountain_peak.jpg
+  - topic_name: Capstone Project - Building the Final Year Project Management System (FYPMS)
+    description: Use the information you have learnt and some new design principles to implement a new system
+    img_name: mountain_peak.jpg
 
-  #   tutorials:
-  #     - name: Excepteur eu reprehenderit reprehenderit esse irure aliquip voluptate in.
-  #       id: 1
-  #     - name: Sit ad ullamco fugiat pariatur ea ex do non enim aliquip.
-  #       id: 2
-  #     - name: Velit culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.
-  #       id: 3
-  #     - name: Elit pariatur esse est elit ut Lorem eiusmod dolor ad consequat nostrud et aliqua nostrud.
-  #       id: 4
-  #     - name: Sit ad ullamco fugiat pariatur ea ex do non enim aliquip.
-  #       id: 5
-  #     - name: Velitculpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.
-  #       id: 6
+    tutorials:
+      - name: Understanding The Project
+        id: 1
+        no_tutorial: True
+      - name: Building Some Classes With Aggregation, Composition And Inheritance
+        id: 2
+        no_tutorial: True
+      - name: Using Upcasting And Downcasting 
+        id: 3
+        no_tutorial: True
+      - name: Design Principle 1 - Singleton
+        description: Use the Singleton pattern to ensure that only one instance of a class exists in the application
+        id: 4
+        no_tutorial: True
+      - name: Design Principle 2 - Observer
+        description: Use the Observer pattern to ensure that when one object changes state, all its dependents are notified and updated automatically
+        id: 5
+        no_tutorial: True
 
 
   # - topic_name: "(Advanced Tutorials) Common Design Patterns in Software Engineering"
