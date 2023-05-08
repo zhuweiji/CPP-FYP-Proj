@@ -52,7 +52,7 @@ Here is the prompt:
 Please evaluate the following code for {metric}, highlighting good points and bad points, but you cannot evaluate the code based on comments of documentation or lack thereof.
 Try not to be too harsh, but the code is good, try to give some actionable feedback as well.
 
-Please also generate a score out of ten in the format: score: value/10.
+Please also generate a score out of ten in the format: score: value/10. This should be the first line of the output.
 
 Here is the code:
 ------------------------------

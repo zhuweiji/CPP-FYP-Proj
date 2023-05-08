@@ -195,7 +195,13 @@ int main(){
 
 ## Inheritance
 
+To be completed
 
+## Bootstrap
+
+Here is a sample header file that you can use to implement the System class, which can perform all the User Interface work your program requires.
+
+This could include checking user input, calling the other classes when required (such as creating a new Student class when the user creates a new Student).
 
 
 <EditorGroup nofiles=false, noerrors=false, nocompile=false>

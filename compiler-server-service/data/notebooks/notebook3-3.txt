@@ -1,1 +1,100 @@
+# Upcasting and Downcasting
 
+Upcasting and Downcasting can be utilised in our program in the following scenarios.
+
+## Upcasting
+
+Upcasting is the typecasting of a child object to a parent object.
+
+Let's look look at an example, using Users in our system.
+
+<MermaidDiagram>
+classDiagram
+    class User{
+        -String userID
+        -String username
+        -String password
+        +User(String userID, String username, String password)
+        +String getUserID()
+        +void setUserID(String userID)
+        +String getUsername()
+        +void setUsername(String username)
+        +String getPassword()
+        +void setPassword(String password)
+    }
+
+    class Faculty{
+        -String userID
+        -String facultyName
+        +Faculty(String userID, String facultyName)
+        +String getUserID()
+        +void setUserID(String userID)
+        +String getFacultyName()
+        +void setFacultyName(String facultyName)
+    }
+
+    class Student{
+        -String userID
+        -String studentName
+        +Student(String userID, String studentName)
+        +String getUserID()
+        +void setUserID(String userID)
+        +String getStudentName()
+        +void setStudentName(String studentName)
+    }
+
+    User <|-- Faculty
+    User <|-- Student
+
+</MermaidDiagram>
+
+We might use this when, for example, we have a function that prints out a User's userId. \n
+The function might take in a Student, or a Faculty, or a FYPCoordinator. 
+
+In that case, your code might look like this:
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+std::string printUserId(User user){
+    std::cout << user.userId << std::endl;
+    return user.userId;
+}
+
+std::string printUserId(Student user){
+    std::cout << user.userId << std::endl;
+    return user.userId;
+}
+
+std::string printUserId(Faculty user){
+    std::cout << user.userId << std::endl;
+    return user.userId;
+}
+
+std::string printUserId(FYPCoordinator user){
+    std::cout << user.userId << std::endl;
+    return user.userId;
+}
+
+</EditorFile>
+</EditorGroup>
+
+Obviously, this is redundant. Since Student, Faculty or FYPCoordinator are child classes of User, we can simply only work with the User class, and C++ will upcast the object to a User class for us.
+
+<EditorGroup nofiles=false, noerrors=false, nocompile=false>
+<EditorFile  filename=main.cpp>
+std::string printUserId(User user){
+    std::cout << user.userId << std::endl;
+    return user.userId;
+}
+
+</EditorFile>
+</EditorGroup>
+
+
+Importantly, this is where the Liskov Substitution Principle is important. If you implemented a new class that overrides the child class such that methods in the parent class no longer work, then these upcasting functions will not work as well.
+
+## Downcasting
+
+Upcasting would be similar.
+
+We could start the program by creating a User class, and once the person using the program logs in and verifies their identity, we can downcast the User object to a more appropriate one, such as Student.
