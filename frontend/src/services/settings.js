@@ -1,5 +1,5 @@
 export default class SETTINGS {
-    static HOST_URL = "https://18.141.204.202.nip.io"
+    static HOST_URL = "https://compilerservice.zhuhome.duckdns.org"
 
     static COMPILER_SERVICE_PORT = '/';
     static GAME_SERVICE_PORT = '/';

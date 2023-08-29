@@ -11,7 +11,7 @@ def start_process(command):
         log.info("Keyboard Interrupt: Halting Program.")
         
 
-PORT = 8080
+PORT = 11234
 
 def start():
     start_process(f'uvicorn main:app --port {PORT} --host 0.0.0.0')
