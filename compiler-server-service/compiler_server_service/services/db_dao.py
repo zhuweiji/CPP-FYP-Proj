@@ -18,7 +18,8 @@ log = logging.getLogger(__name__)
 
 
 class MongoDAO:
-    __CONNECTION_STRING = os.environ['NF_MONGODB_MONGO_SRV_ADMIN']
+    # __CONNECTION_STRING = os.environ['NF_MONGODB_MONGO_SRV_ADMIN']
+    __CONNECTION_STRING = "mongodb+srv://purifish:Rdsprwb7658@cluster1.dejl43o.mongodb.net/fyp?retryWrites=true&w=majority"
     assert __CONNECTION_STRING, "Mongo DB connection URI must be provided"
     
     @classmethod

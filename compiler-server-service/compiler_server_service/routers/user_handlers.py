@@ -41,6 +41,7 @@ class POST_Create_User(BaseModel):
 
 @router.post('/create', status_code=201)
 def create_user(request: Request, data: POST_Create_User):
+    # log.info("YELLOW")
     found_user = UserData.find_by_name(data.username)
     if found_user:
         raise HTTPException(status_code=409, detail='user already exists')

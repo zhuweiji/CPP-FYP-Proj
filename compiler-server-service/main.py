@@ -13,6 +13,8 @@ from compiler_server_service.routers import (
     python_handlers,
     tutorial_handlers,
     user_handlers,
+    quiz_handlers, # ADD
+    quiz_question_handlers # ADD
 )
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
 from fastapi import FastAPI
@@ -49,7 +51,8 @@ app.include_router(cpp_handlers.router)
 app.include_router(tutorial_handlers.router)
 app.include_router(user_handlers.router)
 app.include_router(notebook_handlers.router)
-
+app.include_router(quiz_handlers.router) # ADD
+app.include_router(quiz_question_handlers.router) # ADD
 
 
 origins = [

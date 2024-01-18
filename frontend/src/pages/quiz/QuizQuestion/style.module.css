@@ -1,0 +1,31 @@
+.container {
+  padding: 30px;
+  width: 50%;
+  margin: 20px;
+  box-shadow: 2px 1px 4px 1px rgba(0, 0, 0, 0.4); /*so that the header appears above the rest*/
+  border-radius: 15px;
+  background-color: white;
+}
+
+.question {
+  font-family: "Montserrat", sans-serif;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+.option_container {
+  margin-top: 0;
+}
+
+.option_text {
+  margin-right: 5px;
+}
+
+.img {
+  height: auto;
+  width: 250px;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
