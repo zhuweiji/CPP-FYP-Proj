@@ -74,7 +74,9 @@ def get_quiz_questions(request: Request, quiz_id, status_code=200):
         raise HTTPException(status_code=404, detail='quiz ID does not exist')
 
     questions = QuizQuestionData.find_by_quiz_id(quiz_id)
-    questionsList = [qn for qn in questions] # Convert Cursor object to a list
+    
+    # Convert Cursor object to a list
+    questionsList = [qn for qn in questions]
 
     log.info("success!!!") # TODO: remove when done
     return {

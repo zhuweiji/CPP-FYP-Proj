@@ -2,12 +2,12 @@ import s from "./style.module.css";
 
 import QuizQuestion from "../QuizQuestion/QuizQuestion";
 import { useState, useEffect, useContext } from "react";
-// import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import Button from "@mui/material/Button";
 import LoadingSpinner from "../../../components/LoadingSpinner/LoadingSpinner";
 import QuizResult from "../QuizResult/QuizResult";
-// import { useHttpClient } from "../../hooks/http-hook";
+import { useHttpClient } from "../../../hooks/http-hook";
 // import { CoursesContext } from "../../contexts/courses-context";
 // import PageNotFound from "../../pages/PageNotFound/PageNotFound";
 import EmptyQuiz from "../EmptyQuiz/EmptyQuiz";
@@ -24,34 +24,34 @@ function calculateMaxScore(questions) {
 
 // const dummyData = {};
 
-const dummyData = {
-  questions: [
-    {
-      title: "1 + 1 = ?",
-      options: ["1", "2", "5", "8"],
-      solution: [1],
-      score: 2,
-      type: "radio",
-      image: "",
-    },
-    {
-      title: "3 + 5 = ?",
-      options: ["1", "2", "5", "8"],
-      solution: [3],
-      score: 2,
-      type: "radio",
-      image: "",
-    },
-  ],
-};
+// const dummyData = {
+//   questions: [
+//     {
+//       title: "1 + 1 = ?",
+//       options: ["1", "2", "5", "8"],
+//       solution: [1],
+//       score: 2,
+//       type: "radio",
+//       image: "",
+//     },
+//     {
+//       title: "3 + 5 = ?",
+//       options: ["1", "2", "5", "8"],
+//       solution: [3],
+//       score: 2,
+//       type: "radio",
+//       image: "",
+//     },
+//   ],
+// };
 
 function Quiz() {
-  // const { sendRequest } = useHttpClient();
+  const { sendRequest } = useHttpClient();
   // const { courses, setCourses } = useContext(CoursesContext);
   // const courseCode = decodeURI(useParams().courseCode);
-  // const quizIdx = useParams().quizId;
+  const quizId = useParams().quizId;
 
-  const [quizId, setQuizId] = useState();
+  // const [quizId, setQuizId] = useState();
   const [userScore, setUserScore] = useState(0);
   const [finished, setFinished] = useState(false);
   const [isSelected, setIsSelected] = useState();
@@ -86,59 +86,59 @@ function Quiz() {
   //   }
   // }, [courses, courseCode, quizIdx, sendRequest, setCourses]);
 
-  // useEffect(() => {
-  //   // fetch quiz data from backend first
-  //   const fetchQuestions = async () => {
-  //     try {
-  //       const response = await sendRequest(
-  //         `${process.env.REACT_APP_BACKEND_URL}/questions/${quizId}`
-  //       );
-
-  //       const responseData = await response.json();
-
-  //       if (!response.ok) {
-  //         throw new Error(responseData.message);
-  //       }
-
-  //       // If the quiz has no questions
-  //       if (!responseData.questions || responseData.questions.length === 0) {
-  //         setMaxScore(0);
-  //         return;
-  //       }
-
-  //       setQuizData(responseData);
-  //       let temp = [];
-  //       for (let question of responseData.questions) {
-  //         temp.push(Array(question.options.length).fill(false));
-  //       }
-  //       setIsSelected(temp);
-  //       setMaxScore(calculateMaxScore(responseData.questions));
-  //     } catch (err) {}
-  //   };
-
-  //   if (quizId && quizId !== -1) {
-  //     fetchQuestions();
-  //   }
-  // }, [sendRequest, quizId]);
-
   useEffect(() => {
-    if (
-      !dummyData ||
-      !dummyData.questions ||
-      dummyData.questions.length === 0
-    ) {
-      setMaxScore(0);
-      return;
-    }
-    setQuizData(dummyData);
-    setMaxScore(calculateMaxScore(dummyData.questions));
+    // fetch quiz data from backend first
+    const fetchQuestions = async () => {
+      try {
+        const response = await sendRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/quiz-questions/${quizId}`
+        );
 
-    let temp = [];
-    for (let question of dummyData.questions) {
-      temp.push(Array(question.options.length).fill(false));
+        const responseData = await response.json();
+
+        if (!response.ok) {
+          throw new Error(responseData.message);
+        }
+
+        // If the quiz has no questions
+        if (!responseData.questions || responseData.questions.length === 0) {
+          setMaxScore(0);
+          return;
+        }
+
+        setQuizData(responseData);
+        let temp = [];
+        for (let question of responseData.questions) {
+          temp.push(Array(question.options.length).fill(false));
+        }
+        setIsSelected(temp);
+        setMaxScore(calculateMaxScore(responseData.questions));
+      } catch (err) {}
+    };
+
+    if (quizId && quizId !== -1) {
+      fetchQuestions();
     }
-    setIsSelected(temp);
-  }, []);
+  }, [sendRequest, quizId]);
+
+  // useEffect(() => {
+  //   if (
+  //     !dummyData ||
+  //     !dummyData.questions ||
+  //     dummyData.questions.length === 0
+  //   ) {
+  //     setMaxScore(0);
+  //     return;
+  //   }
+  //   setQuizData(dummyData);
+  //   setMaxScore(calculateMaxScore(dummyData.questions));
+
+  //   let temp = [];
+  //   for (let question of dummyData.questions) {
+  //     temp.push(Array(question.options.length).fill(false));
+  //   }
+  //   setIsSelected(temp);
+  // }, []);
 
   if (quizId === -1) {
     // return <PageNotFound />;
@@ -216,7 +216,7 @@ function Quiz() {
                   question={curQn.title}
                   options={curQn.options}
                   updateSelected={updateSelected}
-                  type={curQn.type}
+                  type={curQn.questionType}
                   imageSrc={curQn.image}
                 />
               );
