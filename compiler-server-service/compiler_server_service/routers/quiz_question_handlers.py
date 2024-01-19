@@ -61,36 +61,22 @@ def create_quiz(request: Request, data: POST_Create_Quiz_Question):
                                     image=data.image,
                                     quiz=data.quiz).create()
     if not new_question: raise HTTPException(status_code=500, detail='error on quiz question creation')
-    log.info("success!!!")
+    log.info("success!!!") # TODO: remove when done
     return new_question
     # return {'quiz_id': new_question.id, 'title':new_question.title, 'questions': new_question.questions}
 
 
 @router.get('/{quiz_id}')
 def get_quiz_questions(request: Request, quiz_id, status_code=200):
+    # Check if the quiz ID is valid
     found_quiz = QuizData.find_by_id(quiz_id)
     if not found_quiz:
         raise HTTPException(status_code=404, detail='quiz ID does not exist')
 
     questions = QuizQuestionData.find_by_quiz_id(quiz_id)
-    
-    if not questions:
-        log.info("No questions found for this quiz")
-        return {
-            'questions': []
-        }
-    
-    # CHECKPOINT
-    log.info("success!!!")
-    questionsArray = []
-    i = 0
-    for qn in questions:
-        log.info(qn)
-        questionsArray.append( {
-            "title": qn["title"],
-            "options": qn["options"]
-        })
-        i += 1
+    questionsList = [qn for qn in questions] # Convert Cursor object to a list
+
+    log.info("success!!!") # TODO: remove when done
     return {
-        'questions': questionsArray
+        'questions': questionsList
     }

@@ -70,7 +70,7 @@ class QuizQuestionData:
     
     @classmethod
     def find_by_quiz_id(cls, quiz_id):
-        questions = cls.get_collection().find({'quiz' : quiz_id})
+        questions = cls.get_collection().find({'quiz' : quiz_id}, {'_id': 0}) # exclude _id from result
         # log.info(questions)
         return questions    
     
