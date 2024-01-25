@@ -8,8 +8,7 @@ import openai
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
-# openai.api_key = os.environ['OPENAI']
-openai.api_key = "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"
+openai.api_key = os.environ['OPENAI']
 
 
 default_prompt = """Create a description of a basic application for me to create code for in C++.
