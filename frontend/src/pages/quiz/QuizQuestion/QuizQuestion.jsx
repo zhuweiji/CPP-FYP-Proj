@@ -19,7 +19,9 @@ function QuizQuestion(props) {
   } = props;
 
   // const { sendRequest } = useHttpClient();
-  const [imageUrl, setImageUrl] = useState();
+
+  // const [imageUrl, setImageUrl] = useState();
+  const [imageUrl, setImageUrl] = useState(imageSrc);
 
   /* Fetch image associated with the quiz question */
   // useEffect(() => {

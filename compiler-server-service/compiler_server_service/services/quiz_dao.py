@@ -59,6 +59,11 @@ class QuizData:
     #     """Repopulates the attributes of this object with its values in the db"""
     #     found_object = self.get_collection().find_one({'id':self.id})
     #     return UserData.from_dict(found_object)        
+        
+    @classmethod
+    def find_all(cls):
+        quizzes = cls.get_collection().find({}, {'_id': 0, 'questions' : 0}) # exclude _id and questions from result
+        return quizzes  
     
     @classmethod
     def find_by_id(cls, id):

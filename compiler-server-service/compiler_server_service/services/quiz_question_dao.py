@@ -66,7 +66,13 @@ class QuizQuestionData:
     # @classmethod
     # def find_by_title(cls, title:str):
     #     found_object = cls.get_collection().find_one({'title': title})
-    #     return QuizQuestion.from_dict(found_object)        
+    #     return QuizQuestion.from_dict(found_object)
+
+    # @classmethod
+    # def find_by_quiz_title(cls, quiz_title):
+    #     questions = cls.get_collection().find({'title' : quiz_title}, {'_id': 0}) # exclude _id from result
+    #     # log.info(questions)
+    #     return questions            
     
     @classmethod
     def find_by_quiz_id(cls, quiz_id):

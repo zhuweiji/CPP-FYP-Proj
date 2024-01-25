@@ -19,6 +19,7 @@ import SimpleGame from "./pages/SimpleGame";
 import CodingConumdrumPage from "./pages/CodingConundrumPage";
 import PyIDEPage from "./pages/HiddenOnlyPyIDEPage";
 import Quiz from "./pages/quiz/Quiz/Quiz.jsx";
+import QuizBrowse from "./pages/quiz/QuizBrowse/QuizBrowse.jsx";
 
 const router = createBrowserRouter([
   {
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
   {
     path: "quiz/:quizId",
     element: <Quiz />,
+  },
+  {
+    path: "quizzes/",
+    element: <QuizBrowse />,
   },
   {
     path: "hidden-py",

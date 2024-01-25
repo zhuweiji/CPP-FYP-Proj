@@ -41,7 +41,6 @@ class POST_Create_Quiz(BaseModel):
 
 @router.post('/create', status_code=201)
 def create_quiz(request: Request, data: POST_Create_Quiz):
-    log.info('TEST')
     found_quiz = QuizData.find_by_title(data.title)
     if found_quiz:
         raise HTTPException(status_code=409, detail='quiz title already exists')
@@ -49,3 +48,14 @@ def create_quiz(request: Request, data: POST_Create_Quiz):
     new_quiz = QuizData(title=data.title).create()
     if not new_quiz: raise HTTPException(status_code=500, detail='error on quiz creation')
     return {'quiz_id': new_quiz.id, 'title':new_quiz.title, 'questions': new_quiz.questions}
+
+@router.get('/', status_code=200)
+def get_all_quizzes(request: Request):
+    quizzes = QuizData.find_all()
+    
+    # Convert Cursor object to a list
+    quizzesList = [quiz for quiz in quizzes]
+
+    return {
+        'quizzes': quizzesList
+    }

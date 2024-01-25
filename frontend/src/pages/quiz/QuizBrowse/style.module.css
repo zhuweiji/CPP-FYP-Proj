@@ -1,0 +1,47 @@
+.container {
+  padding: 30px;
+  margin: 20px 10px 0 10px;
+  /* box-shadow: 2px 1px 4px 1px rgba(0, 0, 0, 0.4);
+  border-radius: 15px; */
+
+  /* background-color: #0A2647;
+    color: white; */
+}
+
+.section_title {
+  margin-bottom: 30px;
+  font-size: 1.5rem;
+  font-family: "Merriweather", serif;
+  font-weight: bold;
+}
+
+.quiz_link {
+  font-family: "Montserrat", sans-serif;
+}
+
+/* .img {
+  height: auto;
+  width: 250px;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+} */
+
+@media only screen and (min-width: 1px) {
+  /* For phones: */
+  .container {
+    width: 100%;
+  }
+}
+@media only screen and (min-width: 600px) {
+  /* For tablets: */
+  .container {
+    width: 66%;
+  }
+}
+@media only screen and (min-width: 768px) {
+  /* For desktop: */
+  .container {
+    width: 50%;
+  }
+}

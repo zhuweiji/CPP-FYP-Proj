@@ -66,6 +66,26 @@ def create_quiz(request: Request, data: POST_Create_Quiz_Question):
     # return {'quiz_id': new_question.id, 'title':new_question.title, 'questions': new_question.questions}
 
 
+class GET_Get_Quiz_Questions_By_Quiz_Title(BaseModel):
+    title: str
+
+@router.get('/title')
+def get_quiz_questions(request: Request, data: GET_Get_Quiz_Questions_By_Quiz_Title, status_code=200):
+    # Check if the quiz title exists
+    found_quiz = QuizData.find_by_title(data.title)
+    if not found_quiz:
+        raise HTTPException(status_code=404, detail='quiz title does not exist')
+
+    questions = QuizQuestionData.find_by_quiz_id(found_quiz.id)
+    
+    # Convert Cursor object to a list
+    questionsList = [qn for qn in questions]
+
+    return {
+        'questions': questionsList
+    }
+
+
 @router.get('/{quiz_id}')
 def get_quiz_questions(request: Request, quiz_id, status_code=200):
     # Check if the quiz ID is valid
