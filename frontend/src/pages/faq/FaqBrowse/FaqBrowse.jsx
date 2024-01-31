@@ -6,7 +6,8 @@ import { useHttpClient } from "../../../hooks/http-hook";
 // import EmptyResource from "../EmptyResource/EmptyResource";
 import LoadingSpinner from "../../../components/LoadingSpinner/LoadingSpinner";
 import ResponsiveAppBar from "../../../components/Nav";
-import QuizResource from "../QuizResource/QuizResource";
+import Faq from "../Faq/Faq";
+// import QuizResource from "../QuizResource/QuizResource";
 // import PageNotFound from "../../pages/PageNotFound/PageNotFound";
 
 // CHECKPOINT
@@ -58,19 +59,18 @@ function FaqBrowse() {
         }}
       >
         <div className={`${s.container}`}>
-          <h1 className={s.section_title}>{`Quizzes`}</h1>
+          <h1 className={s.section_title}>{`FAQs`}</h1>
           <div>
-            {!faqsData.quizzes || faqsData.quizzes.length === 0 ? (
+            {!faqsData.faqs || faqsData.faqs.length === 0 ? (
               // <EmptyResource resourceType="quizzes" />
               <h4>Empty Resource</h4>
             ) : (
-              faqsData.quizzes.map((quiz, idx) => {
+              faqsData.faqs.map((faq, idx) => {
                 return (
-                  <QuizResource
-                    idx={idx}
-                    key={`quiz-${idx}`}
-                    title={quiz.title}
-                    quizId={quiz.id}
+                  <Faq
+                    key={`faq-${idx}`}
+                    question={faq.question}
+                    answer={faq.answer}
                   />
                 );
               })

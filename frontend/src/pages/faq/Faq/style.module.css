@@ -1,26 +1,19 @@
 .faq_question {
-  font-size: 1.2rem;
-  font-family: "Montserrat", sans-serif;
+  font-size: 1.1rem;
+  font-family: "Merriweather", serif;
   font-weight: bold;
 }
 
 .faq_answer {
-  font-family: "Merriweather", serif;
+  font-size: 1rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
 }
 
 .container {
-  padding: 30px;
-  width: 50%;
+  padding: 5px 20px;
   margin: 20px;
   box-shadow: 2px 1px 4px 1px rgba(0, 0, 0, 0.4); /*so that the header appears above the rest*/
   border-radius: 15px;
   background-color: white;
 }
-
-/* .container {
-  padding: 5px 30px 20px 30px;
-  box-shadow: 2px 1px 4px 1px rgba(0, 0, 0, 0.4);
-  border-radius: 3px;
-  background-color: white;
-} 
-*/
