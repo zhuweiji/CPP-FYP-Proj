@@ -1,0 +1,100 @@
+.main_container {
+  padding: 5px 20px;
+  margin-bottom: 20px;
+  box-shadow: 2px 1px 4px 1px rgba(0, 0, 0, 0.4); /*so that the header appears above the rest*/
+  border-radius: 15px;
+  background-color: white;
+}
+
+.suggestions_container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.chatter {
+  font-size: 1.1rem;
+  font-family: "Merriweather", serif;
+  font-weight: bold;
+}
+
+.chatter_statement {
+  font-size: 1rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+}
+
+.topic_outer_container {
+  box-sizing: border-box;
+  background-color: white;
+  margin-bottom: 5px;
+}
+
+.topic_inner_container,
+.other_button {
+  font-size: 0.9rem;
+  font-family: "Merriweather", serif;
+  border: 1px solid;
+  border-radius: 5px;
+  margin-right: 5px;
+  text-align: center;
+  padding: 7px 0;
+  cursor: pointer;
+}
+
+.question_outer_container {
+  width: 100%;
+  background-color: white;
+  margin-bottom: 5px;
+}
+
+.question_inner_container,
+.back_to_suggestions_button,
+.custom_question_button {
+  font-size: 0.9rem;
+  font-family: "Montserrat", sans-serif;
+  border: 1px solid;
+  border-radius: 5px;
+  margin-right: 5px;
+  text-align: center;
+  padding: 7px 0;
+  cursor: pointer;
+}
+
+.back_to_suggestions_button,
+.other_button {
+  font-weight: bold;
+}
+
+.topic_inner_container:hover,
+.question_inner_container:hover {
+  background-color: #bed1cf; /* Darkened background color on button hover */
+}
+
+.back_to_suggestions_button:hover {
+  background-color: #e78895; /* Darkened background color on button hover */
+}
+
+.custom_question_button:hover,
+.other_button:hover {
+  background-color: #ffe4c9; /* Darkened background color on button hover */
+}
+
+@media only screen and (min-width: 1px) {
+  /* For phones: */
+  .topic_outer_container {
+    width: 100%;
+  }
+}
+@media only screen and (min-width: 700px) {
+  /* For tablets: */
+  .topic_outer_container {
+    width: 50%;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  /* For desktop: */
+  .topic_outer_container {
+    width: 33%;
+  }
+}

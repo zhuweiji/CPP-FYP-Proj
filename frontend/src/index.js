@@ -21,6 +21,7 @@ import PyIDEPage from "./pages/HiddenOnlyPyIDEPage";
 import Quiz from "./pages/quiz/Quiz/Quiz.jsx";
 import QuizBrowse from "./pages/quiz/QuizBrowse/QuizBrowse.jsx";
 import FaqBrowse from "./pages/faq/FaqBrowse/FaqBrowse.jsx";
+import Chatbot from "./pages/chatbot/Chatbot/Chatbot.jsx";
 
 const router = createBrowserRouter([
   {
@@ -73,7 +74,7 @@ const router = createBrowserRouter([
     element: <CodingConumdrumPage />,
   },
   {
-    path: "quiz/:quizId",
+    path: "quizzes/quiz/:quizId",
     element: <Quiz />,
   },
   {
@@ -83,6 +84,10 @@ const router = createBrowserRouter([
   {
     path: "faqs/",
     element: <FaqBrowse />,
+  },
+  {
+    path: "chat/",
+    element: <Chatbot />,
   },
   {
     path: "hidden-py",

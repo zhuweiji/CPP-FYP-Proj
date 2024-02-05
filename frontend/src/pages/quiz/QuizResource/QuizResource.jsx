@@ -10,7 +10,7 @@ function QuizResource(props) {
       <div>
         <h1 className={`${s.quiz_title}`}>{`${idx + 1}. ${title}`}</h1>
         <span className={`${s.quiz_link}`}>
-          <Link to={`../quiz/${quizId}`}>{`Try the quiz!`}</Link>
+          <Link to={`quiz/${quizId}`}>{`Try the quiz!`}</Link>
         </span>
       </div>
     </div>

@@ -4,6 +4,9 @@
 *.bak
 */deprec
 
+# API Keys
+**/secret_keys.py
+
 # Development environment variables
 /frontend/.env
 
