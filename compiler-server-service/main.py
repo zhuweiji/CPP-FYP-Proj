@@ -7,6 +7,12 @@ log = logging.getLogger(__name__)
 
 from pathlib import Path
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+
 from compiler_server_service.routers import (
     cpp_handlers,
     notebook_handlers,
@@ -16,14 +22,12 @@ from compiler_server_service.routers import (
     quiz_handlers, # ADD
     quiz_question_handlers,
     faq_handlers,
-    open_ai_handlers
+    open_ai_handlers,
+    chat_topic_handlers,
+    chat_query_handlers
 )
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
-from slowapi import _rate_limit_exceeded_handler
-from slowapi.errors import RateLimitExceeded
+
 
 tags_metadata = [
     {
@@ -57,6 +61,8 @@ app.include_router(quiz_handlers.router) # ADD
 app.include_router(quiz_question_handlers.router) # ADD
 app.include_router(faq_handlers.router) # ADD
 app.include_router(open_ai_handlers.router) # ADD
+app.include_router(chat_topic_handlers.router) # ADD
+app.include_router(chat_query_handlers.router) # ADD
 
 
 origins = [

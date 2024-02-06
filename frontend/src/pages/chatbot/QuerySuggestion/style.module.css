@@ -24,6 +24,12 @@
   font-weight: 400;
 }
 
+.loading_message {
+  font-size: 0.9rem;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+}
+
 .topic_outer_container {
   box-sizing: border-box;
   background-color: white;

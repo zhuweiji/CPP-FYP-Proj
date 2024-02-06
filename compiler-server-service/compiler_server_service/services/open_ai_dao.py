@@ -2,10 +2,9 @@ import asyncio
 import logging
 import os
 
-# import openai
 from openai import OpenAI
 
-from secret_keys import my_api_key
+from compiler_server_service.services.secret_keys import my_api_key
 
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -20,13 +19,13 @@ default_prompt = """
 
 
 async def generate_prompt(user_prompt:str):
-    # log.info(default_prompt + user_prompt)
+    log.info("user's prompt: " + user_prompt)
 
     response = client.chat.completions.create(
         model=MODEL,
         messages=[
             {"role": "system", "content": "You are a helpful assistant and an expert in object-oriented programming, particularly with C++."},
-            {"role": "user", "content": "Explain encapsulation."},
+            {"role": "user", "content": user_prompt},
             # {"role": "assistant", "content": "Who's there?"},
             # {"role": "user", "content": "Orange."},
         ],
