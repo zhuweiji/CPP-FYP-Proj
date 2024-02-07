@@ -121,7 +121,7 @@ function QuerySuggestion(props) {
                 Please wait while topics are loading...
               </h1>
             )}
-            {topicsData && topicsData.topics && (
+            {topicsData && topicsData.topics && !usingCustomQuestion && (
               <div className={`${s.topic_outer_container}`}>
                 <div
                   className={`${s.other_button}`}
@@ -155,16 +155,18 @@ function QuerySuggestion(props) {
                   </div>
                 );
               })}
-            <div className={`${s.question_outer_container}`}>
-              <div
-                className={`${s.custom_question_button}`}
-                onClick={() => {
-                  setUsingCustomQuestion(true);
-                }}
-              >
-                I have a different question
+            {!usingCustomQuestion && (
+              <div className={`${s.question_outer_container}`}>
+                <div
+                  className={`${s.custom_question_button}`}
+                  onClick={() => {
+                    setUsingCustomQuestion(true);
+                  }}
+                >
+                  I have a different question
+                </div>
               </div>
-            </div>
+            )}
             <div className={`${s.question_outer_container}`}>
               <div
                 className={`${s.back_to_suggestions_button}`}
