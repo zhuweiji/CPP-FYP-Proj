@@ -27,7 +27,8 @@ function QuerySuggestion(props) {
   const [currentTopic, setCurrentTopic] = useState(null);
   const [topicsData, setTopicsData] = useState();
   const [queriesData, setQueriesData] = useState({});
-  const { usingCustomQuestion, setUsingCustomQuestion } = props;
+  const { usingCustomQuestion, setUsingCustomQuestion, addToChatHistory } =
+    props;
 
   useEffect(() => {
     const fetchTopics = async () => {
@@ -147,7 +148,9 @@ function QuerySuggestion(props) {
                     <div
                       className={`${s.question_inner_container}`}
                       onClick={() => {
-                        console.log("test");
+                        addToChatHistory("You", query.question);
+                        addToChatHistory("Dan", query.answer);
+                        setCurrentTopic(null);
                       }}
                     >
                       {query.question}

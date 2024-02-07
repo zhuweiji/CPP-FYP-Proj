@@ -10,13 +10,13 @@ import { Button } from "@mui/material";
 import QuerySuggestion from "../QuerySuggestion/QuerySuggestions";
 
 const dummyData = [
-  {
-    chatter: "You",
-    text: "What is 1 + 1?",
-  },
+  // {
+  //   chatter: "You",
+  //   text: "What is 1 + 1?",
+  // },
   {
     chatter: "Dan",
-    text: "1 + 1 = 2",
+    text: "Hi! I am Dan, and I'm here to assist you with queries relating to C++ and OOP.",
   },
 ];
 
@@ -30,11 +30,50 @@ function Chatbot() {
     setInputValue(e.target.value);
   }
 
-  function chatSubmitHandler() {
+  async function chatSubmitHandler(userPrompt) {
     // TODO:
     // Add qn to chat history
     // send qn to BE for response generation
     // Add response to chat history
+
+    try {
+      console.log(userPrompt);
+      const response = await sendRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/chatbot/generate`,
+        "POST",
+        JSON.stringify({
+          user_prompt: userPrompt,
+        }),
+        {
+          "Content-Type": "application/json",
+        }
+      );
+
+      const responseData = await response.json();
+
+      console.log(responseData);
+
+      if (!response.ok) {
+        throw new Error(responseData.message);
+      }
+
+      addToChatHistory("Dan", responseData.answer);
+    } catch (err) {
+      // TODO: handle error when fetching from backend
+      console.log(err.message);
+    }
+  }
+
+  function addToChatHistory(chatter, text) {
+    setChatHistory((prev) => {
+      return [
+        ...prev,
+        {
+          chatter: chatter,
+          text: text,
+        },
+      ];
+    });
   }
 
   return (
@@ -62,6 +101,7 @@ function Chatbot() {
           <QuerySuggestion
             usingCustomQuestion={usingCustomQuestion}
             setUsingCustomQuestion={setUsingCustomQuestion}
+            addToChatHistory={addToChatHistory}
           />
           <div className={`${!usingCustomQuestion && s.hidden}`}>
             <textarea
@@ -69,9 +109,12 @@ function Chatbot() {
               placeholder="Ask me a question about OOP or C++!"
               value={inputValue}
               onChange={inputChangeHandler}
+              maxLength={200}
             />
             <Button
-              onClick={chatSubmitHandler}
+              onClick={() => {
+                chatSubmitHandler(inputValue);
+              }}
               size="medium"
               className={`${s.button}`}
               variant="contained"

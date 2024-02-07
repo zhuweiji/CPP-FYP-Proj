@@ -24,11 +24,14 @@ router = APIRouter(
 class GET_Generate_Response(BaseModel):
     user_prompt: str
 
-@router.get('/generate')
+@router.post('/generate')
 @limiterobj.limit('2/minute')
 async def generate_prompt_handler(request: Request, data: GET_Generate_Response):
     prompt = await generate_prompt(data.user_prompt)
-    return BasicResponse(message=prompt)
+    # answer = prompt['message']['choices'][0]['message']['content']
+    return {
+        'answer': prompt
+    }
 
 
 # class POST__Evaluate_Code(POST_BODY):

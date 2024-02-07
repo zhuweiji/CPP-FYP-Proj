@@ -30,13 +30,21 @@ async def generate_prompt(user_prompt:str):
             # {"role": "user", "content": "Orange."},
         ],
         temperature=0,
-    ) 
+    )
 
-    return response
-
-    response_body = response['choices']
+    # log.info(response)
+    response_body = response.choices
     if not response_body:
         log.warning('response from openai missing basic choices field - the object containing the text response from the model')
+        return { 'message': 'Unknown error' }
+
+    if response_body[0].finish_reason != 'stop':
+        log.warning('Something went wrong')
+        return response_body[0]
+
+    return response_body[0].message.content
+
+    
 
     if not isinstance(response_body, list) or len(response_body) < 1:
         log.warning('choices list from openai data is empty')
