@@ -24,11 +24,15 @@ import { useHttpClient } from "../../../hooks/http-hook";
 
 function QuerySuggestion(props) {
   const { sendRequest } = useHttpClient();
-  const [currentTopic, setCurrentTopic] = useState(null);
   const [topicsData, setTopicsData] = useState();
   const [queriesData, setQueriesData] = useState({});
-  const { usingCustomQuestion, setUsingCustomQuestion, addToChatHistory } =
-    props;
+  const {
+    usingCustomQuestion,
+    setUsingCustomQuestion,
+    addToChatHistory,
+    currentTopic,
+    setCurrentTopic,
+  } = props;
 
   useEffect(() => {
     const fetchTopics = async () => {
@@ -151,6 +155,7 @@ function QuerySuggestion(props) {
                         addToChatHistory("You", query.question);
                         addToChatHistory("Dan", query.answer);
                         setCurrentTopic(null);
+                        setUsingCustomQuestion(false);
                       }}
                     >
                       {query.question}

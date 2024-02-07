@@ -13,8 +13,10 @@ log = logging.getLogger(__name__)
 MODEL = "gpt-3.5-turbo"
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", my_api_key))
 
-default_prompt = """
-    Pretend you're an expert in object-oriented programming, particularly with C++. 
+start_prompt = """
+    You are a helpful assistant and an expert in object-oriented programming, particularly with C++. 
+    If the user asks for anything related to neither object-oriented programming nor C++, you must respond with: 
+    "Sorry, I can only answer questions related to object-oriented programming or C++".
 """
 
 
@@ -24,7 +26,7 @@ async def generate_prompt(user_prompt:str):
     response = client.chat.completions.create(
         model=MODEL,
         messages=[
-            {"role": "system", "content": "You are a helpful assistant and an expert in object-oriented programming, particularly with C++."},
+            {"role": "system", "content": start_prompt},
             {"role": "user", "content": user_prompt},
             # {"role": "assistant", "content": "Who's there?"},
             # {"role": "user", "content": "Orange."},

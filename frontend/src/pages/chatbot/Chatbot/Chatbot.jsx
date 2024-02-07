@@ -25,19 +25,16 @@ function Chatbot() {
   const [chatHistory, setChatHistory] = useState(dummyData);
   const [inputValue, setInputValue] = useState("");
   const [usingCustomQuestion, setUsingCustomQuestion] = useState(false);
+  const [currentTopic, setCurrentTopic] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   function inputChangeHandler(e) {
     setInputValue(e.target.value);
   }
 
   async function chatSubmitHandler(userPrompt) {
-    // TODO:
-    // Add qn to chat history
-    // send qn to BE for response generation
-    // Add response to chat history
-
     try {
-      console.log(userPrompt);
+      // console.log(userPrompt);
       const response = await sendRequest(
         `${process.env.REACT_APP_BACKEND_URL}/chatbot/generate`,
         "POST",
@@ -51,16 +48,20 @@ function Chatbot() {
 
       const responseData = await response.json();
 
-      console.log(responseData);
+      // console.log(responseData);
 
       if (!response.ok) {
         throw new Error(responseData.message);
       }
 
       addToChatHistory("Dan", responseData.answer);
+      setUsingCustomQuestion(false);
+      setInputValue("");
     } catch (err) {
       // TODO: handle error when fetching from backend
       console.log(err.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -98,11 +99,15 @@ function Chatbot() {
               );
             })}
           </div>
-          <QuerySuggestion
-            usingCustomQuestion={usingCustomQuestion}
-            setUsingCustomQuestion={setUsingCustomQuestion}
-            addToChatHistory={addToChatHistory}
-          />
+          {!isLoading && (
+            <QuerySuggestion
+              usingCustomQuestion={usingCustomQuestion}
+              setUsingCustomQuestion={setUsingCustomQuestion}
+              addToChatHistory={addToChatHistory}
+              currentTopic={currentTopic}
+              setCurrentTopic={setCurrentTopic}
+            />
+          )}
           <div className={`${!usingCustomQuestion && s.hidden}`}>
             <textarea
               className={`${s.user_query}`}
@@ -113,6 +118,8 @@ function Chatbot() {
             />
             <Button
               onClick={() => {
+                setIsLoading(true);
+                addToChatHistory("You", inputValue);
                 chatSubmitHandler(inputValue);
               }}
               size="medium"
