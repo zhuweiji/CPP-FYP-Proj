@@ -19,43 +19,43 @@ start_prompt = """
     "Sorry, I can only answer questions related to object-oriented programming or C++".
 """
 
+messageHistory = []
 
-async def generate_prompt(user_prompt:str):
+async def generate_prompt(user_prompt:str, is_first_prompt:bool):
     log.info("user's prompt: " + user_prompt)
+    log.info(str(is_first_prompt))
+    global messageHistory
+    
+    # Only place start prompt if this is the first prompt
+    if is_first_prompt:
+        messageHistory = [
+            {"role": "system", "content": start_prompt},
+            {"role": "user", "content": user_prompt}
+        ]
+    else: 
+        messageHistory.append({"role": "user", "content": user_prompt})
 
     response = client.chat.completions.create(
         model=MODEL,
-        messages=[
-            {"role": "system", "content": start_prompt},
-            {"role": "user", "content": user_prompt},
-            # {"role": "assistant", "content": "Who's there?"},
-            # {"role": "user", "content": "Orange."},
-        ],
+        messages=messageHistory,
         temperature=0,
     )
 
     # log.info(response)
     response_body = response.choices
     if not response_body:
-        log.warning('response from openai missing basic choices field - the object containing the text response from the model')
+        log.warning('response from OpenAI missing choices field')
+        messageHistory.pop()
         return { 'message': 'Unknown error' }
 
     if response_body[0].finish_reason != 'stop':
         log.warning('Something went wrong')
+        messageHistory.pop()
         return response_body[0]
 
+    messageHistory.append({"role": "system", "content": response_body[0].message.content})
     return response_body[0].message.content
 
-    
-
-    if not isinstance(response_body, list) or len(response_body) < 1:
-        log.warning('choices list from openai data is empty')
-
-    first_response_obj = response_body[0]
-    return first_response_obj
-    # response_text = first_response_obj.get('text', "")
-
-    # return response_text
 
 # code_evaluation_prompt_base = lambda code, prompt, metric='functionality': f"""
 # In the following section, a prompt is given, for which some C++ code has been written.
@@ -72,32 +72,3 @@ async def generate_prompt(user_prompt:str):
 # ------------------------------
 # {code}
 # """
-
-      
-# async def evaluate_code(code: str, prompt:str):
-#     def openai_code_evaluate():
-#         log.info('evaluating code..')
-#         return openai.Completion.create(
-#             model="text-davinci-003",
-#             prompt=code_evaluation_prompt_base(code,prompt),
-#             temperature=0.6,
-#             max_tokens=200,
-#         )
-
-#     # pattern for wrapping a blocking task
-#     coro = asyncio.to_thread(openai_code_evaluate)
-#     task = asyncio.create_task(coro)
-#     response = await task
-    
-#     log.info(response)
-#     response_body = response.get('choices', None)
-#     if not response_body:
-#         log.warning('response from openai missing basic choices field - the object containing the text response from the model')
-
-#     if not isinstance(response_body, list) or len(response_body) < 1:
-#         log.warning('choices list from openai data is empty')
-
-#     first_response_obj = response_body[0]
-#     response_text = first_response_obj.get('text', "")
-
-#     return response_text

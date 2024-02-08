@@ -10,10 +10,6 @@ import { Button } from "@mui/material";
 import QuerySuggestion from "../QuerySuggestion/QuerySuggestions";
 
 const dummyData = [
-  // {
-  //   chatter: "You",
-  //   text: "What is 1 + 1?",
-  // },
   {
     chatter: "Dan",
     text: "Hi! I am Dan, and I'm here to assist you with queries relating to C++ and OOP.",
@@ -25,43 +21,60 @@ function Chatbot() {
   const [chatHistory, setChatHistory] = useState(dummyData);
   const [inputValue, setInputValue] = useState("");
   const [usingCustomQuestion, setUsingCustomQuestion] = useState(false);
+
+  // set to the topic the user selects from the suggested topics, or null if none is selected
   const [currentTopic, setCurrentTopic] = useState(null);
+
+  // isLoading is true when awaiting Dan's response from the backend
   const [isLoading, setIsLoading] = useState(false);
+
+  // set to true until the first valid GPT response is received from the backend
+  const [isFirstPrompt, setIsFirstPrompt] = useState(true);
 
   function inputChangeHandler(e) {
     setInputValue(e.target.value);
   }
 
   async function chatSubmitHandler(userPrompt) {
+    let responseData;
+    let response;
     try {
-      // console.log(userPrompt);
-      const response = await sendRequest(
+      response = await sendRequest(
         `${process.env.REACT_APP_BACKEND_URL}/chatbot/generate`,
         "POST",
         JSON.stringify({
           user_prompt: userPrompt,
+          is_first_prompt: isFirstPrompt,
         }),
         {
           "Content-Type": "application/json",
         }
       );
 
-      const responseData = await response.json();
-
-      // console.log(responseData);
+      responseData = await response.json();
 
       if (!response.ok) {
+        console.log(response);
         throw new Error(responseData.message);
       }
 
       addToChatHistory("Dan", responseData.answer);
-      setUsingCustomQuestion(false);
-      setInputValue("");
+      setIsFirstPrompt(false);
     } catch (err) {
       // TODO: handle error when fetching from backend
       console.log(err.message);
+      // console.log(responseData);
+      // console.log(response.status);
+      // console.log(responseData);
+
+      // TODO: handle too many requests error
+      if (response.status === 429) {
+      }
     } finally {
       setIsLoading(false);
+      setCurrentTopic(null);
+      setUsingCustomQuestion(false);
+      setInputValue("");
     }
   }
 
