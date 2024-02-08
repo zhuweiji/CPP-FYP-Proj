@@ -31,6 +31,9 @@ function Chatbot() {
   // set to true until the first valid GPT response is received from the backend
   const [isFirstPrompt, setIsFirstPrompt] = useState(true);
 
+  // set to true until the the first valid GPT or hard-coded response is received from the backend
+  const [isFirstQuestion, setIsFirstQuestion] = useState(true);
+
   function inputChangeHandler(e) {
     setInputValue(e.target.value);
   }
@@ -54,21 +57,24 @@ function Chatbot() {
       responseData = await response.json();
 
       if (!response.ok) {
-        console.log(response);
-        throw new Error(responseData.message);
+        throw new Error(responseData.detail);
       }
 
       addToChatHistory("Dan", responseData.answer);
       setIsFirstPrompt(false);
+      setIsFirstQuestion(false);
     } catch (err) {
-      // TODO: handle error when fetching from backend
       console.log(err.message);
-      // console.log(responseData);
-      // console.log(response.status);
-      // console.log(responseData);
-
-      // TODO: handle too many requests error
       if (response.status === 429) {
+        addToChatHistory(
+          "Dan",
+          "You are only allowed to ask me 2 questions per minute! Try again in a while."
+        );
+      } else if (response.status >= 500) {
+        addToChatHistory(
+          "Dan",
+          "An unknown error has occurred :( Do try again in the near future!"
+        );
       }
     } finally {
       setIsLoading(false);
@@ -119,6 +125,8 @@ function Chatbot() {
               addToChatHistory={addToChatHistory}
               currentTopic={currentTopic}
               setCurrentTopic={setCurrentTopic}
+              isFirstQuestion={isFirstQuestion}
+              setIsFirstQuestion={setIsFirstQuestion}
             />
           )}
           <div className={`${!usingCustomQuestion && s.hidden}`}>

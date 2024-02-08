@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import s from "./style.module.css";
 import { useHttpClient } from "../../../hooks/http-hook";
@@ -32,6 +32,8 @@ function QuerySuggestion(props) {
     addToChatHistory,
     currentTopic,
     setCurrentTopic,
+    isFirstQuestion,
+    setIsFirstQuestion,
   } = props;
 
   useEffect(() => {
@@ -66,7 +68,7 @@ function QuerySuggestion(props) {
         const responseData = await response.json();
 
         if (!response.ok) {
-          throw new Error(responseData.message);
+          throw new Error(responseData.detail);
         }
 
         setQueriesData((prev) => {
@@ -87,17 +89,38 @@ function QuerySuggestion(props) {
     }
   }, [currentTopic, sendRequest]);
 
+  const determineAppropriatePrompt = useCallback(() => {
+    let prompt = "";
+
+    if (usingCustomQuestion) {
+      prompt += "Go ahead and ask your question! If you change your mind, ";
+      if (currentTopic) {
+        prompt += `here are some question suggestions for ${currentTopic.title}.`;
+      } else {
+        prompt += "here are some topic suggestions.";
+      }
+    } else {
+      if (currentTopic) {
+        prompt += "Excellent topic! Here are some question suggestions";
+      } else {
+        if (isFirstQuestion) {
+          prompt += "Not sure what to ask? ";
+        } else {
+          prompt += "Have another question? ";
+        }
+        prompt += "Here are some topic suggestions";
+      }
+    }
+
+    return prompt;
+  }, [usingCustomQuestion, currentTopic, isFirstQuestion]);
+
   return (
     <div className={`${s.main_container}`}>
       <div>
         <h1 className={`${s.chatter}`}>{`Dan`}</h1>
         <h2 className={`${s.chatter_statement}`}>
-          {usingCustomQuestion
-            ? "Go ahead and ask your question! If you change your mind, h"
-            : "H"}
-          {!currentTopic
-            ? "ere are some topic suggestions."
-            : `ere are some question suggestions for ${currentTopic.title}.`}
+          {determineAppropriatePrompt()}
         </h2>
       </div>
       <div className={`${s.suggestions_container}`}>
@@ -156,6 +179,7 @@ function QuerySuggestion(props) {
                         addToChatHistory("Dan", query.answer);
                         setCurrentTopic(null);
                         setUsingCustomQuestion(false);
+                        setIsFirstQuestion(false);
                       }}
                     >
                       {query.question}

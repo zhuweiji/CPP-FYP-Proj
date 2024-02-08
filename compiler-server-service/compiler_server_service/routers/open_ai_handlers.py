@@ -12,8 +12,6 @@ log = logging.getLogger(__name__)
 from fastapi import APIRouter, HTTPException, Request, Response, status
 from pydantic import BaseModel
 
-# from game_service.services.limiter.rate_limiter import limiterobj
-
 ROUTE_PREFIX = '/chatbot'
 
 router = APIRouter(
@@ -28,9 +26,15 @@ class GET_Generate_Response(BaseModel):
 @router.post('/generate')
 @limiterobj.limit('2/minute')
 async def generate_prompt_handler(request: Request, data: GET_Generate_Response):
-    prompt = "testing"
-    # prompt = await generate_prompt(data.user_prompt, data.is_first_prompt)
-    # answer = prompt['message']['choices'][0]['message']['content']
+    # prompt = "testing"
+    try:
+        prompt = await generate_prompt(data.user_prompt, data.is_first_prompt)
+    except HTTPException as err:
+        raise err 
+    except Exception as err:
+        log.warning("Unknown error: " + str(err))
+        raise err
+    
     return {
         'answer': prompt
     }

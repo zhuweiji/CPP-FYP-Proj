@@ -3,6 +3,7 @@ import logging
 import os
 
 from openai import OpenAI
+from fastapi import HTTPException
 
 from compiler_server_service.services.secret_keys import my_api_key
 
@@ -26,6 +27,9 @@ async def generate_prompt(user_prompt:str, is_first_prompt:bool):
     log.info(str(is_first_prompt))
     global messageHistory
     
+    # if is_first_prompt:
+    #     raise HTTPException(status_code=500, detail="Unknown error from OpenAI lol")
+
     # Only place start prompt if this is the first prompt
     if is_first_prompt:
         messageHistory = [
@@ -46,12 +50,12 @@ async def generate_prompt(user_prompt:str, is_first_prompt:bool):
     if not response_body:
         log.warning('response from OpenAI missing choices field')
         messageHistory.pop()
-        return { 'message': 'Unknown error' }
+        raise HTTPException(status_code=500, detail="Unknown error from OpenAI")
 
     if response_body[0].finish_reason != 'stop':
-        log.warning('Something went wrong')
+        log.warning('Something went wrong, proper response could not be generated. Details: ' + str(response_body[0]))
         messageHistory.pop()
-        return response_body[0]
+        raise HTTPException(status_code=500, detail="Unknown error from OpenAI")
 
     messageHistory.append({"role": "system", "content": response_body[0].message.content})
     return response_body[0].message.content
