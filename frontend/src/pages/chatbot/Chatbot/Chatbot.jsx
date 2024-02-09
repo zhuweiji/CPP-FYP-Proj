@@ -9,16 +9,18 @@ import ChatBubble from "../ChatBubble/ChatBubble";
 import { Button } from "@mui/material";
 import QuerySuggestion from "../QuerySuggestion/QuerySuggestions";
 
-const dummyData = [
+const chatbotName = "Dan";
+
+const chatbotIntro = [
   {
-    chatter: "Dan",
-    text: "Hi! I am Dan, and I'm here to assist you with queries relating to C++ and OOP.",
+    chatter: chatbotName,
+    text: `Hi! I am ${chatbotName}, and I'm here to assist you with queries relating to C++ and OOP.`,
   },
 ];
 
 function Chatbot() {
   const { sendRequest } = useHttpClient();
-  const [chatHistory, setChatHistory] = useState(dummyData);
+  const [chatHistory, setChatHistory] = useState(chatbotIntro);
   const [inputValue, setInputValue] = useState("");
   const [usingCustomQuestion, setUsingCustomQuestion] = useState(false);
 
@@ -60,19 +62,20 @@ function Chatbot() {
         throw new Error(responseData.detail);
       }
 
-      addToChatHistory("Dan", responseData.answer);
+      console.log(responseData.answer);
+      addToChatHistory(chatbotName, responseData.answer);
       setIsFirstPrompt(false);
       setIsFirstQuestion(false);
     } catch (err) {
       console.log(err.message);
       if (response.status === 429) {
         addToChatHistory(
-          "Dan",
+          chatbotName,
           "You are only allowed to ask me 2 questions per minute! Try again in a while."
         );
       } else if (response.status >= 500) {
         addToChatHistory(
-          "Dan",
+          chatbotName,
           "An unknown error has occurred :( Do try again in the near future!"
         );
       }
@@ -127,6 +130,7 @@ function Chatbot() {
               setCurrentTopic={setCurrentTopic}
               isFirstQuestion={isFirstQuestion}
               setIsFirstQuestion={setIsFirstQuestion}
+              chatbotName={chatbotName}
             />
           )}
           <div className={`${!usingCustomQuestion && s.hidden}`}>
@@ -136,6 +140,7 @@ function Chatbot() {
               value={inputValue}
               onChange={inputChangeHandler}
               maxLength={200}
+              rows={5}
             />
             <Button
               onClick={() => {

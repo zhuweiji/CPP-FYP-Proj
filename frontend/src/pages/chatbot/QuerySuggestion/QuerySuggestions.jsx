@@ -34,6 +34,7 @@ function QuerySuggestion(props) {
     setCurrentTopic,
     isFirstQuestion,
     setIsFirstQuestion,
+    chatbotName,
   } = props;
 
   useEffect(() => {
@@ -116,9 +117,9 @@ function QuerySuggestion(props) {
   }, [usingCustomQuestion, currentTopic, isFirstQuestion]);
 
   return (
-    <div className={`${s.main_container}`}>
+    <div className={`${s.main_container} ${s.chatbot_bg}`}>
       <div>
-        <h1 className={`${s.chatter}`}>{`Dan`}</h1>
+        <h1 className={`${s.chatter}`}>{chatbotName}</h1>
         <h2 className={`${s.chatter_statement}`}>
           {determineAppropriatePrompt()}
         </h2>
@@ -176,7 +177,7 @@ function QuerySuggestion(props) {
                       className={`${s.question_inner_container}`}
                       onClick={() => {
                         addToChatHistory("You", query.question);
-                        addToChatHistory("Dan", query.answer);
+                        addToChatHistory(chatbotName, query.answer);
                         setCurrentTopic(null);
                         setUsingCustomQuestion(false);
                         setIsFirstQuestion(false);
