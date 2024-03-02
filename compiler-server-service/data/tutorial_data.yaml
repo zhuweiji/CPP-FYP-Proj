@@ -87,7 +87,6 @@ topics:
       - name: "YAGNI"
         id: 10
 
-
   # - topic_name: Tutorial 3 - Conceptual Representations to Code
   #   description: Build familiarity by creating things in C++ using a specification
   #   img_name: convoluted_diagram.jpg
@@ -107,7 +106,6 @@ topics:
   #     - name: Velit culpa sint velit ex aliquip laborum nulla consequat laboris labore aliquip.
   #       id: 7
 
-
   - topic_name: Capstone Project - Building the Final Year Project Management System (FYPMS)
     description: Use the information you have learnt and some new design principles to implement a new system
     img_name: mountain_peak.jpg
@@ -119,7 +117,7 @@ topics:
       - name: Building Some Classes With Aggregation, Composition And Inheritance
         id: 2
         no_tutorial: True
-      - name: Using Upcasting And Downcasting 
+      - name: Using Upcasting And Downcasting
         id: 3
         no_tutorial: True
       - name: Design Principle 1 - Singleton
@@ -131,6 +129,28 @@ topics:
         id: 5
         no_tutorial: True
 
+  - topic_name: Capstone Project - Building a simple game (SnakeEyes)
+    description: Use the information you have learnt and some new design principles to implement a simple game
+    img_name: lens_mountain.jpg
+
+    tutorials:
+      - name: Understanding The Project
+        id: 1
+        no_tutorial: True
+      - name: Building Some Classes With Aggregation, Composition And Inheritance
+        id: 2
+        no_tutorial: True
+      - name: Using Upcasting And Downcasting
+        id: 3
+        no_tutorial: True
+      - name: Design Principle 1 - Singleton
+        description: Use the Singleton pattern to ensure that only one instance of a class exists in the application
+        id: 4
+        no_tutorial: True
+      - name: Design Principle 2 - Observer
+        description: Use the Observer pattern to ensure that when one object changes state, all its dependents are notified and updated automatically
+        id: 5
+        no_tutorial: True
 
   # - topic_name: "(Advanced Tutorials) Common Design Patterns in Software Engineering"
   #   description: Build everything with software! Explore the power of OOP by building different projects (maintainably and sustainably)

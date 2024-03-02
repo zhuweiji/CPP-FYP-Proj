@@ -2,9 +2,6 @@ import s from "./style.module.css";
 
 import { CodeBlock, atomOneDark } from "react-code-blocks";
 
-// const cppCode =
-//   "Here is an example of a simple class in Python:\n\n```python\nclass Rectangle:\n    def __init__(self, width, height):\n        self.width = width\n        self.height = height\n    \n    def area(self):\n        return self.width * self.height\n    \n    def perimeter(self):\n        return 2 * (self.width + self.height)\n```\n\nIn this example, we have defined a class called `Rectangle`. It has two attributes: `width` and `height`, which are initialized in the constructor method `__init__`. \n\nThe class also has two methods: `area` and `perimeter`. The `area` method calculates and returns the area of the rectangle by multiplying its width and height. The `perimeter` method calculates and returns the perimeter of the rectangle by adding twice its width and height.\n\nTo create an instance of this class and use its methods, we can do the following:\n\n```python\n# Create a rectangle object with width 5 and height 3\nmy_rectangle = Rectangle(5, 3)\n\n# Call the area method\nprint(my_rectangle.area())  # Output: 15\n\n# Call the perimeter method\nprint(my_rectangle.perimeter())  # Output: 16\n```\n\nIn this example, we create an instance of the `Rectangle` class called `my_rectangle` with a width of 5 and height of 3. We then call the `area` and `perimeter` methods on `my_rectangle` to calculate and print the area and perimeter of the rectangle.";
-
 /**
  * Splits a block of code-containing text into its text and code components
  * @param {string} text

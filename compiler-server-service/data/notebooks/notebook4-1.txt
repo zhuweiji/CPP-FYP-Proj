@@ -1,0 +1,112 @@
+# Understanding The Project
+
+In this module, we'll be looking at how we can build a simple console game called 'Snake Eyes' using OOP.
+
+
+The game to be built is a simple two-player game where each player takes turns rolling 2 dice. The results of the rolls determine what actions the player can do in that turn. \n
+The action taken by the player will affect either their or their opponent's score. Whoever accumulates 50 points or more first wins. \n
+This game is a Command Line Interface (CLI) application with no GUI.
+
+
+### Rules of Snake Eyes
+
+Let's the denote the two players as Player 1 and Player 2. Player 1 starts first and both players start with zero points. \n
+On each turn, 2 dice are rolled for the user.
+
+If both dice have a value of 1 (snake eyes), then the player's score is reset to zero.
+
+If both dice have odd values (and at least one of them is not 1), then the player has the 'reduce' option. \n
+The 'reduce' option reduces the opponent's score by the sum of the dice values.
+
+If the sum of both dice values add to 7, then the player has the 'jump' option. \n
+The 'jump' option sets the player's score to 30.
+
+As long as the dice values are not snake eyes, the player will have the 'add' option. \n
+The 'add' option adds the sum of the dice values to the player's score.
+
+Before the dice values are revealed to the player, they have the option of 'pass', 'peek' or 'continue'. \n
+'pass' simply skips the player's turn. \n
+'peek' reveals one of the dice values. Once revealed, the player is prompted to 'pass' or 'continue'. Each player is allowed 3 peeks. \n
+'continue' reveals both dice values and presents the player with their options. At this point, the player can no longer choose to 'pass'.
+
+The game ends when either player wins by achieving a score of 50 points.
+
+
+The system involves multiple entities such as students, supervisors, and the FYP coordinator, and their relationships are managed using various operations and actions such as project creation, allocation, deregistration, request approval or rejection, and view requests and history.
+
+### System Design
+
+We will construct three classes: \n
+Die (Entity): This represents a die. \n
+Player (Entity): This represents a player. \n
+SnakeEyes (Control): This acts as the game manager.
+
+Here is an example of a class diagram of the classes which would compose the system.
+
+<MermaidDiagram>
+classDiagram
+    class Die {
+        -int currentValue
+
+        +int getCurrentValue()
+        +int roll()
+    }
+    class Player {
+        -int currentScore
+        -int peeksLeft
+
+        +Player(int initialScore, int initialPeeks)
+        +int getCurrentScore()
+        +bool canPeek()
+        +int usePeek()
+        +int increaseCurrentScore(int value)
+        +void resetCurrentScore()
+        +int jump()
+    }
+    class SnakeEyes {
+        -Player user
+        -Player opponent
+        -Die die1
+        -Die die2
+        -int gameState
+        +int WINNING_SCORE
+
+        +int getGameState()
+        +String[] getPlayerOptions(bool rollsRevealed, String playerName)
+        +int handlePlayerOption(String option, String playerName)
+        +int[] rollDice()
+        +int peekOne(Player player)
+        +int addToPlayerScore(Player player)
+        +int reduceFromFoeScore(Player foe)
+        +int jump (Player player)
+    }
+
+
+</MermaidDiagram>
+
+Their relationships can be modelled using the diagram below.
+
+<MermaidDiagram>
+%%{init: {"flowchart" : { "curve" : "linear" }}}%%
+
+classDiagram
+    class System {
+    }
+    class Project {
+    }
+    class Faculty {
+    }
+    class Student {
+    }
+    class FYPCoordinator {
+    }
+    System "1" --> "1..*" Project
+    System "1" --> "1..*" Faculty
+    System "1" --> "1..*" Student
+    System "1" --> "1..*" FYPCoordinator
+    Project "0..1" --> "1" Faculty : assigned to
+    Project "0..1" --> "0..1" Student : assigned student
+</MermaidDiagram>
+
+Take a moment re-read through the specifications of the systems, and think about how you mightimplement the system. Did our class diagram match up to what you might expect? \n
+We'll be going through more details in the following chapters.
