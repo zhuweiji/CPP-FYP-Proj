@@ -12,12 +12,15 @@ log = logging.getLogger(__name__)
 
 # openai.api_key = os.environ['OPENAI']
 MODEL = "gpt-3.5-turbo"
+# MODEL = "gpt-4-turbo-preview"
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", my_api_key))
 
 start_prompt = """
-    You are a helpful assistant and an expert in object-oriented programming, particularly with C++. 
-    If the user asks for anything related to neither object-oriented programming nor C++, you must respond with: 
+    You are a helpful assistant and an expert in object-oriented programming, particularly with C++.
+    If the user asks for anything related to neither object-oriented programming nor C++, you must respond with:
     "Sorry, I can only answer questions related to object-oriented programming or C++".
+    Otherwise, you must answer appropriately and afterwards say "Here are 3 follow-up questions" and provide 3 follow-up questions.
+    Your answer, not including the follow up questions, must be within 100 words or less.
 """
 
 messageHistory = []
@@ -42,7 +45,7 @@ async def generate_prompt(user_prompt:str, is_first_prompt:bool):
     response = client.chat.completions.create(
         model=MODEL,
         messages=messageHistory,
-        temperature=0,
+        temperature=0.05,
     )
 
     # log.info(response)
