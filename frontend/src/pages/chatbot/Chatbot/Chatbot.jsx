@@ -40,9 +40,30 @@ function Chatbot() {
     setInputValue(e.target.value);
   }
 
+  const testText = `
+Dependency Injection is a design pattern in object-oriented programming where the dependencies of an object are provided externally rather than created within the object itself. 
+This helps in achieving loose coupling between classes and makes the code more modular and testable. 
+There are three common types of dependency injection: constructor injection, setter injection, and interface injection. 
+By injecting dependencies from the outside, classes become more flexible and easier to maintain.
+
+Here are 3 follow-up questions:
+1. How does dependency injection help in unit testing?
+2. Can you explain the difference between constructor injection and setter injection?
+3. What are the benefits of using dependency injection in software development?`;
+
   async function chatSubmitHandler(userPrompt) {
     let responseData;
     let response;
+
+    // addToChatHistory(chatbotName, testText);
+    // setIsFirstPrompt(false);
+    // setIsFirstQuestion(false);
+    // setIsLoading(false);
+    // setCurrentTopic(null);
+    // setUsingCustomQuestion(false);
+    // setInputValue("");
+    // return;
+
     try {
       response = await sendRequest(
         `${process.env.REACT_APP_BACKEND_URL}/chatbot/generate`,
@@ -62,7 +83,7 @@ function Chatbot() {
         throw new Error(responseData.detail);
       }
 
-      console.log(responseData.answer);
+      // console.log(responseData.answer);
       addToChatHistory(chatbotName, responseData.answer);
       setIsFirstPrompt(false);
       setIsFirstQuestion(false);
@@ -117,6 +138,8 @@ function Chatbot() {
                   key={`faq-${idx}`}
                   chatter={item.chatter}
                   text={item.text}
+                  setUsingCustomQuestion={setUsingCustomQuestion}
+                  setInputValue={setInputValue}
                 />
               );
             })}

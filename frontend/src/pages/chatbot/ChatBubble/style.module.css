@@ -10,6 +10,22 @@
   font-weight: 400;
 }
 
+.follow_up {
+  font-size: 0.9rem;
+  font-family: "Montserrat", sans-serif;
+  border: 1px solid;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+  padding: 7px 0;
+  cursor: pointer;
+  background-color: white;
+}
+
+.follow_up:hover {
+  background-color: #bed1cf; /* Darkened background color on button hover */
+}
+
 .container {
   padding: 5px 20px;
   margin-bottom: 20px;

@@ -19,8 +19,8 @@ start_prompt = """
     You are a helpful assistant and an expert in object-oriented programming, particularly with C++.
     If the user asks for anything related to neither object-oriented programming nor C++, you must respond with:
     "Sorry, I can only answer questions related to object-oriented programming or C++".
-    Otherwise, you must answer appropriately and afterwards say "Here are 3 follow-up questions" and provide 3 follow-up questions.
-    Your answer, not including the follow up questions, must be within 100 words or less.
+    Otherwise, you must answer appropriately and afterwards say "Here are 2 follow-up questions:" and provide 2 follow-up questions.
+    Your answer, not including the follow up questions, must be within 150 words or less.
 """
 
 messageHistory = []
@@ -45,7 +45,7 @@ async def generate_prompt(user_prompt:str, is_first_prompt:bool):
     response = client.chat.completions.create(
         model=MODEL,
         messages=messageHistory,
-        temperature=0.05,
+        temperature=0.01, # buggy when temperature is higher
     )
 
     # log.info(response)

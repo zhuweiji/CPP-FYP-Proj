@@ -61,8 +61,96 @@ function extractCppCode(text) {
   return res;
 }
 
+/*
+  Here are 3 follow-up questions: 
+  1. Can you initialize the `name` and `age` members of the `person1` object? 
+  2. How would you create another object of the `Person` class using dynamic memory allocation? 
+  3. How can you access the `name` member of the `person1` object?
+*/
+function extractFollowUpQns(text) {
+  const res = Array(2);
+  const i = text.indexOf("2 follow-up questions:");
+
+  if (i === -1) {
+    return {
+      cutOff: -1,
+      followUpQns: [],
+    };
+  }
+
+  const indices = Array(2).fill(-1);
+
+  indices[0] = text.indexOf("1.", i + 22);
+  indices[1] = text.indexOf("2.", indices[0] + 3);
+
+  if (indices[0] === -1 || indices[1] === -1) {
+    return {
+      cutOff: -1,
+      followUpQns: [],
+    };
+  }
+
+  res[0] = text.substring(indices[0] + 3, indices[1]).trim();
+  res[1] = text.substring(indices[1] + 3).trim();
+  // console.log(res);
+  return {
+    cutOff: i - 9,
+    followUpQns: res,
+  };
+}
+
+function partitionResponse(text) {
+  const response = extractCppCode(text);
+  const finalPartOfResponse = response[response.length - 1];
+  // console.log(response);
+
+  if (!finalPartOfResponse.isCode) {
+    const followUpQnsData = extractFollowUpQns(finalPartOfResponse.text);
+
+    if (followUpQnsData.cutOff === -1) {
+      return {
+        response: response,
+        followUpQns: [],
+      };
+    }
+
+    if (followUpQnsData.cutOff === 0) {
+      // remove the final part if it only contained the follow-up questions
+      response.pop();
+    } else {
+      finalPartOfResponse.text = finalPartOfResponse.text.substring(
+        0,
+        followUpQnsData.cutOff
+      );
+    }
+
+    // console.log(response);
+    // console.log(followUpQnsData.followUpQns);
+    return {
+      response: response,
+      followUpQns: followUpQnsData.followUpQns,
+    };
+
+    // const res = {
+    //   response: response,
+    //   followUpQns: followUpQnsData,
+    // };
+
+    // console.log(res);
+    // return res;
+  }
+
+  return {
+    response: response,
+    followUpQns: [],
+  };
+}
+
 function ChatBubble(props) {
-  const { chatter, text } = props;
+  const { chatter, text, setUsingCustomQuestion, setInputValue } = props;
+
+  // text = testText;
+  const { response, followUpQns } = partitionResponse(text);
 
   return (
     <div
@@ -72,7 +160,7 @@ function ChatBubble(props) {
     >
       <div>
         <h1 className={`${s.chatter}`}>{`${chatter}`}</h1>
-        {extractCppCode(text).map((block, idx) => {
+        {response.map((block, idx) => {
           return block.isCode ? (
             <CodeBlock
               key={`block-${idx}`}
@@ -86,6 +174,20 @@ function ChatBubble(props) {
               key={`block-${idx}`}
               className={`${s.text}`}
             >{`${block.text}`}</h2>
+          );
+        })}
+        {followUpQns.map((qn, idx) => {
+          return (
+            <div
+              key={`follow-up-${idx}`}
+              className={`${s.follow_up}`}
+              onClick={() => {
+                setUsingCustomQuestion(true);
+                setInputValue(qn);
+              }}
+            >
+              {qn}
+            </div>
           );
         })}
       </div>
