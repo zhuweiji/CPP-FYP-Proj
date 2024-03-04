@@ -1,0 +1,19 @@
+.main_container {
+  padding: 5px 20px;
+  margin-bottom: 20px;
+  box-shadow: 2px 1px 4px 1px rgba(0, 0, 0, 0.4); /*so that the header appears above the rest*/
+  border-radius: 15px;
+  background-color: white;
+}
+
+.title {
+  font-size: 1.2rem;
+  font-family: "Montserrat", sans-serif;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.message {
+  font-size: 1rem;
+  font-family: "Roboto", sans-serif;
+}
