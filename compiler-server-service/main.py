@@ -10,6 +10,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from fastapi.staticfiles import StaticFiles
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
@@ -92,6 +93,7 @@ app.add_middleware(
 
 # app.add_middleware(HTTPSRedirectMiddleware)
 
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 @app.get('/')
 def root():
