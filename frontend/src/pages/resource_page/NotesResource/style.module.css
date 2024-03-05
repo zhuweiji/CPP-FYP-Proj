@@ -7,12 +7,13 @@
 }
 
 .notes_title {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-family: "Merriweather", serif;
   font-weight: bold;
 }
 
-.notes_description {
+.notes_description,
+.notes_link {
   font-size: 1rem;
-  font-family: "Roboto", sans-serif;
+  font-family: "Montserrat", sans-serif;
 }

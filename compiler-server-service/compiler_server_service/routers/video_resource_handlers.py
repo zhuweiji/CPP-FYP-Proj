@@ -47,5 +47,5 @@ def get_all_video_resources(request: Request):
     videosList = [video for video in videos]
 
     return {
-        'video_resources': videosList
+        'videos': videosList
     }

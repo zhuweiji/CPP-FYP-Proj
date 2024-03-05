@@ -42,8 +42,8 @@ const dummyData = {
   examPapers: [
     {
       title: "V: Some Question",
-      link: "https://google.com",
-      file: null,
+      link: "",
+      file: "uploads/dc64fe38-9865-404e-af02-7c85b629dcab2023-12-03_WoodlandsSH.pdf",
     },
     {
       title: "Youtube",
@@ -80,34 +80,34 @@ function ResourcePage() {
     }
   }, [navigate, resourceType]);
 
-  // useEffect(() => {
-  //   const fetchResources = async () => {
-  //     try {
-  //       // get relevant data for the current course
-  //       const response = await sendRequest(
-  //         `${process.env.REACT_APP_BACKEND_URL}/courses/id/${courseId}`
-  //       );
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        // get relevant data
+        const response = await sendRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/resources`
+        );
 
-  //       const responseData = await response.json();
+        const responseData = await response.json();
 
-  //       if (!response.ok) {
-  //         throw new Error(responseData.message);
-  //       }
+        if (!response.ok) {
+          throw new Error(responseData.message);
+        }
 
-  //       setResourceData(responseData);
-  //     } catch (err) {
-  //       // TODO: handle error when fetching from backend
-  //       console.log(err.message);
-  //     }
-  //   };
-  //   fetchResources();
-  // }, [sendRequest]);
+        setResourceData(responseData);
+      } catch (err) {
+        // TODO: handle error when fetching from backend
+        console.log(err.message);
+      }
+    };
+    fetchResources();
+  }, [sendRequest]);
 
   // TODO: remove after test
-  useEffect(() => {
-    // setResourceData([]);
-    setResourceData(dummyData);
-  }, []);
+  // useEffect(() => {
+  //   // setResourceData([]);
+  //   setResourceData(dummyData);
+  // }, []);
 
   if (!resourceData) {
     return (

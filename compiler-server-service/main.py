@@ -29,7 +29,8 @@ from compiler_server_service.routers import (
     notes_handlers,
     video_resource_handlers,
     exam_paper_handlers,
-    exam_solution_handlers
+    exam_solution_handlers,
+    resource_handlers
 )
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
 
@@ -72,6 +73,7 @@ app.include_router(notes_handlers.router)
 app.include_router(video_resource_handlers.router)
 app.include_router(exam_paper_handlers.router)
 app.include_router(exam_solution_handlers.router)
+app.include_router(resource_handlers.router)
 
 
 origins = [
@@ -93,6 +95,7 @@ app.add_middleware(
 
 # app.add_middleware(HTTPSRedirectMiddleware)
 
+# For serving static files
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 @app.get('/')
