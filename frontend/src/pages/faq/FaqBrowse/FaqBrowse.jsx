@@ -10,7 +10,6 @@ import Faq from "../Faq/Faq";
 // import QuizResource from "../QuizResource/QuizResource";
 // import PageNotFound from "../../pages/PageNotFound/PageNotFound";
 
-// CHECKPOINT
 function FaqBrowse() {
   const { sendRequest } = useHttpClient();
   const [faqsData, setFaqsData] = useState();

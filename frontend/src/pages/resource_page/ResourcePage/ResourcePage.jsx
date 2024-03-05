@@ -13,8 +13,9 @@ import ExamResourse from "../ExamResource/ExamResource";
 import s from "./style.module.css";
 import ResponsiveAppBar from "../../../components/Nav";
 import SideBar from "../SideBar/SideBar";
+import ContributeForm from "../ContributeForm/ContributeForm";
 
-const validResourceNames = ["notes", "videos", "exams"];
+const validResourceNames = ["notes", "videos", "exams", "contribute"];
 
 const dummyData = {
   notes: [
@@ -194,6 +195,12 @@ function ResourcePage() {
               );
             })
           )}
+        </div>
+      );
+    } else if (resourceType === "contribute") {
+      return (
+        <div>
+          <ContributeForm />
         </div>
       );
     }

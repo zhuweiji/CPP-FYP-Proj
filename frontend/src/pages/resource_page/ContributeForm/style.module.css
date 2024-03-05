@@ -1,0 +1,54 @@
+.main_container {
+  border-radius: 8px;
+  background-color: #c7c8cc;
+  margin-bottom: 10px;
+  /* width: 400px; */
+  padding: 10px;
+  /* display: flex;
+  justify-content: center; */
+}
+
+.input_container {
+  margin-top: 25px;
+  /* display: flex;
+  justify-content: center; */
+}
+
+.label {
+  margin-right: 5px;
+  font-family: "Roboto", sans-serif;
+}
+
+.dropdown_option {
+  border-radius: 5px;
+  /* font-family: "Roboto", sans-serif; */
+}
+
+.form_input {
+  width: 300px;
+  border-radius: 5px;
+  font-family: "Roboto", sans-serif;
+}
+
+.form_text_area {
+  width: 99%;
+  border-radius: 5px;
+  font-family: "Roboto", sans-serif;
+}
+
+.date_input {
+  font-family: "Roboto", sans-serif;
+}
+
+.error_container {
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: center;
+  color: red;
+}
+
+.button_container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}

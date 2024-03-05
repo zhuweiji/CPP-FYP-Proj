@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
+import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -14,7 +15,7 @@ import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
 
 import s from "./style.module.css";
 
-const resources = ["Notes", "Videos", "Exams"];
+const resources = ["Notes", "Videos", "Exams", "Contribute"];
 
 function SideBar() {
   const navigate = useNavigate();
@@ -31,7 +32,12 @@ function SideBar() {
   //   setIsCollapsed(open);
   // };
 
-  const icons = [<MenuBookIcon />, <DuoIcon />, <EditNoteIcon />];
+  const icons = [
+    <MenuBookIcon />,
+    <DuoIcon />,
+    <EditNoteIcon />,
+    <DriveFolderUploadIcon />,
+  ];
 
   function handleClick() {
     setIsCollapsed((prev) => !prev);
