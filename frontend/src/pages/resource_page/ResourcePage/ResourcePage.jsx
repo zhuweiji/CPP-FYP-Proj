@@ -12,6 +12,7 @@ import VideoResource from "../VideoResource/VideoResource";
 import ExamResourse from "../ExamResource/ExamResource";
 import s from "./style.module.css";
 import ResponsiveAppBar from "../../../components/Nav";
+import SideBar from "../SideBar/SideBar";
 
 const validResourceNames = ["notes", "videos", "exams"];
 
@@ -201,7 +202,7 @@ function ResourcePage() {
   return (
     <div>
       <ResponsiveAppBar />
-      {/* <SideBar /> */}
+      <SideBar />
       <div className={`${s.main_container}`}>
         <div className={`${s.resource_container}`}>
           <h1 className={s.section_title}>{`${

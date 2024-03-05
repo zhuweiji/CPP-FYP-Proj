@@ -24,7 +24,11 @@ from compiler_server_service.routers import (
     faq_handlers,
     open_ai_handlers,
     chat_topic_handlers,
-    chat_query_handlers
+    chat_query_handlers,
+    notes_handlers,
+    video_resource_handlers,
+    exam_paper_handlers,
+    exam_solution_handlers
 )
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
 
@@ -58,11 +62,15 @@ app.include_router(tutorial_handlers.router)
 app.include_router(user_handlers.router)
 app.include_router(notebook_handlers.router)
 app.include_router(quiz_handlers.router) # ADD
-app.include_router(quiz_question_handlers.router) # ADD
-app.include_router(faq_handlers.router) # ADD
-app.include_router(open_ai_handlers.router) # ADD
-app.include_router(chat_topic_handlers.router) # ADD
-app.include_router(chat_query_handlers.router) # ADD
+app.include_router(quiz_question_handlers.router)
+app.include_router(faq_handlers.router)
+app.include_router(open_ai_handlers.router)
+app.include_router(chat_topic_handlers.router)
+app.include_router(chat_query_handlers.router)
+app.include_router(notes_handlers.router)
+app.include_router(video_resource_handlers.router)
+app.include_router(exam_paper_handlers.router)
+app.include_router(exam_solution_handlers.router)
 
 
 origins = [
