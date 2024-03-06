@@ -1,16 +1,16 @@
 .container {
-  position: absolute;
+  position: fixed;
   z-index: 10;
   top: 70px;
   bottom: 0;
-  width: 250px;
+  width: 200px;
   box-shadow: 2px 1px 4px 1px rgba(0, 0, 0, 0.4);
   background-color: #232d3f;
   color: white;
 }
 
 .btn_container {
-  position: absolute;
+  position: fixed;
   z-index: 12;
   top: 50%;
   /* font-weight: bold;
@@ -26,7 +26,7 @@
 }
 
 .btn_expand {
-  left: 250px;
+  left: 200px;
 }
 
 /* .collapse_btn {

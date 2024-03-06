@@ -17,6 +17,7 @@ function FileUpload(props) {
     if (event.target.files && event.target.files.length === 1) {
       pickedFile = event.target.files[0]; // get the file uploaded by user
       setFile(pickedFile);
+      console.log(pickedFile);
       fileIsValid = true;
     } else {
       fileIsValid = false;
@@ -42,10 +43,13 @@ function FileUpload(props) {
         accept={validExtensions}
         onChange={pickedHandler}
       />
-      <div className={`${s.file_upload} center`}>
-        <Button variant="outlined" onClick={pickImageHandler}>
+      <div>
+        <Button variant="contained" onClick={pickImageHandler}>
           PICK FILE
         </Button>
+        <h2 className={`${s.file_name}`}>
+          {isValid ? file.name : "No file selected"}
+        </h2>
       </div>
     </div>
   );

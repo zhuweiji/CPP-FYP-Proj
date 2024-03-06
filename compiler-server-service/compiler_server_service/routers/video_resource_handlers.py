@@ -7,7 +7,7 @@ from compiler_server_service.routers.templates import POST_BODY, BasicResponse
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
 from compiler_server_service.services.video_resource_dao import VideoResourceData
 from compiler_server_service.utilities import safe_get
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Form
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -21,18 +21,13 @@ router = APIRouter(
     tags=['Video-resources'],
 )
 
-
-class POST_Create_Video_Resource(BaseModel):
-    title: str
-    description: str
-    link: str
-
 @router.post('/create', status_code=201)
-def create_video_resource(request: Request, data: POST_Create_Video_Resource):    
+def create_video_resource(title: str = Form(...), description: str = '',
+                          link: str = Form(...)):    
     new_video = VideoResourceData(
-        title=data.title, 
-        description=data.description,
-        link=data.link,
+        title=title, 
+        description=description,
+        link=link,
     ).create()
 
     if not new_video: 

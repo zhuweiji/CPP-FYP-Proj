@@ -45,7 +45,7 @@ function SideBar() {
 
   const items = () => (
     <Box
-      sx={{ width: 250 }}
+      sx={{ width: 200 }}
       role="presentation"
       // onClick={() => toggleDrawer(false)}
       // onKeyDown={() => toggleDrawer(false)}
