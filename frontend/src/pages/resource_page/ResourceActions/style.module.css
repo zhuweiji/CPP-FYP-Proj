@@ -1,0 +1,8 @@
+.main_container {
+  display: flex;
+  justify-content: right;
+}
+
+.icon {
+  cursor: pointer;
+}

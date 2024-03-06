@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 
+import RatingDisplay from "../RatingDisplay/RatingDisplay";
 import s from "./style.module.css";
 import { useHttpClient } from "../../../hooks/http-hook";
+import ResourceActions from "../ResourceActions/ResourceActions";
 
 function ExamResourse(props) {
-  const { title, examFile, examLink } = props;
-
+  const { title, examFile, examLink, rating } = props;
   const { sendRequest } = useHttpClient();
   const [fileUrl, setFileUrl] = useState();
 
@@ -34,6 +35,7 @@ function ExamResourse(props) {
     <div className={`${s.main_container}`}>
       <div>
         <h1 className={`${s.exam_title}`}>{title}</h1>
+
         <span className={`${s.exam_link}`}>
           <b>{"Download: "}</b>
         </span>
@@ -52,6 +54,8 @@ function ExamResourse(props) {
         >
           {`${title}`}
         </a>
+        <RatingDisplay rating={rating} />
+        <ResourceActions />
       </div>
     </div>
   );

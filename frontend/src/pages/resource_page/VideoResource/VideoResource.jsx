@@ -1,7 +1,8 @@
 import s from "./style.module.css";
+import RatingDisplay from "../RatingDisplay/RatingDisplay";
 
 function VideoResource(props) {
-  const { title, description, videoLink } = props;
+  const { title, description, videoLink, rating } = props;
 
   return (
     <div className={`${s.main_container}`}>
@@ -19,8 +20,14 @@ function VideoResource(props) {
         >
           {`${title}`}
         </a>
-        <p className={`${s.video_description}`}>{description}</p>
+        <p className={`${s.video_description}`}>
+          <span className={`${s.video_description}`}>
+            <b>{"Description: "}</b>
+          </span>
+          {`${description ? description : "No description found."}`}
+        </p>
       </div>
+      <RatingDisplay rating={rating} />
     </div>
   );
 }

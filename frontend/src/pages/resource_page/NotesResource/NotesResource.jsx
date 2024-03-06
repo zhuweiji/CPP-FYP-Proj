@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 
 import s from "./style.module.css";
 import { useHttpClient } from "../../../hooks/http-hook";
+import RatingDisplay from "../RatingDisplay/RatingDisplay";
 
 function NotesResource(props) {
-  const { title, description, notesFile, notesLink } = props;
+  const { title, description, notesFile, notesLink, rating } = props;
 
   const { sendRequest } = useHttpClient();
   const [fileUrl, setFileUrl] = useState();
@@ -57,6 +58,7 @@ function NotesResource(props) {
           {`${description}`}
         </p>
       </div>
+      <RatingDisplay rating={rating} />
     </div>
   );
 }

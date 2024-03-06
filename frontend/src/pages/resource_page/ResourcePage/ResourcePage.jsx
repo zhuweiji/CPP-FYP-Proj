@@ -133,6 +133,7 @@ function ResourcePage() {
                   description={note.description}
                   notesLink={note.link}
                   notesFile={note.file}
+                  rating={0}
                 />
               );
             })
@@ -152,6 +153,7 @@ function ResourcePage() {
                   title={video.title}
                   description={video.description}
                   videoLink={video.link}
+                  rating={1.1}
                 />
               );
             })
@@ -171,6 +173,7 @@ function ResourcePage() {
                   title={examPaper.title}
                   examLink={examPaper.link}
                   examFile={examPaper.file}
+                  rating={2.2}
                 />
               );
             })
@@ -191,6 +194,7 @@ function ResourcePage() {
                   title={examSolution.title}
                   examLink={examSolution.link}
                   examFile={examSolution.file}
+                  rating={4.6}
                 />
               );
             })

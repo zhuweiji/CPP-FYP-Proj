@@ -25,7 +25,7 @@ router = APIRouter(
 
 @router.post('/create', status_code=201)
 async def create_notes(title: str = Form(...), description: str = Form(...),
-                       link: str = None, file: UploadFile = None):   
+                       link: str = Form(...), file: UploadFile = None):   
 
     if file:
         if file.content_type != "application/pdf":

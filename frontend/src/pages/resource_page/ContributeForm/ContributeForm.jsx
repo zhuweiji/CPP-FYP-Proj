@@ -40,9 +40,9 @@ function ContributeForm(props) {
       formData.append("description", formState.description);
     }
 
-    if (formState.resourceType === "3" || formState.uploadType === "0") {
-      formData.append("link", formState.link);
-    } else {
+    formData.append("link", formState.link);
+
+    if (formState.resourceType !== "3") {
       formData.append("file", formState.file);
     }
 

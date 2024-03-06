@@ -22,8 +22,9 @@ router = APIRouter(
 )
 
 @router.post('/create', status_code=201)
-def create_video_resource(title: str = Form(...), description: str = '',
-                          link: str = Form(...)):    
+def create_video_resource(title: str = Form(...), link: str = Form(...),
+                          description: str = Form(...)):
+    
     new_video = VideoResourceData(
         title=title, 
         description=description,
