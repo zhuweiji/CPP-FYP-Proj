@@ -114,6 +114,10 @@ export default class UserDataService {
     return localStorage.setItem("username", value);
   }
 
+  static isLoggedIn() {
+    return !!localStorage.getItem("userid");
+  }
+
   static logout() {
     localStorage.removeItem("username");
     localStorage.removeItem("userid");

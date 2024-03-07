@@ -66,6 +66,14 @@ const dummyData = {
   ],
 };
 
+function calculateAverageRating(count, total) {
+  if (!count || !total) {
+    return 0;
+  }
+
+  return total / count;
+}
+
 function ResourcePage() {
   const navigate = useNavigate();
   const resourceType = decodeURI(useParams().resourceType);
@@ -133,7 +141,11 @@ function ResourcePage() {
                   description={note.description}
                   notesLink={note.link}
                   notesFile={note.file}
-                  rating={0}
+                  rating={calculateAverageRating(
+                    note.rating_count,
+                    note.rating_total
+                  )}
+                  id={note.id}
                 />
               );
             })
@@ -153,7 +165,11 @@ function ResourcePage() {
                   title={video.title}
                   description={video.description}
                   videoLink={video.link}
-                  rating={1.1}
+                  rating={calculateAverageRating(
+                    video.rating_count,
+                    video.rating_total
+                  )}
+                  id={video.id}
                 />
               );
             })
@@ -173,7 +189,11 @@ function ResourcePage() {
                   title={examPaper.title}
                   examLink={examPaper.link}
                   examFile={examPaper.file}
-                  rating={2.2}
+                  id={examPaper.id}
+                  rating={calculateAverageRating(
+                    examPaper.rating_count,
+                    examPaper.rating_total
+                  )}
                 />
               );
             })
@@ -194,7 +214,12 @@ function ResourcePage() {
                   title={examSolution.title}
                   examLink={examSolution.link}
                   examFile={examSolution.file}
-                  rating={4.6}
+                  rating={calculateAverageRating(
+                    examSolution.rating_count,
+                    examSolution.rating_total
+                  )}
+                  id={examSolution.id}
+                  isSolution
                 />
               );
             })

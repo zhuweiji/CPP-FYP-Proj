@@ -27,6 +27,28 @@ class ExamSolutionData:
         except Exception:
             log.exception('error on writing new object to db')
             return False  
+
+    @classmethod
+    def add_rating(cls, id, rating):
+        try:
+            log.info('updating: ' + id)
+            updated_object = cls.get_collection().find_one_and_update({'id': id}, {'$inc': {'rating_count': 1, 'rating_total': rating}})
+            log.info(str(bool(updated_object)))
+            return bool(updated_object)
+        except Exception:
+            log.exception('error on updating object on db')
+            return False    
+    
+    @classmethod
+    def update_rating_stats(cls, id: str, increment: int):
+        try:
+            log.info('updating: ' + id)
+            updated_object = cls.get_collection().find_one_and_update({'id': id}, {'$inc': {'rating_total': increment}})
+            log.info(str(bool(updated_object)))
+            return bool(updated_object)
+        except Exception:
+            log.exception('error on updating object on db')
+            return False
         
     @classmethod
     def find_all(cls):

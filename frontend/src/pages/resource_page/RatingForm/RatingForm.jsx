@@ -4,16 +4,46 @@ import Rating from "@mui/material/Rating";
 
 import s from "./style.module.css";
 import { useHttpClient } from "../../../hooks/http-hook";
+import UserDataService from "../../../services/UserService";
 
 function RatingForm(props) {
-  const { isOpen, closeForm } = props;
+  const { isOpen, closeForm, resourceId, resourceType } = props;
   const { sendRequest } = useHttpClient();
   const [rating, setRating] = useState(0);
 
   async function saveSettingsHandler(event) {
     event.preventDefault();
+    let responseData;
+    let response;
 
-    // TODO: save to DB via BE
+    try {
+      response = await sendRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/resource-ratings/`,
+        "POST",
+        JSON.stringify({
+          user_id: UserDataService.getUserId(),
+          resource_id: resourceId,
+          rating: rating,
+          resource_type: resourceType,
+        }),
+        {
+          "Content-Type": "application/json",
+        }
+      );
+
+      responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(responseData.detail);
+      }
+      alert("Rating submitted successfully");
+      closeForm();
+    } catch (err) {
+      console.log(err.message);
+      console.log("status code" + response.status);
+      alert("An error occurred. Please try again later.-");
+      closeForm();
+    }
   }
 
   return (
@@ -27,7 +57,7 @@ function RatingForm(props) {
           <div className={`${s.input_container}`}>
             <Rating
               size="large"
-              name="simple-controlled"
+              name="resource-rating"
               value={rating}
               onChange={(event, newValue) => {
                 setRating(newValue);

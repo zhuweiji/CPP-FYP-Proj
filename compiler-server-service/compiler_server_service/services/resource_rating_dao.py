@@ -47,7 +47,10 @@ class ResourceRatingData:
     #         return False
         
 
-    #CHECKPOINT
+    @classmethod
+    def update_rating(cls, id: str, new_rating: int):
+        updated_object = cls.get_collection().find_one_and_update({'id': id}, {'$set': {'rating': new_rating}})
+        return cls.from_dict(updated_object)
         
     @classmethod
     def find_all_by_resource_type(cls, resource_type: str):

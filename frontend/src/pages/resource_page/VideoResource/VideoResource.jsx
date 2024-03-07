@@ -1,8 +1,9 @@
 import s from "./style.module.css";
 import RatingDisplay from "../RatingDisplay/RatingDisplay";
+import ResourceActions from "../ResourceActions/ResourceActions";
 
 function VideoResource(props) {
-  const { title, description, videoLink, rating } = props;
+  const { title, description, videoLink, rating, id } = props;
 
   return (
     <div className={`${s.main_container}`}>
@@ -28,6 +29,7 @@ function VideoResource(props) {
         </p>
       </div>
       <RatingDisplay rating={rating} />
+      <ResourceActions resourceId={id} resourceType={"video_resource"} />
     </div>
   );
 }

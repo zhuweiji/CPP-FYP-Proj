@@ -6,7 +6,7 @@ import { useHttpClient } from "../../../hooks/http-hook";
 import ResourceActions from "../ResourceActions/ResourceActions";
 
 function ExamResourse(props) {
-  const { title, examFile, examLink, rating } = props;
+  const { title, examFile, examLink, rating, id, isSolution } = props;
   const { sendRequest } = useHttpClient();
   const [fileUrl, setFileUrl] = useState();
 
@@ -55,7 +55,10 @@ function ExamResourse(props) {
           {`${title}`}
         </a>
         <RatingDisplay rating={rating} />
-        <ResourceActions />
+        <ResourceActions
+          resourceId={id}
+          resourceType={isSolution ? "exam_solution" : "exam_paper"}
+        />
       </div>
     </div>
   );
