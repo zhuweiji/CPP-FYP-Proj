@@ -30,7 +30,8 @@ from compiler_server_service.routers import (
     video_resource_handlers,
     exam_paper_handlers,
     exam_solution_handlers,
-    resource_handlers
+    resource_handlers,
+    resource_rating_handlers
 )
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
 
@@ -74,6 +75,7 @@ app.include_router(video_resource_handlers.router)
 app.include_router(exam_paper_handlers.router)
 app.include_router(exam_solution_handlers.router)
 app.include_router(resource_handlers.router)
+app.include_router(resource_rating_handlers.router)
 
 
 origins = [

@@ -22,6 +22,8 @@ class NotesData:
     description: str
     link: str
     file: str
+    rating_count: int = 0
+    rating_total: int = 0
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     
     table_name: ClassVar[str] = 'Notes'
@@ -34,6 +36,34 @@ class NotesData:
             log.exception('error on writing new object to db')
             return False  
         
+    # def update(self):
+    #     """returns true if all items were updated successfully, false otherwise"""
+    #     # update all declared attribute_names and their values for this object (not including weird python auto defined attributes)
+    #     try:
+    #         result = self.get_collection().replace_one({'id':self.id}, asdict(self))   
+    #         if result.modified_count == 0: 
+    #             return False
+    #         elif result.modified_count == 1: 
+    #             return True
+    #         else:
+    #             log.error('more than one item was updated when only one object was modified')
+    #             return True
+                
+    #     except Exception:
+    #         log.exception('error on updating user object to db')
+    #         return False
+        
+    @classmethod
+    def add_rating(cls, id, rating):
+        try:
+            log.info('updating: ' + id)
+            cls.get_collection().find_one_and_update({'id': id}, {'$inc': {'rating_count': 1, 'rating_total': rating}})
+            log.info('updating success!')
+            return True
+        except Exception:
+            log.exception('error on updating object on db')
+            return False
+
     @classmethod
     def find_all(cls):
         notes = cls.get_collection().find({}, {'_id': 0}) # exclude _id from result

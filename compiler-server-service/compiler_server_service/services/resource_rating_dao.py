@@ -5,17 +5,21 @@ from dataclasses import asdict, dataclass, field
 from typing import ClassVar, List, Union
 
 from compiler_server_service.services.db_dao import DB_DAO
+from compiler_server_service.services.resource_dao import ResourceData
 
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
+
 @dataclass
-class FaqData:
-    question: str
-    answer: str
+class ResourceRatingData:
+    user_id: str
+    resource_id: str
+    rating: int
+    resource_type: str # notes, exam_paper, exam_solution, video_resource
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     
-    table_name: ClassVar[str] = 'Faqs'
+    table_name: ClassVar[str] = 'ResourceRatings'
     
     def create(self):
         try:
@@ -41,28 +45,19 @@ class FaqData:
     #     except Exception:
     #         log.exception('error on updating user object to db')
     #         return False
-            
-    # def get_db_values(self):
-    #     """Repopulates the attributes of this object with its values in the db"""
-    #     found_object = self.get_collection().find_one({'id':self.id})
-    #     return UserData.from_dict(found_object)        
+        
+
+    #CHECKPOINT
         
     @classmethod
-    def find_all(cls):
-        faqs = cls.get_collection().find({}, {'_id': 0}) # exclude _id and questions from result
-        return faqs  
+    def find_all_by_resource_type(cls, resource_type: str):
+        res = cls.get_collection().find({'resource_type': resource_type}, {'_id': 0})
+        return res
     
     @classmethod
-    def find_by_id(cls, id):
-        found_object = cls.get_collection().find_one({'id': id})
-        return FaqData.from_dict(found_object)        
-    
-    
-    @classmethod
-    def find_by_question(cls, question:str):
-        found_object = cls.get_collection().find_one({'question': question})
-        return FaqData.from_dict(found_object)        
-    
+    def find_by_keys(cls, user_id: str, resource_id: str):
+        found_object = cls.get_collection().find_one({'user_id': user_id, 'resource_id': resource_id})
+        return cls.from_dict(found_object)    
     
     @classmethod
     def get_collection(cls):

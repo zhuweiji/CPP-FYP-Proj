@@ -14,6 +14,8 @@ class ExamSolutionData:
     title: str
     link: str
     file: str
+    rating_count: int = 0
+    rating_total: int = 0
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     
     table_name: ClassVar[str] = 'ExamSolutions'

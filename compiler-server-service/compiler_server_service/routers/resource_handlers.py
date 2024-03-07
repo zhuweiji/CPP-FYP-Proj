@@ -1,6 +1,7 @@
 import logging
 
 from compiler_server_service.services.resource_dao import ResourceData
+from compiler_server_service.services.db_dao import DB_DAO
 from fastapi import APIRouter, HTTPException, Request
 
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
@@ -17,6 +18,8 @@ router = APIRouter(
 def get_all_resources(request: Request):
     resources = ResourceData.find_all()
     
+    if not resources:
+        raise HTTPException(status_code=500, detail='error on object retrieval')
     # Convert Cursor object to a list
     notes_list = [note for note in resources['notes']]
     exam_papers_list = [exam_paper for exam_paper in resources['exam_papers']]
