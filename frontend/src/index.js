@@ -23,6 +23,7 @@ import QuizBrowse from "./pages/quiz/QuizBrowse/QuizBrowse.jsx";
 import FaqBrowse from "./pages/faq/FaqBrowse/FaqBrowse.jsx";
 import Chatbot from "./pages/chatbot/Chatbot/Chatbot.jsx";
 import ResourcePage from "./pages/resource_page/ResourcePage/ResourcePage.jsx";
+import CommentBrowse from "./pages/resource_comment/CommentBrowse/CommentBrowse.jsx";
 
 const router = createBrowserRouter([
   {
@@ -89,6 +90,10 @@ const router = createBrowserRouter([
   {
     path: "chat/",
     element: <Chatbot />,
+  },
+  {
+    path: "resource/:resourceType/comment/:resourceId",
+    element: <CommentBrowse />,
   },
   {
     path: "resource/:resourceType",

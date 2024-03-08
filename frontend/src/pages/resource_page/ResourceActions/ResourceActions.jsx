@@ -6,9 +6,11 @@ import RatingForm from "../RatingForm/RatingForm";
 import { useState } from "react";
 
 import UserDataService from "../../../services/UserService";
+import { useNavigate } from "react-router-dom";
 
 function ResourceActions(props) {
   const { resourceId, resourceType } = props;
+  const navigate = useNavigate();
 
   const [ratingFormIsOpen, setRatingFormIsOpen] = useState(false);
 
@@ -34,6 +36,9 @@ function ResourceActions(props) {
         className={`${s.icon}`}
       />
       <AddCommentIcon
+        onClick={() => {
+          navigate(`./comment/${resourceId}`);
+        }}
         titleAccess="leave a comment"
         fontSize="medium"
         className={`${s.icon}`}

@@ -6,7 +6,15 @@ import RatingDisplay from "../RatingDisplay/RatingDisplay";
 import ResourceActions from "../ResourceActions/ResourceActions";
 
 function NotesResource(props) {
-  const { title, description, notesFile, notesLink, rating, id } = props;
+  const {
+    title,
+    description,
+    notesFile,
+    notesLink,
+    rating,
+    id,
+    displayActions,
+  } = props;
 
   const { sendRequest } = useHttpClient();
   const [fileUrl, setFileUrl] = useState();
@@ -59,8 +67,11 @@ function NotesResource(props) {
           {`${description}`}
         </p>
       </div>
+
       <RatingDisplay rating={rating} />
-      <ResourceActions resourceId={id} resourceType={"notes"} />
+      {displayActions && (
+        <ResourceActions resourceId={id} resourceType={"notes"} />
+      )}
     </div>
   );
 }
