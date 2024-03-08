@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 import s from "./style.module.css";
 import { useHttpClient } from "../../../hooks/http-hook";
 
@@ -10,11 +8,13 @@ function Comment(props) {
 
   return (
     <div className={`${s.main_container}`}>
-      <div>
+      {/* <div className={`${s.inner_container}`}>
         <h1 className={`${s.user_name}`}>{userName}</h1>
-        <h2 className={`${s.time_stamp}`}>{timeStamp}</h2>
-        <p className={`${s.text}`}>{text}</p>
-      </div>
+        <h1 className={`${s.time_stamp}`}>{timeStamp}</h1>
+      </div> */}
+      <span className={`${s.user_name}`}>{userName}</span>
+      <span className={`${s.time_stamp}`}>{timeStamp}</span>
+      <p className={`${s.text}`}>{text}</p>
     </div>
   );
 }

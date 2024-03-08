@@ -64,7 +64,7 @@ const ResponsiveAppBar = (props) => {
   const handleCloseUserMenu = (setting) => {
     if (setting === "Logout") {
       UserService.logout();
-      navigate(0);
+      navigate("/login");
     }
     setAnchorElUser(null);
   };

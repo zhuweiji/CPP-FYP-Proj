@@ -3,7 +3,7 @@ import RatingDisplay from "../RatingDisplay/RatingDisplay";
 import ResourceActions from "../ResourceActions/ResourceActions";
 
 function VideoResource(props) {
-  const { title, description, videoLink, rating, id } = props;
+  const { title, description, videoLink, rating, id, displayActions } = props;
 
   return (
     <div className={`${s.main_container}`}>
@@ -29,7 +29,9 @@ function VideoResource(props) {
         </p>
       </div>
       <RatingDisplay rating={rating} />
-      <ResourceActions resourceId={id} resourceType={"video_resource"} />
+      {displayActions && (
+        <ResourceActions resourceId={id} resourceType={"video_resource"} />
+      )}
     </div>
   );
 }

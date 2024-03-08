@@ -1,8 +1,9 @@
 import inspect
 import logging
 import uuid
+from datetime import datetime
 from dataclasses import asdict, dataclass, field
-from typing import ClassVar, List, Union
+from typing import ClassVar
 
 from compiler_server_service.services.db_dao import DB_DAO
 
@@ -11,23 +12,17 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 
-# @dataclass
-# class CompletedTutorial__OnlyId:
-#     """abstracted tutorial object that only contains the relevant ids to be searched for"""
-#     topic_id: int
-#     tutorial_id: int
-
 @dataclass
-class NotesData:
-    title: str
-    description: str
-    link: str
-    file: str
-    rating_count: int = 0
-    rating_total: int = 0
+class ResourceCommentData:
+    user_id: str
+    user_name: str
+    resource_id: str
+    text: str
+    resource_type: str  # notes, exam_paper, exam_solution, video_resource
+    time_stamp: str = field(default_factory=lambda: str(datetime.now()))
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
 
-    table_name: ClassVar[str] = 'Notes'
+    table_name: ClassVar[str] = 'ResourceComments'
 
     def create(self):
         try:
@@ -54,39 +49,21 @@ class NotesData:
     #         log.exception('error on updating user object to db')
     #         return False
 
-    @classmethod
-    def update_rating_stats(cls, id: str, increment: int):
-        try:
-            log.info('updating: ' + id)
-            updated_object = cls.get_collection().find_one_and_update(
-                {'id': id}, {'$inc': {'rating_total': increment}})
-            log.info(str(bool(updated_object)))
-            return bool(updated_object)
-        except Exception:
-            log.exception('error on updating object on db')
-            return False
+    # @classmethod
+    # def update_rating(cls, id: str, new_rating: int):
+    #     updated_object = cls.get_collection().find_one_and_update({'id': id}, {'$set': {'rating': new_rating}})
+    #     return cls.from_dict(updated_object)
 
     @classmethod
-    def add_rating(cls, id: str, rating: int):
-        try:
-            log.info('updating: ' + id)
-            updated_object = cls.get_collection().find_one_and_update(
-                {'id': id}, {'$inc': {'rating_count': 1, 'rating_total': rating}})
-            log.info(str(bool(updated_object)))
-            return bool(updated_object)
-        except Exception:
-            log.exception('error on updating object on db')
-            return False
+    def find_all_by_resource_id(cls, resource_id: str):
+        res = cls.get_collection().find(
+            {'resource_id': resource_id}, {'_id': 0})
+        return res
 
-    @classmethod
-    def find_all(cls):
-        notes = cls.get_collection().find({}, {'_id': 0})  # exclude _id from result
-        return notes
-
-    @classmethod
-    def find_by_id(cls, id):
-        found_object = cls.get_collection().find_one({'id': id})
-        return NotesData.from_dict(found_object)
+    # @classmethod
+    # def find_by_keys(cls, user_id: str, resource_id: str):
+    #     found_object = cls.get_collection().find_one({'user_id': user_id, 'resource_id': resource_id})
+    #     return cls.from_dict(found_object)
 
     @classmethod
     def get_collection(cls):

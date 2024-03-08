@@ -38,6 +38,7 @@ function RatingForm(props) {
       }
       alert("Rating submitted successfully");
       closeForm();
+      window.location.reload(false);
     } catch (err) {
       console.log(err.message);
       console.log("status code" + response.status);

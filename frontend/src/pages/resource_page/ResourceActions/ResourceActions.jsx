@@ -37,6 +37,7 @@ function ResourceActions(props) {
       />
       <AddCommentIcon
         onClick={() => {
+          localStorage.setItem("cppFyp-resource-type", resourceType);
           navigate(`./comment/${resourceId}`);
         }}
         titleAccess="leave a comment"

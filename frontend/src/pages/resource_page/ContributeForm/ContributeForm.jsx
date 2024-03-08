@@ -5,6 +5,7 @@ import { Button } from "@mui/material";
 import s from "./style.module.css";
 import { useHttpClient } from "../../../hooks/http-hook";
 import FileUpload from "../../../components/FileUpload/FileUpload";
+import UserDataService from "../../../services/UserService";
 
 const resourceTypes = ["Notes", "Exam Paper", "Exam Solution", "Video"];
 const resourcePaths = [
@@ -30,6 +31,10 @@ function ContributeForm(props) {
   });
 
   async function formSubmitHandler(event) {
+    if (!UserDataService.isLoggedIn()) {
+      alert("You must log in to contribute!");
+      return;
+    }
     setErrorMessage("");
     event.preventDefault();
 

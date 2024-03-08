@@ -109,6 +109,7 @@ function ResourcePage() {
         console.log(err.message);
       }
     };
+    localStorage.removeItem("cppFyp-resource-type");
     fetchResources();
   }, [sendRequest]);
 
@@ -146,6 +147,7 @@ function ResourcePage() {
                     note.rating_total
                   )}
                   id={note.id}
+                  displayActions
                 />
               );
             })
@@ -170,6 +172,7 @@ function ResourcePage() {
                     video.rating_total
                   )}
                   id={video.id}
+                  displayActions
                 />
               );
             })
@@ -194,6 +197,7 @@ function ResourcePage() {
                     examPaper.rating_count,
                     examPaper.rating_total
                   )}
+                  displayActions
                 />
               );
             })
@@ -220,6 +224,7 @@ function ResourcePage() {
                   )}
                   id={examSolution.id}
                   isSolution
+                  displayActions
                 />
               );
             })
