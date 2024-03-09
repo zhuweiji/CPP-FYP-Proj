@@ -9,13 +9,6 @@ from compiler_server_service.services.db_dao import DB_DAO
 logging.basicConfig(format='%(name)s-%(levelname)s|%(lineno)d:  %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
-
-# @dataclass
-# class CompletedTutorial__OnlyId:
-#     """abstracted tutorial object that only contains the relevant ids to be searched for"""
-#     topic_id: int
-#     tutorial_id: int
-
 @dataclass
 class FaqData:
     question: str

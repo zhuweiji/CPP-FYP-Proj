@@ -1,0 +1,55 @@
+.container {
+  padding: 30px;
+  margin: 20px 10px 0 10px;
+  /* box-shadow: 2px 1px 4px 1px rgba(0, 0, 0, 0.4);
+    border-radius: 15px; */
+
+  /* background-color: #0A2647;
+      color: white; */
+}
+
+.section_title {
+  margin-bottom: 30px;
+  font-size: 1.7rem;
+  font-family: "Merriweather", serif;
+  font-weight: bold;
+}
+
+.input_container {
+  margin: 25px 0;
+  /* display: flex;
+  justify-content: center; */
+  /* border: 1px solid purple; */
+}
+
+.form_text_area {
+  width: 99%;
+  border-radius: 5px;
+  font-family: "Roboto", sans-serif;
+  /* border: none; */
+  /* background-color: inherit; */
+}
+
+.btn_container {
+  display: flex;
+  justify-content: right;
+}
+
+@media only screen and (min-width: 1px) {
+  /* For phones: */
+  .container {
+    width: 100%;
+  }
+}
+@media only screen and (min-width: 600px) {
+  /* For tablets: */
+  .container {
+    width: 66%;
+  }
+}
+@media only screen and (min-width: 768px) {
+  /* For desktop: */
+  .container {
+    width: 50%;
+  }
+}

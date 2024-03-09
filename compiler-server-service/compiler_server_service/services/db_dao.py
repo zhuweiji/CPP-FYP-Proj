@@ -21,10 +21,16 @@ class MongoDAO:
     # __CONNECTION_STRING = os.environ['NF_MONGODB_MONGO_SRV_ADMIN']
     __CONNECTION_STRING = "mongodb+srv://purifish:Rdsprwb7658@cluster1.dejl43o.mongodb.net/fyp?retryWrites=true&w=majority"
     assert __CONNECTION_STRING, "Mongo DB connection URI must be provided"
+    db_client = MongoClient(__CONNECTION_STRING, tlsCAFile=certifi.where())
+
+    @classmethod
+    def get_client(cls):
+        return cls.db_client
     
     @classmethod
     def get_database(cls):
-        return MongoClient(cls.__CONNECTION_STRING, tlsCAFile=certifi.where()).Compiler_Server_Service        
+        return cls.db_client.Compiler_Server_Service
+        # return MongoClient(cls.__CONNECTION_STRING, tlsCAFile=certifi.where()).Compiler_Server_Service        
 
 
 class DB_DAO(MongoDAO):

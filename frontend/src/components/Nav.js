@@ -64,7 +64,7 @@ const ResponsiveAppBar = (props) => {
   const handleCloseUserMenu = (setting) => {
     if (setting === "Logout") {
       UserService.logout();
-      navigate(0);
+      navigate("/login");
     }
     setAnchorElUser(null);
   };
@@ -77,6 +77,7 @@ const ResponsiveAppBar = (props) => {
         { page: "Quizzes", link: "/quizzes" },
         { page: "FAQs", link: "/faqs" },
         { page: "Chat", link: "/chat" },
+        { page: "Resources", link: "/resource/notes" },
 
         // { 'page': 'Notebook', 'link': '/notebook' }
       ]
@@ -85,7 +86,7 @@ const ResponsiveAppBar = (props) => {
   return (
     <AppBar
       position={appBarIsFixed ? "fixed" : "sticky"}
-      sx={{ bgcolor: indigo[900] }}
+      sx={{ bgcolor: indigo[900], height: "70px" }}
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
