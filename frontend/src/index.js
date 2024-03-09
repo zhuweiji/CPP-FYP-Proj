@@ -24,6 +24,7 @@ import FaqBrowse from "./pages/faq/FaqBrowse/FaqBrowse.jsx";
 import Chatbot from "./pages/chatbot/Chatbot/Chatbot.jsx";
 import ResourcePage from "./pages/resource_page/ResourcePage/ResourcePage.jsx";
 import CommentBrowse from "./pages/resource_comment/CommentBrowse/CommentBrowse.jsx";
+import QuizForm from "./pages/quiz/QuizForm/QuizForm.jsx";
 
 const router = createBrowserRouter([
   {
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
   {
     path: "quizzes/quiz/:quizId",
     element: <Quiz />,
+  },
+  {
+    path: "quizzes/create/",
+    element: <QuizForm />,
   },
   {
     path: "quizzes/",

@@ -1,0 +1,57 @@
+.container {
+  padding: 30px;
+  margin: 20px 10px 0 10px;
+  border: 1px solid black;
+}
+
+.section_title {
+  margin-bottom: 30px;
+  font-size: 1.7rem;
+  font-family: "Merriweather", serif;
+  font-weight: bold;
+}
+
+.title_container {
+  /* border: 1px solid purple; */
+  padding: 5px 20px 20px;
+  margin-bottom: 20px;
+  box-shadow: 2px 1px 4px 1px rgba(0, 0, 0, 0.4); /*so that the header appears above the rest*/
+  border-radius: 15px;
+  background-color: white;
+}
+
+.label {
+  margin-right: 5px;
+  font-family: "Merriweather", serif;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.form_input {
+  /* border-radius: 5px; */
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid grey;
+  outline: none;
+  /* border-bottom: 1px solid green; */
+  font-family: "Roboto", sans-serif;
+}
+
+@media only screen and (max-width: 599px) {
+  /* For phones: */
+  .container {
+    width: 100%;
+  }
+}
+@media only screen and (min-width: 600px) {
+  /* For tablets: */
+  .container {
+    width: 66%;
+  }
+}
+@media only screen and (min-width: 768px) {
+  /* For desktop: */
+  .container {
+    width: 50%;
+  }
+}
