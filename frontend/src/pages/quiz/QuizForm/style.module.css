@@ -37,6 +37,26 @@
   font-family: "Roboto", sans-serif;
 }
 
+.add_qn_btn {
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px dotted gray;
+  text-align: center;
+  font-size: 1.5rem;
+  font-family: "Merriweather", serif;
+  font-weight: bold;
+}
+
+.add_qn_btn:hover {
+  background-color: #e3e1d9; /* Darkened background color on hover */
+}
+
+.submit_btn_container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
 @media only screen and (max-width: 599px) {
   /* For phones: */
   .container {

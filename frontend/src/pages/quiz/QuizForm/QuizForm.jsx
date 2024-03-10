@@ -7,6 +7,7 @@ import { useHttpClient } from "../../../hooks/http-hook";
 import LoadingSpinner from "../../../components/LoadingSpinner/LoadingSpinner";
 import ResponsiveAppBar from "../../../components/Nav";
 import QuizQuestionForm from "../QuizQuestionForm/QuizQuestionForm";
+import { Button } from "@mui/material";
 // import QuizResource from "../QuizResource/QuizResource";
 // import PageNotFound from "../../pages/PageNotFound/PageNotFound";
 
@@ -25,20 +26,10 @@ function QuizForm() {
     },
   ]);
 
-  // if (courseId === "INVALID") {
-  //   return <PageNotFound />;
-  // }
-
-  if (!questions) {
-    return (
-      <div className="center">
-        <LoadingSpinner asOverlay />
-      </div>
-    );
-  }
-
   async function submitQuiz(event) {
     event.preventDefault();
+
+    console.log(questions);
   }
 
   return (
@@ -69,18 +60,40 @@ function QuizForm() {
             </div>
             {questions.map((qn, idx) => {
               return (
-                // <div key={`qn-${idx}`}>Test</div>
                 <QuizQuestionForm
+                  questionIdx={idx}
                   key={`qn-${idx}`}
                   setQuestions={setQuestions}
                 />
-                // <Faq
-                //   key={`qn-${idx}`}
-                //   question={qn.question}
-                //   answer={qn.answer}
-                // />
               );
             })}
+            <div
+              title="add another question"
+              className={`${s.add_qn_btn}`}
+              onClick={() => {
+                setQuestions((prev) => {
+                  return [
+                    ...prev,
+                    {
+                      title: "",
+                      options: [],
+                      solution: [],
+                      score: 1,
+                      questionType: "radio",
+                      imageLink: "",
+                      imageFile: null,
+                    },
+                  ];
+                });
+              }}
+            >
+              +
+            </div>
+            <div className={`${s.submit_btn_container}`}>
+              <Button type="submit" variant="contained" color="success">
+                SUBMIT
+              </Button>
+            </div>
           </form>
         </div>
       </div>
