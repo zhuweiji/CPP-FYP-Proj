@@ -38,6 +38,15 @@
   font-family: "Roboto", sans-serif;
 }
 
+.question_input {
+  border: none;
+  border-bottom: 1px solid black;
+  outline: none;
+  background-color: inherit;
+  font-family: "Roboto", sans-serif;
+  min-width: 300px;
+}
+
 .score_input {
   max-width: 70px;
 }

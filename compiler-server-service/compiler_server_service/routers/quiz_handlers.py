@@ -116,7 +116,7 @@ async def create_whole_quiz(
                                 status_code=429, detail='Invalid file type!')
 
                         contents = await file.read()
-                        folder_path = "./uploads"
+                        folder_path = "./uploads/images"
                         os.makedirs(folder_path, exist_ok=True)
 
                         new_file_name = str(uuid.uuid4()) + file.filename
@@ -129,7 +129,7 @@ async def create_whole_quiz(
                         solution=question['solution'],
                         score=int(question['score']),
                         questionType=question['questionType'],
-                        image="uploads/" +
+                        image="uploads/images/" +
                         new_file_name if question['hasFile'] else "",
                         quiz=new_quiz.id).create()
                     if not new_question:

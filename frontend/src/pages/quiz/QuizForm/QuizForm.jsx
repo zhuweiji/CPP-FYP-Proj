@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import s from "./style.module.css";
 import { useHttpClient } from "../../../hooks/http-hook";
@@ -15,55 +15,52 @@ import { json } from "react-router-dom";
 function QuizForm() {
   const { sendRequest } = useHttpClient();
   const [quizTitle, setQuizTitle] = useState("");
-  const [questions, setQuestions] = useState([
-    {},
-    // {
-    //   title: "",
-    //   options: [],
-    //   solution: [],
-    //   score: "1",
-    //   questionType: "0",
-    //   imageLink: "",
-    //   imageFile: null,
-    // },
-  ]);
+  const [questions, setQuestions] = useState([{}]);
 
-  async function submitQuiz(event) {
-    event.preventDefault();
+  const validateInputs = useCallback(() => {
+    if (!quizTitle) {
+      return "Quiz Title is empty";
+    }
+
+    for (let i = 0; i < questions.length; i++) {
+      if (!questions[i].title) {
+        return `Question ${i + 1} is empty`;
+      } else if (questions[i].options.length < 2) {
+        return `Question ${i + 1} has only 1 option`;
+      } else if (questions[i].solution.length === 0) {
+        return `Question ${i + 1} has no solution`;
+      }
+
+      for (const option of questions[i].options) {
+        if (!option) {
+          return `Question ${i + 1} has one or more blank options`;
+        }
+      }
+
+      for (const sln of questions[i].solution) {
+        if (sln < 0 || sln >= questions[i].options.length) {
+          return `Question ${i + 1} has one or more invalid solutions`;
+        }
+      }
+
+      return "";
+    }
+  }, [questions, quizTitle]);
+
+  async function submitQuiz() {
+    // event.preventDefault();
+    const message = validateInputs();
+    if (message) {
+      alert(message);
+      return;
+    }
 
     const formData = new FormData();
     formData.append("title", quizTitle);
 
-    // const questionTitleList = [];
-    // const optionsList = [];
-    // const questionTypeList = [];
-    // const scoreList = [];
-    // const solutionList = [];
-    // const fileList = [];
-    // const hasFileList = [];
-
-    // for (const question of questions) {
-    //   questionTitleList.push(question.title);
-    //   optionsList.push(question.options);
-    //   questionTypeList.push(
-    //     question.questionType === "0" ? "radio" : "checkbox"
-    //   );
-    //   scoreList.push(question.score);
-    //   solutionList.push(question.solution);
-
-    //   if (question.imageFile) {
-    //     formData.append("file_list", question.imageFile);
-    //     fileList.push(question.imageFile);
-    //     hasFileList.push(true);
-    //   } else {
-    //     hasFileList.push(false);
-    //   }
-    // }
-
     const questionsData = questions.map((qn) => {
       if (qn.imageFile) {
         qn.hasFile = true;
-        // fileList.push(qn.imageFile);
         formData.append("file_list", qn.imageFile);
       } else {
         qn.hasFile = false;
@@ -73,13 +70,6 @@ function QuizForm() {
       return qn;
     });
     formData.append("questions_data", JSON.stringify(questionsData));
-
-    // formData.append("question_title_list", JSON.stringify(questionTitleList));
-    // formData.append("options_list", JSON.stringify(optionsList));
-    // formData.append("question_type_list", JSON.stringify(questionTypeList));
-    // formData.append("score_list", JSON.stringify(scoreList));
-    // formData.append("solution_list", JSON.stringify(solutionList));
-    // formData.append("has_file_list", JSON.stringify(hasFileList));
 
     try {
       const response = await sendRequest(
@@ -91,8 +81,8 @@ function QuizForm() {
       if (!response.ok) {
         throw new Error(responseData.detail);
       } else {
-        console.log("done done");
-        // alert("Your contribution has been uploaded! Thank you!");
+        alert("Your contribution has been uploaded! Thank you!");
+        window.location.reload(false); // reload
         // setFormState({
         //   title: "",
         //   description: "",
@@ -103,7 +93,9 @@ function QuizForm() {
         // });
       }
     } catch (err) {
-      console.log(err.message);
+      // console.log(err.message);
+      alert(err.message);
+      window.location.reload(false); // reload
     }
   }
 
@@ -165,7 +157,7 @@ function QuizForm() {
               +
             </div>
             <div className={`${s.submit_btn_container}`}>
-              <Button type="submit" variant="contained" color="success">
+              <Button variant="contained" color="success" onClick={submitQuiz}>
                 SUBMIT
               </Button>
             </div>

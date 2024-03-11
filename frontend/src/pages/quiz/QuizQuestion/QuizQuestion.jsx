@@ -21,7 +21,7 @@ function QuizQuestion(props) {
   // const { sendRequest } = useHttpClient();
 
   // const [imageUrl, setImageUrl] = useState();
-  const [imageUrl, setImageUrl] = useState(imageSrc);
+  // const [imageUrl, setImageUrl] = useState(imageSrc);
 
   /* Fetch image associated with the quiz question */
   // useEffect(() => {
@@ -80,9 +80,17 @@ function QuizQuestion(props) {
     >
       <div className={s.container}>
         <h2 className={s.question}>{`${qnNumber}. ${question}`}</h2>
-        {imageUrl && (
+        {imageSrc && (
           <div>
-            <img src={imageUrl} alt={`quiz question`} className={`${s.img}`} />
+            <img
+              src={
+                imageSrc.substring(0, 4) === "http"
+                  ? imageSrc
+                  : `${process.env.REACT_APP_BACKEND_URL}/${imageSrc}`
+              }
+              alt={`quiz question`}
+              className={`${s.img}`}
+            />
           </div>
         )}
         {type === "radio" ? (

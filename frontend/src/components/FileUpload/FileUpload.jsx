@@ -17,7 +17,7 @@ function FileUpload(props) {
     if (event.target.files && event.target.files.length === 1) {
       pickedFile = event.target.files[0]; // get the file uploaded by user
       setFile(pickedFile);
-      console.log(pickedFile);
+      // console.log(pickedFile);
       fileIsValid = true;
     } else {
       fileIsValid = false;

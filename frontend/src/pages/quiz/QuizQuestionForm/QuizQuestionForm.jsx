@@ -20,8 +20,8 @@ function QuizQuestionForm(props) {
   const { sendRequest } = useHttpClient();
   const [formState, setFormState] = useState({
     title: "",
-    options: [""],
-    solution: [],
+    options: ["", ""],
+    solution: [0],
     score: "1",
     questionType: "0", // radio
     imageLink: "",
@@ -36,7 +36,7 @@ function QuizQuestionForm(props) {
     setFormState((prev) => {
       return {
         ...prev,
-        solution: [],
+        solution: formState.questionType === "0" ? [0] : [],
       };
     });
   }, [formState.questionType]);
@@ -100,25 +100,30 @@ function QuizQuestionForm(props) {
           }}
         />
 
-        <div
-          className={`${s.icon_container}`}
-          onClick={() => {
-            setFormState((prev) => {
-              const newOptions = prev.options.filter((_, currIdx) => {
-                return currIdx !== idx;
-              });
-              return {
-                ...prev,
-                options: newOptions,
-                solution: prev.solution.filter((item) => {
-                  return item < newOptions.length;
-                }),
-              };
-            });
-          }}
-        >
-          <DeleteIcon />
-        </div>
+        {
+          // only allow delete if more than 2 options
+          formState.options.length > 2 && (
+            <div
+              className={`${s.icon_container}`}
+              onClick={() => {
+                setFormState((prev) => {
+                  const newOptions = prev.options.filter((_, currIdx) => {
+                    return currIdx !== idx;
+                  });
+                  return {
+                    ...prev,
+                    options: newOptions,
+                    solution: prev.solution.filter((item) => {
+                      return item < newOptions.length;
+                    }),
+                  };
+                });
+              }}
+            >
+              <DeleteIcon />
+            </div>
+          )
+        }
       </div>
     );
   });
@@ -132,7 +137,7 @@ function QuizQuestionForm(props) {
           id="title"
           type="text"
           placeholder="Question"
-          className={`${s.form_input}`}
+          className={`${s.question_input}`}
           value={formState.title}
           onChange={(event) => {
             setFormState((prev) => {
@@ -182,6 +187,7 @@ function QuizQuestionForm(props) {
         {formState.questionType === "0" ? (
           <FormControl>
             <RadioGroup
+              value={`${formState.solution[0]}`}
               onChange={(e) => {
                 setFormState((prev) => {
                   return {
