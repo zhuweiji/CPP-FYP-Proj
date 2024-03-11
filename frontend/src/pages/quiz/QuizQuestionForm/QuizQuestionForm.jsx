@@ -13,15 +13,6 @@ import { useHttpClient } from "../../../hooks/http-hook";
 import FileUpload from "../../../components/FileUpload/FileUpload";
 
 const questionTypes = ["radio", "checkbox"];
-const resourcePaths = [
-  "notes",
-  "exam-papers",
-  "exam-solutions",
-  "video-resources",
-];
-const uploadTypes = ["Link", "File"];
-
-// CHECKPOINT
 
 function QuizQuestionForm(props) {
   const { setQuestions, questionIdx } = props;
@@ -31,7 +22,7 @@ function QuizQuestionForm(props) {
     title: "",
     options: [""],
     solution: [],
-    score: 1,
+    score: "1",
     questionType: "0", // radio
     imageLink: "",
     imageFile: null,
@@ -55,15 +46,10 @@ function QuizQuestionForm(props) {
       <div key={`option-${idx}`} className={s.option_container}>
         {formState.questionType === "0" ? (
           // radio
-          <FormControlLabel
-            value={idx}
-            control={<Radio />}
-            // label={`${option}`}
-          />
+          <FormControlLabel value={idx} control={<Radio />} />
         ) : (
           // checkbox
           <FormControlLabel
-            // label={`${option}`}
             control={
               <Checkbox
                 id={`option-${idx}`}
@@ -111,17 +97,10 @@ function QuizQuestionForm(props) {
                 }),
               };
             });
-            // setOptions((prev) => {
-            //   const newOptions = [...prev];
-            //   newOptions[idx] = event.target.value;
-            //   return newOptions;
-            // });
           }}
         />
 
         <div
-          // CHECKPOINT: update solution when an option is removed
-          // suggest: reset solution when option is removed?
           className={`${s.icon_container}`}
           onClick={() => {
             setFormState((prev) => {
@@ -182,8 +161,8 @@ function QuizQuestionForm(props) {
               };
             })
           }
-          // defaultValue={0}
-          value={formState.questionType}
+          defaultValue={"0"}
+          // value={formState.questionType}
         >
           {questionTypes.map((questionType, idx) => {
             return (
@@ -247,7 +226,7 @@ function QuizQuestionForm(props) {
           id="score"
           type="number"
           min={1}
-          max={8}
+          max={10}
           placeholder="Score"
           className={`${s.form_input} ${s.score_input}`}
           value={formState.score}

@@ -60,7 +60,8 @@ function ContributeForm(props) {
       );
       const responseData = await response.json();
       if (!response.ok) {
-        console.log(responseData.message);
+        throw new Error(responseData.detail);
+        // console.log(responseData.message);
       } else {
         alert("Your contribution has been uploaded! Thank you!");
         setFormState({
