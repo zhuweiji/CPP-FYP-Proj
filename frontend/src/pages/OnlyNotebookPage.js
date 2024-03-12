@@ -37,29 +37,6 @@ export default function OnlyNotebookPage() {
     navigateToTutorialIfNoNotebook();
   }, []);
 
-  // not working because editors rerender causing all the data on the models to be lost on each state change
-  // let lastScroll = 0;
-  // const [showTutorialStickyButton, setShowTutorialStickyButton] = useState(true);
-
-  // const handleTutorialStickyButton = () => {
-  //     let scrollY = window.scrollY;
-  //     if (scrollY > lastScroll) { // scroll down
-  //         setShowTutorialStickyButton(false);
-  //     } else if (scrollY < lastScroll) { //scroll up
-  //         setShowTutorialStickyButton(true);
-  //     } // else was horizontal scroll
-  //     lastScroll = scrollY <= 0 ? 0 : scrollY; // For Mobile or negative scrolling
-  // }
-
-  // useEffect(() => {
-  //   window.addEventListener('scroll', handleTutorialStickyButton);
-
-  //   return () => {
-  //     window.removeEventListener('scroll', handleTutorialStickyButton);
-  //   }
-
-  // }, [])
-
   return (
     <>
       <TopNavBar></TopNavBar>

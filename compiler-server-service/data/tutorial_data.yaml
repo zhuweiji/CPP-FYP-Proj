@@ -137,7 +137,7 @@ topics:
       - name: Understanding The Project
         id: 1
         no_tutorial: True
-      - name: Building Some Classes With Aggregation, Composition And Inheritance
+      - name: Building the Classes
         id: 2
         no_tutorial: True
       - name: Using Upcasting And Downcasting
