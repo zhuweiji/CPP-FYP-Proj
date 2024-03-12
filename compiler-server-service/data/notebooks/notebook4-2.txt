@@ -1,6 +1,6 @@
 # Building Out the Classes
 
-For this project, we need to code out the Player and SnakeEyes classes. The main function, Die class, and parts of the other classes have been done for you.
+For this project, you are to code out the Player and SnakeEyes classes. The main function, Die class, and parts of the other classes have been done for you.
 
 ## Die Class
 
@@ -24,37 +24,43 @@ For this class, you will code out the following methods: \n
 5. jump \n
 6. handlePlayerOption
 
-For the methods that you are to code out, they come with comments above them that instruct what you are expected to do. Please read them carefully.
+For the methods that you are to code out, they come with comments above them that instruct what you are expected to do. Please read them carefully. \n
+After you are done, you may click on 'compile' to compile and run your code against our test cases.
 
 <EditorGroup nofiles=false, noerrors=true, nocompile=false>
-<EditorFile  filename=main.cpp>
+<EditorFile filename=main.cpp>
 #include <iostream>
-#include <random>
-#include <memory>
+#include "tester.cpp"
 
+int main() {
+    int result = Tester::testPlayer();
 
-class Die {
-    private:
-        int currentValue;
-        std::random_device dev;
-        std::mt19937 rng;
-        std::uniform_int_distribution<std::mt19937::result_type> randomAction;
+    std::cout << "Testing Player class...\n";
+    if (result == 0) {
+        std::cout << "All test cases passed!";
+    } else {
+        std::cout << "Test case " << result << " failed.";
+    }
+    std::cout << "\n\n";
 
-    public:
-        Die() {
-            rng = std::mt19937(dev());
-            randomAction = std::uniform_int_distribution<std::mt19937::result_type>(1, 6);
-        }
+    std::cout << "Testing SnakeEyes class...\n";
+    result = Tester::testSnakeEyes();
+    if (result == 0) {
+        std::cout << "All test cases passed!";
+    } else {
+        std::cout << "Test case " << result << " failed.";
+    }
 
-        int getCurrentValue() {
-            return currentValue;
-        }
+    std::cout << "\n";
 
-        int roll() {
-            currentValue = randomAction(rng);
-            return currentValue;
-        }
-};
+    return 0;
+}
+</EditorFile>
+
+<EditorFile filename=player.cpp>
+#ifndef PLAYER_CPP
+#define PLAYER_CPP
+#include <iostream>
 
 class Player {
     private:
@@ -62,9 +68,7 @@ class Player {
         int peeksLeft;
 
     public:
-        Player(int initialScore, int initialPeeks) {
-            currentScore = initialScore;
-            peeksLeft = initialPeeks;
+        Player(int initialScore, int initialPeeks) : currentScore(initialScore), peeksLeft(initialPeeks) {
         }
 
         int getCurrentScore() {
@@ -78,25 +82,34 @@ class Player {
         // returns true if player has at least 1 peek left,
         // returns false otherwise
         bool canPeek() {
-            /* Insert your code here! */
+
         }
 
         // decrement the player's number of peeks left
         void usePeek() {
-            /* Insert your code here! */
+
         }
 
         // increase the player's current score by value, which can be negative
         // ensure the current score does not go below 0
         int increaseCurrentScore(int value) {
-            /* Insert your code here! */
+
         }
 
         // set the player's current score to 0
         void resetCurrentScore() {
-            /* Insert your code here! */
+
         }
 };
+#endif
+</EditorFile>
+
+<EditorFile filename=snakeeyes.cpp>
+#ifndef SNAKE_EYES_CPP
+#define SNAKE_EYES_CPP
+#include <vector>
+#include "player.cpp"
+#include "die.cpp"
 
 class SnakeEyes {
     private:
@@ -116,12 +129,7 @@ class SnakeEyes {
         static const int WINNING_SCORE = 50;
         static const int JUMP_VALUE = 30;
 
-        SnakeEyes() {
-            player1 = new Player(0, 3);
-            player2 = new Player(0, 3);
-            die1 = new Die();
-            die2 = new Die();
-            gameState = 0;
+        SnakeEyes() : player1(new Player(0, 3)), player2(new Player(0, 3)), die1(new Die()), die2(new Die()), gameState(0) {
         }
         
         ~SnakeEyes() {
@@ -144,7 +152,12 @@ class SnakeEyes {
         //      otherwise the return list contains "add"
         //      depending on the dice values, the list may also include "reduce" or "jump"
         std::vector<std::string> getPlayerOptions(bool rollsRevealed, const int playerId) {
-            /* Insert your code here! */
+
+        }
+
+        void setDiceValues(int value1, int value2) {
+            die1->setCurrentValue(value1);
+            die2->setCurrentValue(value2);
         }
 
         std::pair<int, int> rollDice() {
@@ -153,25 +166,25 @@ class SnakeEyes {
 
         // use one peek of the player and return the value of die1
         int peekOne(Player* player) {
-            /* Insert your code here! */
+
         }
 
         // add the player's score by the sum of the dice values
         // returns the new score of the player
         // remember to update gameState if the player wins
         int addToPlayerScore(Player* player) {
-            /* Insert your code here! */
+
         }
 
         // reduce the foe's score by the sum of the dice values
         // return the new score of the foe
         int reduceFromFoeScore(Player* foe) {
-            /* Insert your code here! */
+
         }
 
         // set the player's score to JUMP_VALUE and return JUMP_VALUE
         int jump(Player* player) {
-            /* Insert your code here! */
+
         }
 
         // call the appropriate method (e.g. jump) based on option
@@ -179,119 +192,16 @@ class SnakeEyes {
         // otherwise return the new score of the player whose score got updated
         // remember to utilise one of the methods already defined above!
         int handlePlayerOption(const std::string& option, const int playerId) {
-            /* Insert your code here! */
+
         }   
 };
-
-int main() {
-    auto gameManager = std::make_unique<SnakeEyes>();
-    bool playerOneTurn;
-
-    for (playerOneTurn = true; gameManager->getGameState() == 0; playerOneTurn = !playerOneTurn) {
-        // roll the dice and store the result
-        auto rollResults = gameManager->rollDice();
-
-        // determine the player whose turn it is currently
-        int playerId = playerOneTurn ? 1 : 2;
-        int choice = -1;
-
-        std::cout << "===========================================\n"; 
-        std::cout << "Player "<< playerId << "'s turn. What would you like to do?\n\n";
-
-        auto options = gameManager->getPlayerOptions(false, playerId); 
-        for (int i = 0; i < options.size(); i++) {
-            std::cout << (i + 1) << ". " << options[i] << "\n";
-        }
-        std::cout << "\n";
-        std::cin >> choice;
-        while (choice < 1 || choice > options.size()) {
-            std::cout << "\nPlease input a valid choice.\n";
-            std::cin >> choice;
-        }
-
-        if (options[choice - 1] == "pass") {
-            // player chooses to pass
-
-            std::cout << "\nYou have chosen to pass.";
-            std::cout << "\nThe dice values are " << rollResults.first << " and " << rollResults.second << ".\n";
-            continue;
-        } else if (options[choice - 1] == "peek") {
-            // player chooses to peek
-
-            int peekResult = gameManager->handlePlayerOption("peek", playerId);
-            std::cout << "\nOne of the dice's value is " << peekResult << ".\n"
-                << "What would you like to do?\n\n"
-                << "1. pass\n"
-                << "2. proceed\n\n";
-
-            std::cin >> choice;
-            while (choice < 1 || choice > options.size()) {
-                std::cout << "\nPlease input a valid choice.\n";
-                std::cin >> choice;
-            }
-
-            if (choice == 1) {
-                std::cout << "\nYou have chosen to pass.";
-                std::cout << "\nThe dice values are " << rollResults.first << " and " << rollResults.second << ".\n";
-                continue;
-            }
-        }
-
-        // display the dice values and the possible options
-        options = gameManager->getPlayerOptions(true, playerId);
-        std::cout << "\nThe dice values are " << rollResults.first << " and " << rollResults.second << ".\n";
-
-        if (options.size() == 0) {
-            std::cout << "That is snake eyes! Sorry, your score is reset to 0.\n\n";
-            continue;
-        }
-
-        std::cout << "What would you like to do?\n\n";        
-        for (int i = 0; i < options.size(); i++) {
-            std::cout << (i + 1) << ". " << options[i] << "\n";
-        }
-
-        std::cout << "\n";
-        std::cin >> choice;
-        int currentScore = gameManager->handlePlayerOption(options[choice - 1], playerId);
-
-        if (options[choice - 1] == "reduce") {
-            std::cout << "\nYou have chosen '" << options[choice - 1] << "'. Your opponent's score is now " << currentScore << ".\n\n";
-        } else {
-            std::cout << "\nYou have chosen '" << options[choice - 1] << "'. Your score is now " << currentScore << ".\n\n";
-        }
-        
-    }
-
-    if (playerOneTurn) {
-        std::cout << "Game over. Player 2 wins!\n";
-    } else {
-        std::cout << "Game over. Player 1 wins!\n";
-    }
-
-    return 0;
-}
+#endif
 </EditorFile>
 
-<EditorFile filename=classes.cpp>
-class A{
-    public:
-        int component;
-        A(int v){
-            component = v;
-        };
-};
-
-</EditorFile>
-</EditorGroup>
-
-## Example Solution
-
-<EditorGroup nofiles=false, noerrors=true, nocompile=true>
-<EditorFile filename=main.cpp>
-#include <iostream>
+<EditorFile filename=die.cpp>
+#ifndef DIE_CPP
+#define DIE_CPP
 #include <random>
-#include <memory>
 
 class Die {
     private:
@@ -303,6 +213,10 @@ class Die {
     public:
         Die() : currentValue(-1), rng(std::mt19937(dev())), randomAction(std::uniform_int_distribution<std::mt19937::result_type>(1, 6)) {
         }
+        
+        void setCurrentValue(int value) {
+            currentValue = value;
+        }
 
         int getCurrentValue() {
             return currentValue;
@@ -313,6 +227,252 @@ class Die {
             return currentValue;
         }
 };
+#endif
+</EditorFile>
+
+<EditorFile filename=tester.cpp>
+#ifndef TESTER_CPP
+#define TESTER_CPP
+#include <algorithm>
+#include <memory>
+#include "SnakeEyes.cpp"
+
+class Tester {
+    public:
+        static int testPlayer() {
+            auto player = std::make_unique<Player>(0, 3);
+
+            player->increaseCurrentScore(10);
+
+            // Test case 1
+            // Expected: 10
+            if (player->getCurrentScore() != 10) {
+                return 1;
+            }
+
+            player->increaseCurrentScore(-20);
+
+            // Test case 2
+            // Expected: 0
+            if (player->getCurrentScore() != 0) {
+                return 2;
+            }
+
+            player->usePeek();
+            player->usePeek();
+
+            // Test case 3
+            // Expected: true
+            if (!player->canPeek()) {
+                return 3;
+            }
+
+            player->usePeek();
+
+            // Test case 4
+            // Expected: false
+            if (player->canPeek()) {
+                return 4;
+            }
+
+            player->increaseCurrentScore(10);
+            player->resetCurrentScore();
+
+            // Test case 5
+            // Expected: 0
+            if (player->getCurrentScore() != 0) {
+                return 5;
+            }
+
+            // All passed
+            return 0;
+        }
+
+        static int testSnakeEyes() {
+            auto gameManager = std::make_unique<SnakeEyes>();
+
+            gameManager->setDiceValues(4, 6);
+            auto options1 = gameManager->getPlayerOptions(false, 1);
+            std::vector<std::string> options2 = {"peek", "pass", "proceed"};
+            std::sort(options1.begin(), options1.end());
+            std::sort(options2.begin(), options2.end());
+
+            // Test case 1
+            // Expected: {"add", "peek", "pass"}
+            if (!compareVectors(options1, options2)) {
+                return 1;
+            }
+
+            int res = gameManager->handlePlayerOption("peek", 1);
+
+            // Test case 2
+            // Expected: 4
+            if (res != 4) {
+                return 2;
+            }
+
+            options1 = gameManager->getPlayerOptions(true, 1);
+            options2 = {"add"};
+            std::sort(options1.begin(), options1.end());
+            std::sort(options2.begin(), options2.end());
+
+            // Test case 3
+            // Expected: {"add"}
+            if (!compareVectors(options1, options2)) {
+                return 3;
+            }
+
+            res = gameManager->handlePlayerOption("add", 1);
+
+            // Test case 4
+            // Expected: 10
+            if (res != 10) {
+                return 4;
+            }
+
+            gameManager->setDiceValues(5, 2);
+            options1 = gameManager->getPlayerOptions(true, 2);
+            options2 = {"add", "jump"};
+            std::sort(options1.begin(), options1.end());
+            std::sort(options2.begin(), options2.end());
+
+            // Test case 5
+            // Expected: {"add", "jump"}
+            if (!compareVectors(options1, options2)) {
+                return 5;
+            }
+
+            res = gameManager->handlePlayerOption("jump", 2);
+
+            // Test case 6
+            // Expected: 30
+            if (res != 30) {
+                return 6;
+            }
+
+            gameManager->setDiceValues(3, 1);
+            options1 = gameManager->getPlayerOptions(true, 1);
+            options2 = {"add", "reduce"};
+            std::sort(options1.begin(), options1.end());
+            std::sort(options2.begin(), options2.end());
+            
+            // Test case 7
+            // Expected: {"add", "reduce"}
+            if (!compareVectors(options1, options2)) {
+                return 7;
+            }
+
+            res = gameManager->handlePlayerOption("reduce", 1);
+
+            // Test case 8
+            // Expected: 26
+            if (res != 26) {
+                return 8;
+            }
+
+            gameManager->setDiceValues(1, 1);
+            options1 = gameManager->getPlayerOptions(true, 2);
+            options2 = {};
+            std::sort(options1.begin(), options1.end());
+            std::sort(options2.begin(), options2.end());
+            
+            // Test case 9
+            // Expected: {}
+            if (!compareVectors(options1, options2)) {
+                return 9;
+            }
+
+            gameManager->setDiceValues(1, 5);
+            gameManager->handlePlayerOption("peek", 1);
+            gameManager->handlePlayerOption("peek", 1);
+            options1 = gameManager->getPlayerOptions(false, 1);
+            options2 = {"pass", "proceed"};
+            std::sort(options1.begin(), options1.end());
+            std::sort(options2.begin(), options2.end());
+            
+            // Test case 10
+            // Expected: {"pass", "proceed"}
+            if (!compareVectors(options1, options2)) {
+                return 10;
+            }
+
+            gameManager->handlePlayerOption("jump", 1);
+            gameManager->setDiceValues(6, 6);
+            res = gameManager->handlePlayerOption("add", 1);
+
+            // Test case 11
+            // Expected: 42
+            if (res != 42) {
+                return 11;
+            }
+
+            gameManager->setDiceValues(6, 6);
+            res = gameManager->handlePlayerOption("add", 1);
+
+            // Test case 12
+            // Expected: 54, 0
+            if (res != 54 || gameManager->getGameState() != 1) {
+                return 12;
+            }
+
+            return 0;
+        }
+    private:
+        static bool compareVectors(std::vector<std::string>& v1, std::vector<std::string>& v2) {
+            if (v1.size() != v2.size()) {
+                return false;
+            }
+
+            for (size_t i = 0; i < v1.size(); i++) {
+                if (v1[i] != v2[i]) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+};
+
+#endif
+</EditorFile>
+
+</EditorGroup>
+
+## Example Solution
+
+<EditorGroup nofiles=false, noerrors=true, nocompile=false>
+<EditorFile filename=main.cpp>
+#include <iostream>
+#include "tester.cpp"
+
+int main() {
+    int result = Tester::testPlayer();
+    if (result == 0) {
+        std::cout << "All test cases passed!";
+    } else {
+        std::cout << "Test case " << result << " failed.";
+    }
+    std::cout << "\n\n";
+
+    result = Tester::testSnakeEyes();
+    if (result == 0) {
+        std::cout << "All test cases passed!";
+    } else {
+        std::cout << "Test case " << result << " failed.";
+    }
+
+    std::cout << "\n";
+
+    return 0;
+}
+
+
+</EditorFile>
+
+<EditorFile filename=player.cpp>
+#ifndef PLAYER_CPP
+#define PLAYER_CPP
+#include <iostream>
 
 class Player {
     private:
@@ -354,6 +514,15 @@ class Player {
             currentScore = 0;
         }
 };
+#endif
+</EditorFile>
+
+<EditorFile filename=snakeeyes.cpp>
+#ifndef SNAKE_EYES_CPP
+#define SNAKE_EYES_CPP
+#include <vector>
+#include "player.cpp"
+#include "die.cpp"
 
 class SnakeEyes {
     private:
@@ -431,6 +600,11 @@ class SnakeEyes {
             }
         }
 
+        void setDiceValues(int value1, int value2) {
+            die1->setCurrentValue(value1);
+            die2->setCurrentValue(value2);
+        }
+
         std::pair<int, int> rollDice() {
             return std::make_pair(die1->roll(), die2->roll());
         }
@@ -459,94 +633,249 @@ class SnakeEyes {
             return JUMP_VALUE;
         }        
 };
+#endif
+</EditorFile>
 
-int main() {
-    auto gameManager = std::make_unique<SnakeEyes>();
-    bool playerOneTurn;
+<EditorFile filename=die.cpp>
+#ifndef DIE_CPP
+#define DIE_CPP
 
-    for (playerOneTurn = true; gameManager->getGameState() == 0; playerOneTurn = !playerOneTurn) {
-        // roll the dice and store the result
-        auto rollResults = gameManager->rollDice();
+#include <random>
 
-        // determine the player whose turn it is currently
-        int playerId = playerOneTurn ? 1 : 2;
-        int choice = -1;
+class Die {
+    private:
+        int currentValue;
+        std::random_device dev;
+        std::mt19937 rng;
+        std::uniform_int_distribution<std::mt19937::result_type> randomAction;
 
-        std::cout << "===========================================\n"; 
-        std::cout << "Player "<< playerId << "'s turn. What would you like to do?\n\n";
-
-        auto options = gameManager->getPlayerOptions(false, playerId); 
-        for (int i = 0; i < options.size(); i++) {
-            std::cout << (i + 1) << ". " << options[i] << "\n";
-        }
-        std::cout << "\n";
-        std::cin >> choice;
-        while (choice < 1 || choice > options.size()) {
-            std::cout << "\nPlease input a valid choice.\n";
-            std::cin >> choice;
-        }
-
-        if (options[choice - 1] == "pass") {
-            // player chooses to pass
-
-            std::cout << "\nYou have chosen to pass.";
-            std::cout << "\nThe dice values are " << rollResults.first << " and " << rollResults.second << ".\n";
-            continue;
-        } else if (options[choice - 1] == "peek") {
-            // player chooses to peek
-
-            int peekResult = gameManager->handlePlayerOption("peek", playerId);
-            std::cout << "\nOne of the dice's value is " << peekResult << ".\n"
-                << "What would you like to do?\n\n"
-                << "1. pass\n"
-                << "2. proceed\n\n";
-
-            std::cin >> choice;
-            while (choice < 1 || choice > options.size()) {
-                std::cout << "\nPlease input a valid choice.\n";
-                std::cin >> choice;
-            }
-
-            if (choice == 1) {
-                std::cout << "\nYou have chosen to pass.";
-                std::cout << "\nThe dice values are " << rollResults.first << " and " << rollResults.second << ".\n";
-                continue;
-            }
-        }
-
-        // display the dice values and the possible options
-        options = gameManager->getPlayerOptions(true, playerId);
-        std::cout << "\nThe dice values are " << rollResults.first << " and " << rollResults.second << ".\n";
-
-        if (options.size() == 0) {
-            std::cout << "That is snake eyes! Sorry, your score is reset to 0.\n\n";
-            continue;
-        }
-
-        std::cout << "What would you like to do?\n\n";        
-        for (int i = 0; i < options.size(); i++) {
-            std::cout << (i + 1) << ". " << options[i] << "\n";
-        }
-
-        std::cout << "\n";
-        std::cin >> choice;
-        int currentScore = gameManager->handlePlayerOption(options[choice - 1], playerId);
-
-        if (options[choice - 1] == "reduce") {
-            std::cout << "\nYou have chosen '" << options[choice - 1] << "'. Your opponent's score is now " << currentScore << ".\n\n";
-        } else {
-            std::cout << "\nYou have chosen '" << options[choice - 1] << "'. Your score is now " << currentScore << ".\n\n";
+    public:
+        Die() : currentValue(-1), rng(std::mt19937(dev())), randomAction(std::uniform_int_distribution<std::mt19937::result_type>(1, 6)) {
         }
         
-    }
+        void setCurrentValue(int value) {
+            currentValue = value;
+        }
 
-    if (playerOneTurn) {
-        std::cout << "Game over. Player 2 wins!\n";
-    } else {
-        std::cout << "Game over. Player 1 wins!\n";
-    }
+        int getCurrentValue() {
+            return currentValue;
+        }
 
-    return 0;
-}
+        int roll() {
+            currentValue = randomAction(rng);
+            return currentValue;
+        }
+};
+#endif
 </EditorFile>
+
+<EditorFile filename=tester.cpp>
+#ifndef TESTER_CPP
+#define TESTER_CPP
+
+#include <algorithm>
+#include <memory>
+#include "SnakeEyes.cpp"
+
+
+class Tester {
+    public:
+        static int testPlayer() {
+            auto player = std::make_unique<Player>(0, 3);
+
+            player->increaseCurrentScore(10);
+
+            // Test case 1
+            // Expected: 10
+            if (player->getCurrentScore() != 10) {
+                return 1;
+            }
+
+            player->increaseCurrentScore(-20);
+
+            // Test case 2
+            // Expected: 0
+            if (player->getCurrentScore() != 0) {
+                return 2;
+            }
+
+            player->usePeek();
+            player->usePeek();
+
+            // Test case 3
+            // Expected: true
+            if (!player->canPeek()) {
+                return 3;
+            }
+
+            player->usePeek();
+
+            // Test case 4
+            // Expected: false
+            if (player->canPeek()) {
+                return 4;
+            }
+
+            player->increaseCurrentScore(10);
+            player->resetCurrentScore();
+
+            // Test case 5
+            // Expected: 0
+            if (player->getCurrentScore() != 0) {
+                return 5;
+            }
+
+            // All passed
+            return 0;
+        }
+
+        static int testSnakeEyes() {
+            auto gameManager = std::make_unique<SnakeEyes>();
+
+            gameManager->setDiceValues(4, 6);
+            auto options1 = gameManager->getPlayerOptions(false, 1);
+            std::vector<std::string> options2 = {"peek", "pass", "proceed"};
+            std::sort(options1.begin(), options1.end());
+            std::sort(options2.begin(), options2.end());
+
+            // Test case 1
+            // Expected: {"add", "peek", "pass"}
+            if (!compareVectors(options1, options2)) {
+                return 1;
+            }
+
+            int res = gameManager->handlePlayerOption("peek", 1);
+
+            // Test case 2
+            // Expected: 4
+            if (res != 4) {
+                return 2;
+            }
+
+            options1 = gameManager->getPlayerOptions(true, 1);
+            options2 = {"add"};
+            std::sort(options1.begin(), options1.end());
+            std::sort(options2.begin(), options2.end());
+
+            // Test case 3
+            // Expected: {"add"}
+            if (!compareVectors(options1, options2)) {
+                return 3;
+            }
+
+            res = gameManager->handlePlayerOption("add", 1);
+
+            // Test case 4
+            // Expected: 10
+            if (res != 10) {
+                return 4;
+            }
+
+            gameManager->setDiceValues(5, 2);
+            options1 = gameManager->getPlayerOptions(true, 2);
+            options2 = {"add", "jump"};
+            std::sort(options1.begin(), options1.end());
+            std::sort(options2.begin(), options2.end());
+
+            // Test case 5
+            // Expected: {"add", "jump"}
+            if (!compareVectors(options1, options2)) {
+                return 5;
+            }
+
+            res = gameManager->handlePlayerOption("jump", 2);
+
+            // Test case 6
+            // Expected: 30
+            if (res != 30) {
+                return 6;
+            }
+
+            gameManager->setDiceValues(3, 1);
+            options1 = gameManager->getPlayerOptions(true, 1);
+            options2 = {"add", "reduce"};
+            std::sort(options1.begin(), options1.end());
+            std::sort(options2.begin(), options2.end());
+            
+            // Test case 7
+            // Expected: {"add", "reduce"}
+            if (!compareVectors(options1, options2)) {
+                return 7;
+            }
+
+            res = gameManager->handlePlayerOption("reduce", 1);
+
+            // Test case 8
+            // Expected: 26
+            if (res != 26) {
+                return 8;
+            }
+
+            gameManager->setDiceValues(1, 1);
+            options1 = gameManager->getPlayerOptions(true, 2);
+            options2 = {};
+            std::sort(options1.begin(), options1.end());
+            std::sort(options2.begin(), options2.end());
+            
+            // Test case 9
+            // Expected: {}
+            if (!compareVectors(options1, options2)) {
+                return 9;
+            }
+
+            gameManager->setDiceValues(1, 5);
+            gameManager->handlePlayerOption("peek", 1);
+            gameManager->handlePlayerOption("peek", 1);
+            options1 = gameManager->getPlayerOptions(false, 1);
+            options2 = {"pass", "proceed"};
+            std::sort(options1.begin(), options1.end());
+            std::sort(options2.begin(), options2.end());
+            
+            // Test case 10
+            // Expected: {"pass", "proceed"}
+            if (!compareVectors(options1, options2)) {
+                return 10;
+            }
+
+            gameManager->handlePlayerOption("jump", 1);
+            gameManager->setDiceValues(6, 6);
+            res = gameManager->handlePlayerOption("add", 1);
+
+            // Test case 11
+            // Expected: 42
+            if (res != 42) {
+                return 11;
+            }
+
+            gameManager->setDiceValues(6, 6);
+            res = gameManager->handlePlayerOption("add", 1);
+
+            // Test case 12
+            // Expected: 54, 0
+            if (res != 54 || gameManager->getGameState() != 1) {
+                return 12;
+            }
+
+            return 0;
+        }
+    private:
+        static bool compareVectors(std::vector<std::string>& v1, std::vector<std::string>& v2) {
+            if (v1.size() != v2.size()) {
+                return false;
+            }
+
+            for (size_t i = 0; i < v1.size(); i++) {
+                if (v1[i] != v2[i]) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+};
+
+#endif
+</EditorFile>
+
+
 </EditorGroup>
