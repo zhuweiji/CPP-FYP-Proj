@@ -8,14 +8,23 @@ import LoadingSpinner from "../../../components/LoadingSpinner/LoadingSpinner";
 import ResponsiveAppBar from "../../../components/Nav";
 import QuizQuestionForm from "../QuizQuestionForm/QuizQuestionForm";
 import { Button } from "@mui/material";
-import { json } from "react-router-dom";
 // import QuizResource from "../QuizResource/QuizResource";
 // import PageNotFound from "../../pages/PageNotFound/PageNotFound";
 
 function QuizForm() {
   const { sendRequest } = useHttpClient();
   const [quizTitle, setQuizTitle] = useState("");
-  const [questions, setQuestions] = useState([{}]);
+  const [questions, setQuestions] = useState([
+    {
+      title: "",
+      options: ["", ""],
+      solution: [0],
+      score: "1",
+      questionType: "0", // radio
+      imageLink: "",
+      imageFile: null,
+    },
+  ]);
 
   const validateInputs = useCallback(() => {
     if (!quizTitle) {
@@ -128,8 +137,9 @@ function QuizForm() {
             {questions.map((qn, idx) => {
               return (
                 <QuizQuestionForm
-                  questionIdx={idx}
+                  currQuestionIdx={idx}
                   key={`qn-${idx}`}
+                  questions={questions}
                   setQuestions={setQuestions}
                 />
               );
@@ -143,10 +153,10 @@ function QuizForm() {
                     ...prev,
                     {
                       title: "",
-                      options: [],
-                      solution: [],
-                      score: 1,
-                      questionType: "radio",
+                      options: ["", ""],
+                      solution: [0],
+                      score: "1",
+                      questionType: "0", // radio
                       imageLink: "",
                       imageFile: null,
                     },

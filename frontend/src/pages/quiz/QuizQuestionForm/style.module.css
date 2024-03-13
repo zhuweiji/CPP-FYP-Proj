@@ -8,6 +8,16 @@
   justify-content: center; */
 }
 
+.delete_qn_container {
+  /* margin-left: 10px; */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  text-align: right;
+  justify-content: right;
+  border: 1px solid blueviolet;
+}
+
 .input_container {
   margin: 25px 0;
   /* display: flex;

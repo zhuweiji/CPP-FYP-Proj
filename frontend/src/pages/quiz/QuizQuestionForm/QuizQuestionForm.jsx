@@ -15,118 +15,193 @@ import FileUpload from "../../../components/FileUpload/FileUpload";
 const questionTypes = ["radio", "checkbox"];
 
 function QuizQuestionForm(props) {
-  const { setQuestions, questionIdx } = props;
+  const { setQuestions, currQuestionIdx, questions } = props;
   const [errorMessage, setErrorMessage] = useState("");
   const { sendRequest } = useHttpClient();
-  const [formState, setFormState] = useState({
-    title: "",
-    options: ["", ""],
-    solution: [0],
-    score: "1",
-    questionType: "0", // radio
-    imageLink: "",
-    imageFile: null,
-  });
+  // const [formState, setFormState] = useState({
+
+  // });
+
+  // CHECKPOINT: USE setQuestions instead of setFormState
+  // const formState = questions[questionIdx];
 
   // useEffect(() => {
   //   console.log(solution);
   // }, [solution]);
 
-  useEffect(() => {
-    setFormState((prev) => {
-      return {
-        ...prev,
-        solution: formState.questionType === "0" ? [0] : [],
-      };
-    });
-  }, [formState.questionType]);
+  // useEffect(() => {
+  //   setQuestions((prev) => {
+  //     return prev.map((qn, qnIdx) => {
+  //       if (qnIdx !== currQuestionIdx) {
+  //         return qn;
+  //       }
+  //       return {
+  //         ...qn,
+  //         solution: questions[currQuestionIdx].questionType === "0" ? [0] : [],
+  //       };
+  //     });
+  //   });
+  //   // setFormState((prev) => {
+  //   //   return {
+  //   //     ...prev,
+  //   //     solution: formState.questionType === "0" ? [0] : [],
+  //   //   };
+  //   // });
+  // }, [questions[currQuestionIdx].questionType]);
+  // }, [formState.questionType]);
 
-  const optionComponents = formState.options.map((option, idx) => {
-    return (
-      <div key={`option-${idx}`} className={s.option_container}>
-        {formState.questionType === "0" ? (
-          // radio
-          <FormControlLabel value={idx} control={<Radio />} />
-        ) : (
-          // checkbox
-          <FormControlLabel
-            control={
-              <Checkbox
-                id={`option-${idx}`}
-                value={idx}
-                className={s.option_text}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setFormState((prev) => {
-                      return {
-                        ...prev,
-                        solution: [...prev.solution, idx].sort((a, b) => {
-                          return a - b;
-                        }),
-                      };
-                    });
-                  } else {
-                    setFormState((prev) => {
-                      return {
-                        ...prev,
-                        solution: prev.solution.filter((item) => {
-                          return item !== idx;
-                        }),
-                      };
-                    });
+  // const optionComponents = formState.options.map((option, optionIdx) => {
+  const optionComponents = questions[currQuestionIdx].options.map(
+    (option, optionIdx) => {
+      return (
+        <div key={`option-${optionIdx}`} className={s.option_container}>
+          {/* {formState.questionType === "0" ? ( */}
+          {questions[currQuestionIdx].questionType === "0" ? (
+            // radio
+            <FormControlLabel value={optionIdx} control={<Radio />} />
+          ) : (
+            // checkbox
+            <FormControlLabel
+              control={
+                <Checkbox
+                  id={`option-${optionIdx}`}
+                  value={optionIdx}
+                  className={s.option_text}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setQuestions((prev) => {
+                        return prev.map((qn, qnIdx) => {
+                          if (qnIdx !== currQuestionIdx) {
+                            return qn;
+                          }
+                          return {
+                            ...qn,
+                            solution: [...qn.solution, optionIdx].sort(
+                              (a, b) => {
+                                return a - b;
+                              }
+                            ),
+                          };
+                        });
+                      });
+                      // setFormState((prev) => {
+                      //   return {
+                      //     ...prev,
+                      //     solution: [...prev.solution, idx].sort((a, b) => {
+                      //       return a - b;
+                      //     }),
+                      //   };
+                      // });
+                    } else {
+                      setQuestions((prev) => {
+                        return prev.map((qn, qnIdx) => {
+                          if (qnIdx !== currQuestionIdx) {
+                            return qn;
+                          }
+                          return {
+                            ...qn,
+                            solution: qn.solution.filter((item) => {
+                              return item !== optionIdx;
+                            }),
+                          };
+                        });
+                      });
+                      // setFormState((prev) => {
+                      //   return {
+                      //     ...prev,
+                      //     solution: prev.solution.filter((item) => {
+                      //       return item !== idx;
+                      //     }),
+                      //   };
+                      // });
+                    }
+                  }}
+                />
+              }
+            />
+          )}
+          <input
+            type="text"
+            placeholder={`Option ${optionIdx + 1}`}
+            className={`${s.option_input}`}
+            value={option}
+            onChange={(event) => {
+              setQuestions((prev) => {
+                return prev.map((qn, qnIdx) => {
+                  if (qnIdx !== currQuestionIdx) {
+                    return qn;
                   }
-                }}
-              />
-            }
-          />
-        )}
-        <input
-          type="text"
-          placeholder={`Option ${idx + 1}`}
-          className={`${s.option_input}`}
-          value={option}
-          onChange={(event) => {
-            setFormState((prev) => {
-              return {
-                ...prev,
-                options: prev.options.map((currOption, currIdx) => {
-                  if (idx !== currIdx) {
-                    return currOption;
-                  }
-                  return event.target.value;
-                }),
-              };
-            });
-          }}
-        />
-
-        {
-          // only allow delete if more than 2 options
-          formState.options.length > 2 && (
-            <div
-              className={`${s.icon_container}`}
-              onClick={() => {
-                setFormState((prev) => {
-                  const newOptions = prev.options.filter((_, currIdx) => {
-                    return currIdx !== idx;
-                  });
                   return {
-                    ...prev,
-                    options: newOptions,
-                    solution: prev.solution.filter((item) => {
-                      return item < newOptions.length;
+                    ...qn,
+                    options: qn.options.map((currOption, currIdx) => {
+                      if (optionIdx !== currIdx) {
+                        return currOption;
+                      }
+                      return event.target.value;
                     }),
                   };
                 });
-              }}
-            >
-              <DeleteIcon />
-            </div>
-          )
-        }
-      </div>
-    );
-  });
+              });
+              // setFormState((prev) => {
+              //   return {
+              //     ...prev,
+              //     options: prev.options.map((currOption, currIdx) => {
+              //       if (optionIdx !== currIdx) {
+              //         return currOption;
+              //       }
+              //       return event.target.value;
+              //     }),
+              //   };
+              // });
+            }}
+          />
+
+          {
+            // only allow delete if more than 2 options
+            // formState.options.length > 2 && (
+            questions[currQuestionIdx].options.length > 2 && (
+              <div
+                className={`${s.icon_container}`}
+                onClick={() => {
+                  setQuestions((prev) => {
+                    return prev.map((qn, qnIdx) => {
+                      if (qnIdx !== currQuestionIdx) {
+                        return qn;
+                      }
+                      const newOptions = qn.options.filter((_, currIdx) => {
+                        return currIdx !== optionIdx;
+                      });
+                      return {
+                        ...qn,
+                        options: newOptions,
+                        solution: qn.solution.filter((item) => {
+                          return item < newOptions.length;
+                        }),
+                      };
+                    });
+                  });
+                  // setFormState((prev) => {
+                  //   const newOptions = prev.options.filter((_, currIdx) => {
+                  //     return currIdx !== optionIdx;
+                  //   });
+                  //   return {
+                  //     ...prev,
+                  //     options: newOptions,
+                  //     solution: prev.solution.filter((item) => {
+                  //       return item < newOptions.length;
+                  //     }),
+                  //   };
+                  // });
+                }}
+              >
+                <DeleteIcon />
+              </div>
+            )
+          }
+        </div>
+      );
+    }
+  );
 
   return (
     <div className={`${s.main_container}`}>
@@ -138,13 +213,25 @@ function QuizQuestionForm(props) {
           type="text"
           placeholder="Question"
           className={`${s.question_input}`}
-          value={formState.title}
+          // value={formState.title}
+          value={questions[currQuestionIdx].title}
           onChange={(event) => {
-            setFormState((prev) => {
-              return {
-                ...prev,
-                title: event.target.value,
-              };
+            // setFormState((prev) => {
+            //   return {
+            //     ...prev,
+            //     title: event.target.value,
+            //   };
+            // });
+            setQuestions((prev) => {
+              return prev.map((qn, idx) => {
+                if (idx !== currQuestionIdx) {
+                  return qn;
+                }
+                return {
+                  ...qn,
+                  title: event.target.value,
+                };
+              });
             });
           }}
         />
@@ -157,15 +244,26 @@ function QuizQuestionForm(props) {
         </label>
         <select
           id="question-type"
-          onChange={(event) =>
-            setFormState((prev) => {
-              // console.log(event.target.value);
-              return {
-                ...prev,
-                questionType: event.target.value,
-              };
-            })
-          }
+          onChange={(event) => {
+            setQuestions((prev) => {
+              return prev.map((qn, qnIdx) => {
+                if (qnIdx !== currQuestionIdx) {
+                  return qn;
+                }
+                return {
+                  ...qn,
+                  questionType: event.target.value,
+                  solution: event.target.value === "0" ? [0] : [],
+                };
+              });
+            });
+            // setFormState((prev) => {
+            //   return {
+            //     ...prev,
+            //     questionType: event.target.value,
+            //   };
+            // });
+          }}
           defaultValue={"0"}
           // value={formState.questionType}
         >
@@ -184,17 +282,30 @@ function QuizQuestionForm(props) {
       </div>
 
       <div>
-        {formState.questionType === "0" ? (
+        {/* {formState.questionType === "0" ? ( */}
+        {questions[currQuestionIdx].questionType === "0" ? (
           <FormControl>
             <RadioGroup
-              value={`${formState.solution[0]}`}
+              // value={`${formState.solution[0]}`}
+              value={`${questions[currQuestionIdx].solution[0]}`}
               onChange={(e) => {
-                setFormState((prev) => {
-                  return {
-                    ...prev,
-                    solution: [Number(e.target.value)],
-                  };
+                setQuestions((prev) => {
+                  return prev.map((qn, qnIdx) => {
+                    if (qnIdx !== currQuestionIdx) {
+                      return qn;
+                    }
+                    return {
+                      ...qn,
+                      solution: [Number(e.target.value)],
+                    };
+                  });
                 });
+                // setFormState((prev) => {
+                //   return {
+                //     ...prev,
+                //     solution: [Number(e.target.value)],
+                //   };
+                // });
               }}
             >
               {optionComponents}
@@ -211,14 +322,23 @@ function QuizQuestionForm(props) {
         }}
         variant="outlined"
         onClick={() => {
-          setFormState((prev) => {
-            return {
-              ...prev,
-              options: [...prev.options, ""],
-            };
+          setQuestions((prev) => {
+            return prev.map((qn, qnIdx) => {
+              if (qnIdx !== currQuestionIdx) {
+                return qn;
+              }
+              return {
+                ...qn,
+                options: [...qn.options, ""],
+              };
+            });
           });
-          // setOptions((prev) => {
-          //   return [...prev, ""];
+
+          // setFormState((prev) => {
+          //   return {
+          //     ...prev,
+          //     options: [...prev.options, ""],
+          //   };
           // });
         }}
       >
@@ -235,14 +355,26 @@ function QuizQuestionForm(props) {
           max={10}
           placeholder="Score"
           className={`${s.form_input} ${s.score_input}`}
-          value={formState.score}
+          // value={formState.score}
+          value={questions[currQuestionIdx].score}
           onChange={(event) => {
-            setFormState((prev) => {
-              return {
-                ...prev,
-                score: event.target.value,
-              };
+            setQuestions((prev) => {
+              return prev.map((qn, qnIdx) => {
+                if (qnIdx !== currQuestionIdx) {
+                  return qn;
+                }
+                return {
+                  ...qn,
+                  score: event.target.value,
+                };
+              });
             });
+            // setFormState((prev) => {
+            //   return {
+            //     ...prev,
+            //     score: event.target.value,
+            //   };
+            // });
           }}
         />
       </div>
@@ -253,23 +385,39 @@ function QuizQuestionForm(props) {
         <FileUpload
           validExtensions={".png,.jpg,.jpeg"}
           onInput={(pickedFile) => {
-            setFormState((prev) => {
-              return {
-                ...prev,
-                imageFile: pickedFile,
-              };
+            setQuestions((prev) => {
+              return prev.map((qn, qnIdx) => {
+                if (qnIdx !== currQuestionIdx) {
+                  return qn;
+                }
+                return {
+                  ...qn,
+                  imageFile: pickedFile,
+                };
+              });
             });
+            // setFormState((prev) => {
+            //   return {
+            //     ...prev,
+            //     imageFile: pickedFile,
+            //   };
+            // });
           }}
         />
       </div>
 
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <Button
-          variant="contained"
+      {questions.length > 1 && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          {/* <Button
+          sx={{
+            mr: "10px",
+          }}
+          variant="outlined"
+          color="success"
           onClick={() => {
             setQuestions((prev) => {
               return prev.map((question, idx) => {
-                if (idx !== questionIdx) {
+                if (idx !== currQuestionIdx) {
                   return question;
                 }
                 return formState;
@@ -278,8 +426,22 @@ function QuizQuestionForm(props) {
           }}
         >
           SAVE
-        </Button>
-      </div>
+        </Button> */}
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => {
+              setQuestions((prev) => {
+                return prev.filter((qn, idx) => {
+                  return idx !== currQuestionIdx;
+                });
+              });
+            }}
+          >
+            <DeleteIcon />
+          </Button>
+        </div>
+      )}
 
       {/* {errorMessage && (
           <div className={`${s.error_container}`}>

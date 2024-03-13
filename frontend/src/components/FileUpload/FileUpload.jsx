@@ -5,7 +5,7 @@ import s from "./style.module.css";
 
 function FileUpload(props) {
   const { onInput, validExtensions } = props;
-  const [file, setFile] = useState();
+  const [file, setFile] = useState(null);
   const [isValid, setIsValid] = useState(false);
 
   const filePickerRef = useRef();
@@ -48,7 +48,7 @@ function FileUpload(props) {
           PICK FILE
         </Button>
         <h2 className={`${s.file_name}`}>
-          {isValid ? file.name : "No file selected"}
+          {file ? file.name : "No file selected"}
         </h2>
       </div>
     </div>
