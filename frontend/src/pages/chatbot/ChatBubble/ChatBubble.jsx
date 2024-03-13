@@ -78,6 +78,14 @@ function extractFollowUpQns(text) {
     };
   }
 
+  // remove follow up questions if invalid question
+  if (text.substring(0, 5) === "Sorry") {
+    return {
+      cutOff: i - 9,
+      followUpQns: [],
+    };
+  }
+
   const indices = Array(2).fill(-1);
 
   indices[0] = text.indexOf("1.", i + 22);
@@ -148,8 +156,6 @@ function partitionResponse(text) {
 
 function ChatBubble(props) {
   const { chatter, text, setUsingCustomQuestion, setInputValue } = props;
-
-  // text = testText;
   const { response, followUpQns } = partitionResponse(text);
 
   return (
