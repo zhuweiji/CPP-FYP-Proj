@@ -33,25 +33,34 @@ After you are done, you may click on 'compile' to compile and run your code agai
 #include "tester.cpp"
 
 int main() {
-    int result = Tester::testPlayer();
+    auto result = Tester::testPlayer();
 
-    std::cout << "Testing Player class...\n";
-    if (result == 0) {
-        std::cout << "All test cases passed!";
-    } else {
-        std::cout << "Test case " << result << " failed.";
-    }
-    std::cout << "\n\n";
+    std::cout << "Testing Player class...\n\n";
 
-    std::cout << "Testing SnakeEyes class...\n";
-    result = Tester::testSnakeEyes();
-    if (result == 0) {
-        std::cout << "All test cases passed!";
-    } else {
-        std::cout << "Test case " << result << " failed.";
+    for (int i = 1; i <= result.second; i++) {
+        std::cout << "Test case " << i;
+        if (i <= result.first) {
+            std::cout << " passed.\n";
+        } else {
+            std::cout << " failed.\n";
+            break;
+        }
     }
 
     std::cout << "\n";
+
+    std::cout << "Testing SnakeEyes class...\n\n";
+    result = Tester::testSnakeEyes();
+
+    for (int i = 1; i <= result.second; i++) {
+        std::cout << "Test case " << i;
+        if (i <= result.first) {
+            std::cout << " passed.\n";
+        } else {
+            std::cout << " failed.\n";
+            break;
+        }
+    }
 
     return 0;
 }
@@ -239,15 +248,15 @@ class Die {
 
 class Tester {
     public:
-        static int testPlayer() {
+        static std::pair<int, int> testPlayer() {
+            const int NUM_TEST_CASES = 5;
             auto player = std::make_unique<Player>(0, 3);
-
             player->increaseCurrentScore(10);
 
             // Test case 1
             // Expected: 10
             if (player->getCurrentScore() != 10) {
-                return 1;
+                return std::make_pair(0, NUM_TEST_CASES);
             }
 
             player->increaseCurrentScore(-20);
@@ -255,7 +264,7 @@ class Tester {
             // Test case 2
             // Expected: 0
             if (player->getCurrentScore() != 0) {
-                return 2;
+                return std::make_pair(1, NUM_TEST_CASES);
             }
 
             player->usePeek();
@@ -264,7 +273,7 @@ class Tester {
             // Test case 3
             // Expected: true
             if (!player->canPeek()) {
-                return 3;
+                return std::make_pair(2, NUM_TEST_CASES);
             }
 
             player->usePeek();
@@ -272,7 +281,7 @@ class Tester {
             // Test case 4
             // Expected: false
             if (player->canPeek()) {
-                return 4;
+                return std::make_pair(3, NUM_TEST_CASES);
             }
 
             player->increaseCurrentScore(10);
@@ -281,17 +290,18 @@ class Tester {
             // Test case 5
             // Expected: 0
             if (player->getCurrentScore() != 0) {
-                return 5;
+                return std::make_pair(4, NUM_TEST_CASES);
             }
 
             // All passed
-            return 0;
+            return std::make_pair(5, NUM_TEST_CASES);
         }
 
-        static int testSnakeEyes() {
+        static std::pair<int, int> testSnakeEyes() {
+            const int NUM_TESTCASES = 12;
             auto gameManager = std::make_unique<SnakeEyes>();
-
             gameManager->setDiceValues(4, 6);
+
             auto options1 = gameManager->getPlayerOptions(false, 1);
             std::vector<std::string> options2 = {"peek", "pass", "proceed"};
             std::sort(options1.begin(), options1.end());
@@ -300,7 +310,7 @@ class Tester {
             // Test case 1
             // Expected: {"add", "peek", "pass"}
             if (!compareVectors(options1, options2)) {
-                return 1;
+                return std::make_pair(0, NUM_TESTCASES);
             }
 
             int res = gameManager->handlePlayerOption("peek", 1);
@@ -308,7 +318,7 @@ class Tester {
             // Test case 2
             // Expected: 4
             if (res != 4) {
-                return 2;
+                return std::make_pair(1, NUM_TESTCASES);
             }
 
             options1 = gameManager->getPlayerOptions(true, 1);
@@ -319,7 +329,7 @@ class Tester {
             // Test case 3
             // Expected: {"add"}
             if (!compareVectors(options1, options2)) {
-                return 3;
+                return std::make_pair(2, NUM_TESTCASES);
             }
 
             res = gameManager->handlePlayerOption("add", 1);
@@ -327,7 +337,7 @@ class Tester {
             // Test case 4
             // Expected: 10
             if (res != 10) {
-                return 4;
+                return std::make_pair(3, NUM_TESTCASES);
             }
 
             gameManager->setDiceValues(5, 2);
@@ -339,7 +349,7 @@ class Tester {
             // Test case 5
             // Expected: {"add", "jump"}
             if (!compareVectors(options1, options2)) {
-                return 5;
+                return std::make_pair(4, NUM_TESTCASES);
             }
 
             res = gameManager->handlePlayerOption("jump", 2);
@@ -347,7 +357,7 @@ class Tester {
             // Test case 6
             // Expected: 30
             if (res != 30) {
-                return 6;
+                return std::make_pair(5, NUM_TESTCASES);
             }
 
             gameManager->setDiceValues(3, 1);
@@ -359,7 +369,7 @@ class Tester {
             // Test case 7
             // Expected: {"add", "reduce"}
             if (!compareVectors(options1, options2)) {
-                return 7;
+                return std::make_pair(6, NUM_TESTCASES);
             }
 
             res = gameManager->handlePlayerOption("reduce", 1);
@@ -367,7 +377,7 @@ class Tester {
             // Test case 8
             // Expected: 26
             if (res != 26) {
-                return 8;
+                return std::make_pair(7, NUM_TESTCASES);
             }
 
             gameManager->setDiceValues(1, 1);
@@ -379,7 +389,7 @@ class Tester {
             // Test case 9
             // Expected: {}
             if (!compareVectors(options1, options2)) {
-                return 9;
+                return std::make_pair(8, NUM_TESTCASES);
             }
 
             gameManager->setDiceValues(1, 5);
@@ -393,7 +403,7 @@ class Tester {
             // Test case 10
             // Expected: {"pass", "proceed"}
             if (!compareVectors(options1, options2)) {
-                return 10;
+                return std::make_pair(9, NUM_TESTCASES);
             }
 
             gameManager->handlePlayerOption("jump", 1);
@@ -403,7 +413,7 @@ class Tester {
             // Test case 11
             // Expected: 42
             if (res != 42) {
-                return 11;
+                return std::make_pair(10, NUM_TESTCASES);
             }
 
             gameManager->setDiceValues(6, 6);
@@ -412,10 +422,10 @@ class Tester {
             // Test case 12
             // Expected: 54, 0
             if (res != 54 || gameManager->getGameState() != 1) {
-                return 12;
+                return std::make_pair(11, NUM_TESTCASES);
             }
 
-            return 0;
+            return std::make_pair(12, NUM_TESTCASES);
         }
     private:
         static bool compareVectors(std::vector<std::string>& v1, std::vector<std::string>& v2) {
@@ -432,7 +442,6 @@ class Tester {
             return true;
         }
 };
-
 #endif
 </EditorFile>
 
@@ -446,22 +455,34 @@ class Tester {
 #include "tester.cpp"
 
 int main() {
-    int result = Tester::testPlayer();
-    if (result == 0) {
-        std::cout << "All test cases passed!";
-    } else {
-        std::cout << "Test case " << result << " failed.";
-    }
-    std::cout << "\n\n";
+    auto result = Tester::testPlayer();
 
-    result = Tester::testSnakeEyes();
-    if (result == 0) {
-        std::cout << "All test cases passed!";
-    } else {
-        std::cout << "Test case " << result << " failed.";
+    std::cout << "Testing Player class...\n\n";
+
+    for (int i = 1; i <= result.second; i++) {
+        std::cout << "Test case " << i;
+        if (i <= result.first) {
+            std::cout << " passed.\n";
+        } else {
+            std::cout << " failed.\n";
+            break;
+        }
     }
 
     std::cout << "\n";
+
+    std::cout << "Testing SnakeEyes class...\n\n";
+    result = Tester::testSnakeEyes();
+
+    for (int i = 1; i <= result.second; i++) {
+        std::cout << "Test case " << i;
+        if (i <= result.first) {
+            std::cout << " passed.\n";
+        } else {
+            std::cout << " failed.\n";
+            break;
+        }
+    }
 
     return 0;
 }
@@ -672,23 +693,20 @@ class Die {
 <EditorFile filename=tester.cpp>
 #ifndef TESTER_CPP
 #define TESTER_CPP
-
 #include <algorithm>
 #include <memory>
 #include "SnakeEyes.cpp"
-
-
 class Tester {
     public:
-        static int testPlayer() {
+        static std::pair<int, int> testPlayer() {
+            const int NUM_TEST_CASES = 5;
             auto player = std::make_unique<Player>(0, 3);
-
             player->increaseCurrentScore(10);
 
             // Test case 1
             // Expected: 10
             if (player->getCurrentScore() != 10) {
-                return 1;
+                return std::make_pair(0, NUM_TEST_CASES);
             }
 
             player->increaseCurrentScore(-20);
@@ -696,7 +714,7 @@ class Tester {
             // Test case 2
             // Expected: 0
             if (player->getCurrentScore() != 0) {
-                return 2;
+                return std::make_pair(1, NUM_TEST_CASES);
             }
 
             player->usePeek();
@@ -705,7 +723,7 @@ class Tester {
             // Test case 3
             // Expected: true
             if (!player->canPeek()) {
-                return 3;
+                return std::make_pair(2, NUM_TEST_CASES);
             }
 
             player->usePeek();
@@ -713,7 +731,7 @@ class Tester {
             // Test case 4
             // Expected: false
             if (player->canPeek()) {
-                return 4;
+                return std::make_pair(3, NUM_TEST_CASES);
             }
 
             player->increaseCurrentScore(10);
@@ -722,17 +740,18 @@ class Tester {
             // Test case 5
             // Expected: 0
             if (player->getCurrentScore() != 0) {
-                return 5;
+                return std::make_pair(4, NUM_TEST_CASES);
             }
 
             // All passed
-            return 0;
+            return std::make_pair(5, NUM_TEST_CASES);
         }
 
-        static int testSnakeEyes() {
+        static std::pair<int, int> testSnakeEyes() {
+            const int NUM_TESTCASES = 12;
             auto gameManager = std::make_unique<SnakeEyes>();
-
             gameManager->setDiceValues(4, 6);
+
             auto options1 = gameManager->getPlayerOptions(false, 1);
             std::vector<std::string> options2 = {"peek", "pass", "proceed"};
             std::sort(options1.begin(), options1.end());
@@ -741,7 +760,7 @@ class Tester {
             // Test case 1
             // Expected: {"add", "peek", "pass"}
             if (!compareVectors(options1, options2)) {
-                return 1;
+                return std::make_pair(0, NUM_TESTCASES);
             }
 
             int res = gameManager->handlePlayerOption("peek", 1);
@@ -749,7 +768,7 @@ class Tester {
             // Test case 2
             // Expected: 4
             if (res != 4) {
-                return 2;
+                return std::make_pair(1, NUM_TESTCASES);
             }
 
             options1 = gameManager->getPlayerOptions(true, 1);
@@ -760,7 +779,7 @@ class Tester {
             // Test case 3
             // Expected: {"add"}
             if (!compareVectors(options1, options2)) {
-                return 3;
+                return std::make_pair(2, NUM_TESTCASES);
             }
 
             res = gameManager->handlePlayerOption("add", 1);
@@ -768,7 +787,7 @@ class Tester {
             // Test case 4
             // Expected: 10
             if (res != 10) {
-                return 4;
+                return std::make_pair(3, NUM_TESTCASES);
             }
 
             gameManager->setDiceValues(5, 2);
@@ -780,7 +799,7 @@ class Tester {
             // Test case 5
             // Expected: {"add", "jump"}
             if (!compareVectors(options1, options2)) {
-                return 5;
+                return std::make_pair(4, NUM_TESTCASES);
             }
 
             res = gameManager->handlePlayerOption("jump", 2);
@@ -788,7 +807,7 @@ class Tester {
             // Test case 6
             // Expected: 30
             if (res != 30) {
-                return 6;
+                return std::make_pair(5, NUM_TESTCASES);
             }
 
             gameManager->setDiceValues(3, 1);
@@ -800,7 +819,7 @@ class Tester {
             // Test case 7
             // Expected: {"add", "reduce"}
             if (!compareVectors(options1, options2)) {
-                return 7;
+                return std::make_pair(6, NUM_TESTCASES);
             }
 
             res = gameManager->handlePlayerOption("reduce", 1);
@@ -808,7 +827,7 @@ class Tester {
             // Test case 8
             // Expected: 26
             if (res != 26) {
-                return 8;
+                return std::make_pair(7, NUM_TESTCASES);
             }
 
             gameManager->setDiceValues(1, 1);
@@ -820,7 +839,7 @@ class Tester {
             // Test case 9
             // Expected: {}
             if (!compareVectors(options1, options2)) {
-                return 9;
+                return std::make_pair(8, NUM_TESTCASES);
             }
 
             gameManager->setDiceValues(1, 5);
@@ -834,7 +853,7 @@ class Tester {
             // Test case 10
             // Expected: {"pass", "proceed"}
             if (!compareVectors(options1, options2)) {
-                return 10;
+                return std::make_pair(9, NUM_TESTCASES);
             }
 
             gameManager->handlePlayerOption("jump", 1);
@@ -844,7 +863,7 @@ class Tester {
             // Test case 11
             // Expected: 42
             if (res != 42) {
-                return 11;
+                return std::make_pair(10, NUM_TESTCASES);
             }
 
             gameManager->setDiceValues(6, 6);
@@ -853,10 +872,10 @@ class Tester {
             // Test case 12
             // Expected: 54, 0
             if (res != 54 || gameManager->getGameState() != 1) {
-                return 12;
+                return std::make_pair(11, NUM_TESTCASES);
             }
 
-            return 0;
+            return std::make_pair(12, NUM_TESTCASES);
         }
     private:
         static bool compareVectors(std::vector<std::string>& v1, std::vector<std::string>& v2) {
@@ -873,7 +892,6 @@ class Tester {
             return true;
         }
 };
-
 #endif
 </EditorFile>
 
