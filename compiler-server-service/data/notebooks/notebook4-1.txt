@@ -110,3 +110,5 @@ classDiagram
         +int reduceFromFoeScore(Player foe)
         +int jump (Player player)
     }
+
+</MermaidDiagram>

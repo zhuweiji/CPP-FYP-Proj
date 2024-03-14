@@ -47,7 +47,7 @@ async def generate_prompt(user_prompt: str, is_first_prompt: bool):
     response = client.chat.completions.create(
         model=MODEL,
         messages=messageHistory,
-        temperature=0.01,  # buggy when temperature is higher
+        temperature=0,  # buggy when temperature is higher
     )
 
     # log.info(response)
