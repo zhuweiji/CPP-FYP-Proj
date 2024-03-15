@@ -1,0 +1,71 @@
+.main_container {
+  border-radius: 8px;
+  background-color: #c7c8cc;
+  margin-bottom: 10px;
+  /* width: 400px; */
+  padding: 5px 10px;
+  /* display: flex;
+  justify-content: center; */
+}
+
+.input_container {
+  margin: 25px 0;
+  /* display: flex;
+  justify-content: center; */
+  /* border: 1px solid purple; */
+}
+
+.label {
+  margin-right: 5px;
+  font-family: "Merriweather", serif;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.input_label {
+  font-family: "Merriweather", serif;
+  font-size: 1rem;
+  /* font-weight: 400; */
+}
+
+.form_input {
+  border-radius: 5px;
+  font-family: "Roboto", sans-serif;
+}
+
+.form_text_area {
+  width: 99%;
+  border-radius: 5px;
+  font-family: "Roboto", sans-serif;
+}
+
+.button_container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+@media only screen and (max-width: 599px) {
+  /* For phones: */
+  .form_input {
+    width: 200px;
+  }
+}
+@media only screen and (min-width: 600px) {
+  /* For tablets: */
+  .form_input {
+    width: 250px;
+  }
+}
+@media only screen and (min-width: 800px) {
+  /* For desktop: */
+  .form_input {
+    width: 300px;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  /* For desktop: */
+  .form_input {
+    width: 300px;
+  }
+}

@@ -17,3 +17,12 @@
   border-radius: 15px;
   background-color: white;
 }
+
+.icons_container {
+  display: flex;
+  justify-content: right;
+}
+
+.icon {
+  cursor: pointer;
+}
