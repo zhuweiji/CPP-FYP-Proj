@@ -58,6 +58,7 @@ class ChatQueryData:
 
     @classmethod
     def remove_by_id(cls, id):
+        log.info('attempting delete: ' + str(id))
         x = cls.get_collection().delete_many({'id': id})
         return x.deleted_count
 

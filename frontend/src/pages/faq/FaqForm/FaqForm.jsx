@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import s from "./style.module.css";
 import { useHttpClient } from "../../../hooks/http-hook";
+import UserDataService from "../../../services/UserService";
 
 function FaqForm(props) {
   const { question, answer, topic, topicId, id, closeForm } = props;
@@ -12,50 +13,48 @@ function FaqForm(props) {
     question: question,
     answer: answer,
     topic: topic,
-    id: id,
   });
 
   async function formSubmitHandler(event) {
-    // if (!UserDataService.isLoggedIn()) {
-    //   alert("You must log in to contribute!");
-    //   return;
-    // }
-    // setErrorMessage("");
-    // event.preventDefault();
-    // const formData = new FormData();
-    // formData.append("title", formState.title);
-    // if (formState.resourceType === "0" || formState.resourceType === "3") {
-    //   formData.append("description", formState.description);
-    // }
-    // formData.append("link", formState.link);
-    // if (formState.resourceType !== "3") {
-    //   formData.append("file", formState.file);
-    // }
-    // try {
-    //   const resourcePath = resourcePaths[Number(formState.resourceType)];
-    //   const response = await sendRequest(
-    //     `${process.env.REACT_APP_BACKEND_URL}/${resourcePath}/create`,
-    //     "POST",
-    //     formData
-    //   );
-    //   const responseData = await response.json();
-    //   if (!response.ok) {
-    //     throw new Error(responseData.detail);
-    //     // console.log(responseData.message);
-    //   } else {
-    //     alert("Your contribution has been uploaded! Thank you!");
-    //     setFormState({
-    //       title: "",
-    //       description: "",
-    //       resourceType: "0",
-    //       uploadType: "0",
-    //       link: "",
-    //       file: null,
-    //     });
-    //   }
-    // } catch (err) {
-    //   console.log(err.message);
-    // }
+    event.preventDefault();
+
+    if (!UserDataService.isLoggedIn()) {
+      alert("You must log in to contribute!");
+      return;
+    }
+    setErrorMessage("");
+
+    const method = id === "-1" ? "POST" : "PUT";
+    const path = id === "-1" ? "create" : "";
+    const reqBody = {
+      question: formState.question,
+      answer: formState.answer,
+      chat_topic: formState.topic,
+    };
+    if (id !== "-1") {
+      reqBody.id = id;
+    }
+    try {
+      const response = await sendRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/chat-queries/${path}`,
+        method,
+        JSON.stringify(reqBody),
+        {
+          "Content-Type": "application/json",
+        }
+      );
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(responseData.detail);
+      } else {
+        alert("Your FAQ has been uploaded! Thank you!");
+        window.location.reload(false); // reload to see changes
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
   }
 
   return (
@@ -133,6 +132,7 @@ function FaqForm(props) {
 
         <div className={`${s.button_container}`}>
           <Button
+            type="submit"
             sx={{
               mr: "10px",
             }}

@@ -47,6 +47,7 @@ function FaqBrowse() {
   useEffect(() => {
     const deleteFaq = async (id) => {
       try {
+        // console.log
         const response = await sendRequest(
           `${process.env.REACT_APP_BACKEND_URL}/chat-queries/${id}`,
           "DELETE"
@@ -55,19 +56,20 @@ function FaqBrowse() {
         const responseData = await response.json();
 
         if (!response.ok) {
-          throw new Error(responseData.message);
+          throw new Error(responseData.detail);
         }
 
-        setFaqsData(responseData);
+        alert("FAQ successfully deleted");
+        window.location.reload(false); // reload to see changes
       } catch (err) {
         // TODO: handle error when fetching from backend
         console.log(err.message);
       }
     };
     if (faqForDeletion !== "-1") {
-      deleteFaq();
+      deleteFaq(faqForDeletion);
     }
-  }, [sendRequest]);
+  }, [sendRequest, faqForDeletion]);
 
   // if (courseId === "INVALID") {
   //   return <PageNotFound />;
@@ -140,9 +142,7 @@ function FaqBrowse() {
                     openForm={() => {
                       openForm(faq.id);
                     }}
-                    removeFaq={() => {
-                      removeFaq(faq.id);
-                    }}
+                    removeFaq={removeFaq}
                   />
                 ) : (
                   <FaqForm

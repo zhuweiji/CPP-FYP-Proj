@@ -21,8 +21,7 @@ function Faq(props) {
           className={`${s.icon}`}
           titleAccess="delete"
           onClick={() => {
-            alert("Deletion activated");
-            removeFaq();
+            removeFaq(id);
           }}
         />
       </div>
