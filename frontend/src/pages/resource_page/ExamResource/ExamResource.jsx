@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import RatingDisplay from "../RatingDisplay/RatingDisplay";
 import s from "./style.module.css";
@@ -10,6 +10,11 @@ function ExamResourse(props) {
     props;
   const { sendRequest } = useHttpClient();
   const [fileUrl, setFileUrl] = useState();
+  const [toDelete, setToDelete] = useState(false);
+
+  const triggerDelete = useCallback(() => {
+    setToDelete(true);
+  }, []);
 
   useEffect(() => {
     const createTempUrl = async () => {
@@ -32,6 +37,33 @@ function ExamResourse(props) {
     }
   }, [examFile, sendRequest, setFileUrl]);
 
+  useEffect(() => {
+    const deleteResource = async () => {
+      try {
+        const response = await sendRequest(
+          `${process.env.REACT_APP_ASSET_URL}/${
+            isSolution ? "exam-solutions" : "exam-papers"
+          }/${id}`,
+          "DELETE"
+        );
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+          throw new Error(responseData.detail);
+        }
+
+        alert("Resource successfully deleted");
+        window.location.reload(false); // reload to see changes
+      } catch (err) {
+        alert(err.message);
+      }
+    };
+    if (toDelete) {
+      deleteResource();
+    }
+  }, [sendRequest, toDelete, id]);
+
   return (
     <div className={`${s.main_container}`}>
       <div>
@@ -45,11 +77,6 @@ function ExamResourse(props) {
           type="button"
           target="_blank"
           rel="noreferrer"
-          // href={
-          //   examFile
-          //     ? `${process.env.REACT_APP_ASSET_URL}/${examFile}`
-          //     : examLink
-          // }
           href={fileUrl || examLink}
           download={fileUrl && `${title}.pdf`}
         >
@@ -60,6 +87,7 @@ function ExamResourse(props) {
           <ResourceActions
             resourceId={id}
             resourceType={isSolution ? "exam_solution" : "exam_paper"}
+            triggerDelete={triggerDelete}
           />
         )}
       </div>

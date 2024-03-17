@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 
 import s from "./style.module.css";
 import { useHttpClient } from "../../../hooks/http-hook";
+import UserDataService from "../../../services/UserService";
 
 // import EmptyResource from "../EmptyResource/EmptyResource";
 import LoadingSpinner from "../../../components/LoadingSpinner/LoadingSpinner";
@@ -13,12 +14,16 @@ import FaqForm from "../FaqForm/FaqForm";
 function FaqBrowse() {
   const { sendRequest } = useHttpClient();
   const [faqsData, setFaqsData] = useState();
+  const isAdmin = UserDataService.getUserPrivilege() === "admin";
 
-  // The faq currently selected for edit
-  // -1: none
-  // 0: new Faq
-  // other IDs: Edit existing
+  /*
+    The faq currently selected for edit
+    -1: none
+    0: new Faq
+    other IDs: Edit existing
+  */
   const [selectedFaq, setSelectedFaq] = useState("-1");
+
   const [faqForDeletion, setFaqForDeletion] = useState("-1");
 
   useEffect(() => {
@@ -105,26 +110,27 @@ function FaqBrowse() {
         <div className={`${s.container}`}>
           <h1 className={s.section_title}>{`FAQs`}</h1>
           <div>
-            {selectedFaq === "0" ? (
-              <FaqForm
-                question=""
-                answer=""
-                topic="Encaps"
-                topicId=""
-                id="-1"
-                closeForm={closeForm}
-              />
-            ) : (
-              <div
-                title="add a FAQ"
-                className={`${s.add_qn_btn}`}
-                onClick={() => {
-                  setSelectedFaq("0");
-                }}
-              >
-                +
-              </div>
-            )}
+            {isAdmin &&
+              (selectedFaq === "0" ? (
+                <FaqForm
+                  question=""
+                  answer=""
+                  topic="Encaps"
+                  topicId=""
+                  id="-1"
+                  closeForm={closeForm}
+                />
+              ) : (
+                <div
+                  title="add a FAQ"
+                  className={`${s.add_qn_btn}`}
+                  onClick={() => {
+                    setSelectedFaq("0");
+                  }}
+                >
+                  +
+                </div>
+              ))}
             {!faqsData.queries || faqsData.queries.length === 0 ? (
               <h4>Empty Resource</h4>
             ) : (

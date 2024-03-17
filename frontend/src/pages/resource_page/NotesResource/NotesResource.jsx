@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 import s from "./style.module.css";
 import { useHttpClient } from "../../../hooks/http-hook";
@@ -81,11 +80,6 @@ function NotesResource(props) {
           type="button"
           target="_blank"
           rel="noreferrer"
-          // href={
-          //   notesFile
-          //     ? `${process.env.REACT_APP_ASSET_URL}/${notesFile}`
-          //     : notesLink
-          // }
           href={fileUrl || notesLink}
           download={fileUrl && `${title}.pdf`}
         >

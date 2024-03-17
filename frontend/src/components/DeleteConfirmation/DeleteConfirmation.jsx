@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import Button from "@mui/material/Button";
 
 import s from "./style.module.css";
-import UserDataService from "../../services/UserService";
 
 function DeleteConfirmation(props) {
   const { isOpen, closeForm, triggerDelete, message } = props;
@@ -24,6 +23,7 @@ function DeleteConfirmation(props) {
               triggerDelete();
             }}
             size="small"
+            sx={{ mr: "10px" }}
           >
             DELETE
           </Button>
@@ -33,8 +33,10 @@ function DeleteConfirmation(props) {
         </div>
       </div>
 
-      {/* Background Blurrer */}
-      <div className={`${s.overlay} ${!isOpen && s.hidden}`}></div>
+      {
+        /* Background Blurrer */
+        <div className={`${s.overlay} ${!isOpen && s.hidden}`}></div>
+      }
     </>
   );
 }

@@ -114,6 +114,14 @@ export default class UserDataService {
     return localStorage.setItem("username", value);
   }
 
+  static getUserPrivilege() {
+    return localStorage.getItem("cppFyp-user-privilege") || "user";
+  }
+
+  static setUserPrivilege(value) {
+    return localStorage.setItem("cppFyp-user-privilege", value);
+  }
+
   static isLoggedIn() {
     return !!localStorage.getItem("userid");
   }

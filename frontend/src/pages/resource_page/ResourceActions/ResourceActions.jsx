@@ -18,7 +18,7 @@ function ResourceActions(props) {
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
 
-  const showDelete = true;
+  const showDelete = UserDataService.getUserPrivilege() === "admin";
 
   return (
     <div className={`${s.main_container}`}>
