@@ -6,15 +6,6 @@
   background-color: white;
 }
 
-.resource_moderation {
-  display: flex;
-  justify-content: right;
-}
-
-.icon {
-  cursor: pointer;
-}
-
 .notes_title {
   font-size: 1.2rem;
   font-family: "Merriweather", serif;

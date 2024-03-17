@@ -72,15 +72,6 @@ function NotesResource(props) {
   return (
     <div className={`${s.main_container}`}>
       <div>
-        {displayActions && (
-          <div className={`${s.resource_moderation}`}>
-            <DeleteIcon
-              className={`${s.icon}`}
-              titleAccess="delete"
-              onClick={triggerDelete}
-            />
-          </div>
-        )}
         <h1 className={`${s.notes_title}`}>{title}</h1>
         <span className={`${s.notes_link}`}>
           <b>{"Download: "}</b>
@@ -110,7 +101,11 @@ function NotesResource(props) {
 
       <RatingDisplay rating={rating} />
       {displayActions && (
-        <ResourceActions resourceId={id} resourceType={"notes"} />
+        <ResourceActions
+          resourceId={id}
+          resourceType={"notes"}
+          triggerDelete={triggerDelete}
+        />
       )}
     </div>
   );

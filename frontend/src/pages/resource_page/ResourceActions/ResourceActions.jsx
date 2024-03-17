@@ -1,5 +1,6 @@
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import s from "./style.module.css";
 import RatingForm from "../RatingForm/RatingForm";
@@ -7,12 +8,17 @@ import { useState } from "react";
 
 import UserDataService from "../../../services/UserService";
 import { useNavigate } from "react-router-dom";
+import DeleteConfirmation from "../../../components/DeleteConfirmation/DeleteConfirmation";
 
 function ResourceActions(props) {
-  const { resourceId, resourceType } = props;
+  const { resourceId, resourceType, triggerDelete } = props;
   const navigate = useNavigate();
 
   const [ratingFormIsOpen, setRatingFormIsOpen] = useState(false);
+  const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
+    useState(false);
+
+  const showDelete = true;
 
   return (
     <div className={`${s.main_container}`}>
@@ -24,6 +30,16 @@ function ResourceActions(props) {
           setRatingFormIsOpen(false);
         }}
       />
+      <DeleteConfirmation
+        isOpen={deleteConfirmationIsOpen}
+        closeForm={() => {
+          setDeleteConfirmationIsOpen(false);
+        }}
+        triggerDelete={triggerDelete}
+        message={
+          "Are you sure you want to delete this? This action cannot be undone"
+        }
+      />
       <ThumbsUpDownIcon
         onClick={() => {
           UserDataService.isLoggedIn()
@@ -32,7 +48,6 @@ function ResourceActions(props) {
         }}
         titleAccess="rate"
         fontSize="medium"
-        sx={{ margin: "0 15px" }}
         className={`${s.icon}`}
       />
       <AddCommentIcon
@@ -42,8 +57,18 @@ function ResourceActions(props) {
         }}
         titleAccess="leave a comment"
         fontSize="medium"
+        sx={{ margin: "0 15px" }}
         className={`${s.icon}`}
       />
+      {showDelete && (
+        <DeleteIcon
+          className={`${s.icon}`}
+          titleAccess="delete"
+          onClick={() => {
+            setDeleteConfirmationIsOpen(true);
+          }}
+        />
+      )}
     </div>
   );
 }
