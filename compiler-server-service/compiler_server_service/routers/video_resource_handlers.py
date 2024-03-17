@@ -9,6 +9,7 @@ from compiler_server_service.services.video_resource_dao import VideoResourceDat
 from compiler_server_service.services.db_dao import DB_DAO
 from compiler_server_service.services.resource_rating_dao import ResourceRatingData
 from compiler_server_service.services.resource_comment_dao import ResourceCommentData
+from compiler_server_service.services.user_dao import UserData
 from compiler_server_service.utilities import safe_get
 from fastapi import APIRouter, HTTPException, Request, Form
 from fastapi.responses import JSONResponse
@@ -26,8 +27,21 @@ router = APIRouter(
 )
 
 
+class DELETE_Delete_Video_Resource(BaseModel):
+    user_id: str
+
+
 @router.delete('/{id}', status_code=200)
-def delete_video_resource_by_id(request: Request, id: str):
+def delete_video_resource_by_id(request: Request, id: str, data: DELETE_Delete_Video_Resource):
+    found_user = UserData.find_by_id(data.user_id)
+    if not found_user:
+        raise HTTPException(
+            status_code=404, detail='user ID does not exist')
+
+    if found_user.privilege != 'admin':
+        raise HTTPException(
+            status_code=403, detail='user not allowed to delete resource')
+
     found_resource = VideoResourceData.find_by_id(id)
 
     if not found_resource:

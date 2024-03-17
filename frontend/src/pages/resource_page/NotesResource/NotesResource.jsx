@@ -4,6 +4,7 @@ import s from "./style.module.css";
 import { useHttpClient } from "../../../hooks/http-hook";
 import RatingDisplay from "../RatingDisplay/RatingDisplay";
 import ResourceActions from "../ResourceActions/ResourceActions";
+import UserDataService from "../../../services/UserService";
 
 function NotesResource(props) {
   const {
@@ -48,7 +49,13 @@ function NotesResource(props) {
       try {
         const response = await sendRequest(
           `${process.env.REACT_APP_ASSET_URL}/notes/${id}`,
-          "DELETE"
+          "DELETE",
+          JSON.stringify({
+            user_id: UserDataService.getUserId(),
+          }),
+          {
+            "Content-Type": "application/json",
+          }
         );
 
         const responseData = await response.json();

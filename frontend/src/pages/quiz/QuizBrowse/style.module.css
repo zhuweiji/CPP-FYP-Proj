@@ -15,6 +15,21 @@
   font-weight: bold;
 }
 
+.add_quiz_btn {
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px dotted gray;
+  text-align: center;
+  font-size: 1.5rem;
+  font-family: "Merriweather", serif;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.add_quiz_btn:hover {
+  background-color: #e3e1d9; /* Darkened background color on hover */
+}
+
 .quiz_link {
   font-family: "Montserrat", sans-serif;
 }

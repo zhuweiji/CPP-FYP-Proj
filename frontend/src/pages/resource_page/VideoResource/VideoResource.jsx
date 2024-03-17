@@ -4,6 +4,7 @@ import s from "./style.module.css";
 import { useHttpClient } from "../../../hooks/http-hook";
 import RatingDisplay from "../RatingDisplay/RatingDisplay";
 import ResourceActions from "../ResourceActions/ResourceActions";
+import UserDataService from "../../../services/UserService";
 
 function VideoResource(props) {
   const { title, description, videoLink, rating, id, displayActions } = props;
@@ -19,7 +20,13 @@ function VideoResource(props) {
       try {
         const response = await sendRequest(
           `${process.env.REACT_APP_ASSET_URL}/video-resources/${id}`,
-          "DELETE"
+          "DELETE",
+          JSON.stringify({
+            user_id: UserDataService.getUserId(),
+          }),
+          {
+            "Content-Type": "application/json",
+          }
         );
 
         const responseData = await response.json();

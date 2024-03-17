@@ -11,6 +11,7 @@ from compiler_server_service.routers.templates import POST_BODY, BasicResponse
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
 from compiler_server_service.services.chat_topic_dao import ChatTopicData
 from compiler_server_service.services.chat_query_dao import ChatQueryData
+from compiler_server_service.services.user_dao import UserData
 from compiler_server_service.utilities import safe_get
 
 
@@ -30,10 +31,20 @@ class POST_Create_Chat_Query(BaseModel):
     question: str
     answer: str
     chat_topic: str  # chat_topic title
+    user_id: str
 
 
 @router.post('/create', status_code=201)
 def create_chat_query(request: Request, data: POST_Create_Chat_Query):
+    found_user = UserData.find_by_id(data.user_id)
+    if not found_user:
+        raise HTTPException(
+            status_code=404, detail='user ID does not exist')
+
+    if found_user.privilege != 'admin':
+        raise HTTPException(
+            status_code=403, detail='user not allowed to delete resource')
+
     topic = ChatTopicData.find_by_title(data.chat_topic)
     if not topic:
         log.info('Topic does not exist. Creating new topic...')
@@ -58,10 +69,20 @@ class PUT_Update_Chat_Query(BaseModel):
     answer: str
     chat_topic: str  # chat_topic title
     id: str  # query ID
+    user_id: str
 
 
 @router.put('/', status_code=201)
 def update_chat_query(request: Request, data: PUT_Update_Chat_Query):
+    found_user = UserData.find_by_id(data.user_id)
+    if not found_user:
+        raise HTTPException(
+            status_code=404, detail='user ID does not exist')
+
+    if found_user.privilege != 'admin':
+        raise HTTPException(
+            status_code=403, detail='user not allowed to delete resource')
+
     topic = ChatTopicData.find_by_title(data.chat_topic)
     if not topic:
         log.info('Topic does not exist. Creating new topic...')
@@ -140,8 +161,21 @@ def get_chat_queries(request: Request):
     }
 
 
+class DELETE_Delete_Chat_Query(BaseModel):
+    user_id: str
+
+
 @router.delete('/{id}', status_code=200)
-def delete_chat_query_by_id(request: Request, id: str):
+def delete_chat_query_by_id(request: Request, id: str, data: DELETE_Delete_Chat_Query):
+    found_user = UserData.find_by_id(data.user_id)
+    if not found_user:
+        raise HTTPException(
+            status_code=404, detail='user ID does not exist')
+
+    if found_user.privilege != 'admin':
+        raise HTTPException(
+            status_code=403, detail='user not allowed to delete resource')
+
     deleted_count = ChatQueryData.remove_by_id(id)
 
     if deleted_count == 0:

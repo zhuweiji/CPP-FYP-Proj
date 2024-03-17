@@ -18,8 +18,8 @@ function FaqForm(props) {
   async function formSubmitHandler(event) {
     event.preventDefault();
 
-    if (!UserDataService.isLoggedIn()) {
-      alert("You must log in to contribute!");
+    if (UserDataService.getUserPrivilege() !== "admin") {
+      alert("You are not authorized!");
       return;
     }
     setErrorMessage("");
@@ -30,6 +30,7 @@ function FaqForm(props) {
       question: formState.question,
       answer: formState.answer,
       chat_topic: formState.topic,
+      user_id: UserDataService.getUserId(),
     };
     if (id !== "-1") {
       reqBody.id = id;
@@ -53,6 +54,7 @@ function FaqForm(props) {
         window.location.reload(false); // reload to see changes
       }
     } catch (err) {
+      alert(err.message);
       console.log(err.message);
     }
   }

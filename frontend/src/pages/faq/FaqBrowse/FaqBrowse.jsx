@@ -54,7 +54,13 @@ function FaqBrowse() {
       try {
         const response = await sendRequest(
           `${process.env.REACT_APP_BACKEND_URL}/chat-queries/${id}`,
-          "DELETE"
+          "DELETE",
+          JSON.stringify({
+            user_id: UserDataService.getUserId(),
+          }),
+          {
+            "Content-Type": "application/json",
+          }
         );
 
         const responseData = await response.json();

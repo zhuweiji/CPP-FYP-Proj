@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import s from "./style.module.css";
@@ -13,6 +13,7 @@ import QuizResource from "../QuizResource/QuizResource";
 function QuizBrowse() {
   const { sendRequest } = useHttpClient();
   const [quizzesData, setQuizzesData] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -61,6 +62,15 @@ function QuizBrowse() {
         <div className={`${s.container}`}>
           <h4 className={s.section_title}>{`Quizzes`}</h4>
           <div>
+            <div
+              title="add a Quiz"
+              className={`${s.add_quiz_btn}`}
+              onClick={() => {
+                navigate("./create");
+              }}
+            >
+              +
+            </div>
             {!quizzesData.quizzes || quizzesData.quizzes.length === 0 ? (
               // <EmptyResource resourceType="quizzes" />
               <h4>Empty Resource</h4>

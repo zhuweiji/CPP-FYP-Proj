@@ -4,6 +4,7 @@ import RatingDisplay from "../RatingDisplay/RatingDisplay";
 import s from "./style.module.css";
 import { useHttpClient } from "../../../hooks/http-hook";
 import ResourceActions from "../ResourceActions/ResourceActions";
+import UserDataService from "../../../services/UserService";
 
 function ExamResourse(props) {
   const { title, examFile, examLink, rating, id, isSolution, displayActions } =
@@ -44,7 +45,13 @@ function ExamResourse(props) {
           `${process.env.REACT_APP_ASSET_URL}/${
             isSolution ? "exam-solutions" : "exam-papers"
           }/${id}`,
-          "DELETE"
+          "DELETE",
+          JSON.stringify({
+            user_id: UserDataService.getUserId(),
+          }),
+          {
+            "Content-Type": "application/json",
+          }
         );
 
         const responseData = await response.json();
