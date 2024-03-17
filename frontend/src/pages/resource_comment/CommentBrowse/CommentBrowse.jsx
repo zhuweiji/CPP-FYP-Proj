@@ -12,39 +12,39 @@ import VideoResource from "../../resource_page/VideoResource/VideoResource";
 import ResponsiveAppBar from "../../../components/Nav";
 import UserDataService from "../../../services/UserService";
 
-const dummyComments = {
-  resource: {
-    title: "Xd",
-    description: "???",
-    link: "",
-    file: "",
-    rating_count: 1,
-    rating_total: 4,
-  },
-  comments: [
-    {
-      user_id: "",
-      user_name: "Abeforth",
-      resource_id: "",
-      text: "This is a dummy comment xd xd",
-      time_stamp: new Date(2024, 5, 4, 23, 59, 0).toLocaleString(),
-    },
-    {
-      user_id: "",
-      user_name: "Bronnick",
-      resource_id: "",
-      text: "This is a dummy comment xd xd This is a dummy comment xd xd",
-      time_stamp: new Date(2024, 5, 4, 23, 59, 0).toLocaleString(),
-    },
-    {
-      user_id: "",
-      user_name: "Charles",
-      resource_id: "",
-      text: "This is a dummy comment xd xd This is a dummy comment xd xd",
-      time_stamp: new Date(2024, 5, 4, 23, 59, 0).toLocaleString(),
-    },
-  ],
-};
+// const dummyComments = {
+//   resource: {
+//     title: "Xd",
+//     description: "???",
+//     link: "",
+//     file: "",
+//     rating_count: 1,
+//     rating_total: 4,
+//   },
+//   comments: [
+//     {
+//       user_id: "",
+//       user_name: "Abeforth",
+//       resource_id: "",
+//       text: "This is a dummy comment xd xd",
+//       time_stamp: new Date(2024, 5, 4, 23, 59, 0).toLocaleString(),
+//     },
+//     {
+//       user_id: "",
+//       user_name: "Bronnick",
+//       resource_id: "",
+//       text: "This is a dummy comment xd xd This is a dummy comment xd xd",
+//       time_stamp: new Date(2024, 5, 4, 23, 59, 0).toLocaleString(),
+//     },
+//     {
+//       user_id: "",
+//       user_name: "Charles",
+//       resource_id: "",
+//       text: "This is a dummy comment xd xd This is a dummy comment xd xd",
+//       time_stamp: new Date(2024, 5, 4, 23, 59, 0).toLocaleString(),
+//     },
+//   ],
+// };
 
 function calculateAverageRating(count, total) {
   if (!count || !total) {
@@ -74,7 +74,7 @@ function CommentBrowse() {
     if (!resourceType || validResourceTypes.indexOf(resourceType) === -1) {
       navigate("./../..");
     }
-  }, []);
+  }, [navigate, resourceType]);
 
   useEffect(() => {
     const fetchComments = async () => {

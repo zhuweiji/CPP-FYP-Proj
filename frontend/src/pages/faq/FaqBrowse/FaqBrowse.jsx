@@ -47,7 +47,6 @@ function FaqBrowse() {
   useEffect(() => {
     const deleteFaq = async (id) => {
       try {
-        // console.log
         const response = await sendRequest(
           `${process.env.REACT_APP_BACKEND_URL}/chat-queries/${id}`,
           "DELETE"
@@ -62,8 +61,7 @@ function FaqBrowse() {
         alert("FAQ successfully deleted");
         window.location.reload(false); // reload to see changes
       } catch (err) {
-        // TODO: handle error when fetching from backend
-        console.log(err.message);
+        alert(err.message);
       }
     };
     if (faqForDeletion !== "-1") {

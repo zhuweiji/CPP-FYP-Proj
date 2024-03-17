@@ -55,6 +55,12 @@ class NotesData:
     #         return False
 
     @classmethod
+    def remove_by_id(cls, id):
+        log.info('attempting delete: ' + str(id))
+        result = cls.get_collection().delete_many({'id': id})
+        return result.deleted_count
+
+    @classmethod
     def update_rating_stats(cls, id: str, increment: int):
         try:
             log.info('updating: ' + id)

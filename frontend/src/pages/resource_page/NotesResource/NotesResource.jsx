@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import s from "./style.module.css";
 import { useHttpClient } from "../../../hooks/http-hook";
@@ -18,6 +19,11 @@ function NotesResource(props) {
 
   const { sendRequest } = useHttpClient();
   const [fileUrl, setFileUrl] = useState();
+  const [toDelete, setToDelete] = useState(false);
+
+  const triggerDelete = useCallback(() => {
+    setToDelete(true);
+  }, []);
 
   useEffect(() => {
     const createTempUrl = async () => {
@@ -38,9 +44,43 @@ function NotesResource(props) {
     }
   }, [notesFile, sendRequest, setFileUrl]);
 
+  useEffect(() => {
+    const deleteResource = async () => {
+      try {
+        const response = await sendRequest(
+          `${process.env.REACT_APP_ASSET_URL}/notes/${id}`,
+          "DELETE"
+        );
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+          throw new Error(responseData.detail);
+        }
+
+        alert("Notes successfully deleted");
+        window.location.reload(false); // reload to see changes
+      } catch (err) {
+        alert(err.message);
+      }
+    };
+    if (toDelete) {
+      deleteResource();
+    }
+  }, [sendRequest, toDelete, id]);
+
   return (
     <div className={`${s.main_container}`}>
       <div>
+        {displayActions && (
+          <div className={`${s.resource_moderation}`}>
+            <DeleteIcon
+              className={`${s.icon}`}
+              titleAccess="delete"
+              onClick={triggerDelete}
+            />
+          </div>
+        )}
         <h1 className={`${s.notes_title}`}>{title}</h1>
         <span className={`${s.notes_link}`}>
           <b>{"Download: "}</b>

@@ -16,8 +16,6 @@ const resourcePaths = [
 ];
 const uploadTypes = ["Link", "File"];
 
-// CHECKPOINT
-
 function ContributeForm(props) {
   const [errorMessage, setErrorMessage] = useState("");
   const { sendRequest } = useHttpClient();
@@ -45,7 +43,7 @@ function ContributeForm(props) {
       formData.append("description", formState.description);
     }
 
-    formData.append("link", formState.link);
+    formData.append("link", formState.link || " ");
 
     if (formState.resourceType !== "3") {
       formData.append("file", formState.file);

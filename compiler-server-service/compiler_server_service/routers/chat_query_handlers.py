@@ -141,7 +141,7 @@ def get_chat_queries(request: Request):
 
 
 @router.delete('/{id}', status_code=200)
-def delete_chat_query_by_id(request: Request, id):
+def delete_chat_query_by_id(request: Request, id: str):
     deleted_count = ChatQueryData.remove_by_id(id)
 
     if deleted_count == 0:

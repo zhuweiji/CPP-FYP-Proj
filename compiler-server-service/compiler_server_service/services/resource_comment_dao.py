@@ -55,6 +55,11 @@ class ResourceCommentData:
     #     return cls.from_dict(updated_object)
 
     @classmethod
+    def deleted_comments_by_resource_id(cls, resource_id: str) -> int:
+        result = cls.get_collection().delete_many({'resource_id': resource_id})
+        return result.deleted_count
+
+    @classmethod
     def find_all_by_resource_id(cls, resource_id: str):
         res = cls.get_collection().find(
             {'resource_id': resource_id}, {'_id': 0})

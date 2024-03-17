@@ -8,6 +8,9 @@ import uuid
 from compiler_server_service.routers.templates import POST_BODY, BasicResponse
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
 from compiler_server_service.services.notes_dao import NotesData
+from compiler_server_service.services.db_dao import DB_DAO
+from compiler_server_service.services.resource_rating_dao import ResourceRatingData
+from compiler_server_service.services.resource_comment_dao import ResourceCommentData
 from compiler_server_service.utilities import safe_get
 from fastapi import APIRouter, HTTPException, Request, Form, UploadFile
 from fastapi.responses import JSONResponse
@@ -23,6 +26,54 @@ router = APIRouter(
     prefix=ROUTE_PREFIX,
     tags=['Notes'],
 )
+
+
+@router.delete('/{id}', status_code=200)
+def delete_notes_by_id(request: Request, id: str):
+    found_notes = NotesData.find_by_id(id)
+
+    if not found_notes:
+        raise HTTPException(
+            status_code=404, detail='notes ID does not exist')
+
+    client = DB_DAO.db_client
+    # start DB session
+    try:
+        with client.start_session() as session:
+            with session.start_transaction():
+                deleted_count = NotesData.remove_by_id(id)
+                if deleted_count == 0:
+                    raise HTTPException(
+                        status_code=500, detail='Unknown error occurred')
+
+                # remove corresponding ratings
+                deleted_ratings_count = ResourceRatingData.delete_ratings_by_resource_id(
+                    id)
+
+                if found_notes.rating_count != deleted_ratings_count:
+                    log.warning('Deleted ' + str(deleted_ratings_count) +
+                                ' ratings but ' + str(found_notes.rating_count) + ' existed')
+
+                # remove corresponding comments
+                deleted_comments_count = ResourceCommentData.deleted_comments_by_resource_id(
+                    id)
+
+                # remove corresponding file if it exists
+                if found_notes.file:
+                    if os.path.exists(found_notes.file):
+                        os.remove(found_notes.file)
+                    else:
+                        log.warning(
+                            'Could not find the file to delete (' + found_notes.file + ')')
+    except Exception as e:
+        raise e
+
+    return {
+        'detail': 'Notes successfully deleted',
+        'id': id,
+        'ratingsCount': deleted_ratings_count,
+        'commentsCount': deleted_comments_count
+    }
 
 
 @router.post('/create', status_code=201)
