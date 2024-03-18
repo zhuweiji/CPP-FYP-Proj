@@ -28,13 +28,12 @@ function ContributeForm(props) {
     file: null,
   });
 
-  async function formSubmitHandler(event) {
+  async function formSubmitHandler() {
     if (!UserDataService.isLoggedIn()) {
       alert("You must log in to contribute!");
       return;
     }
     setErrorMessage("");
-    event.preventDefault();
 
     const formData = new FormData();
     formData.append("title", formState.title);
@@ -57,21 +56,15 @@ function ContributeForm(props) {
         formData
       );
       const responseData = await response.json();
+
       if (!response.ok) {
         throw new Error(responseData.detail);
-        // console.log(responseData.message);
       } else {
         alert("Your contribution has been uploaded! Thank you!");
-        setFormState({
-          title: "",
-          description: "",
-          resourceType: "0",
-          uploadType: "0",
-          link: "",
-          file: null,
-        });
+        window.location.reload(false); // reload to see changes
       }
     } catch (err) {
+      alert(err.message);
       console.log(err.message);
     }
   }
@@ -92,7 +85,6 @@ function ContributeForm(props) {
             id="resource-type"
             onChange={(event) =>
               setFormState((prev) => {
-                console.log(event.target.value);
                 return {
                   ...prev,
                   resourceType: event.target.value,
@@ -239,7 +231,11 @@ function ContributeForm(props) {
         )} */}
 
         <div className={`${s.button_container}`}>
-          <Button type="submit" variant="contained" color="success">
+          <Button
+            onClick={formSubmitHandler}
+            variant="contained"
+            color="success"
+          >
             ADD
           </Button>
         </div>
