@@ -29,9 +29,9 @@ class NotesData:
 
     table_name: ClassVar[str] = 'Notes'
 
-    def create(self):
+    def create(self, session=None):
         try:
-            self.get_collection().insert_one(asdict(self))
+            self.get_collection().insert_one(asdict(self), session=session)
             return self
         except Exception:
             log.exception('error on writing new object to db')
@@ -55,17 +55,17 @@ class NotesData:
     #         return False
 
     @classmethod
-    def remove_by_id(cls, id):
+    def remove_by_id(cls, id, session=None):
         log.info('attempting delete: ' + str(id))
-        result = cls.get_collection().delete_many({'id': id})
+        result = cls.get_collection().delete_many({'id': id}, session=session)
         return result.deleted_count
 
     @classmethod
-    def update_rating_stats(cls, id: str, increment: int):
+    def update_rating_stats(cls, id: str, increment: int, session=None):
         try:
             log.info('updating: ' + id)
             updated_object = cls.get_collection().find_one_and_update(
-                {'id': id}, {'$inc': {'rating_total': increment}})
+                {'id': id}, {'$inc': {'rating_total': increment}}, session=session)
             log.info(str(bool(updated_object)))
             return bool(updated_object)
         except Exception:
@@ -73,11 +73,11 @@ class NotesData:
             return False
 
     @classmethod
-    def add_rating(cls, id: str, rating: int):
+    def add_rating(cls, id: str, rating: int, session=None):
         try:
             log.info('updating: ' + id)
             updated_object = cls.get_collection().find_one_and_update(
-                {'id': id}, {'$inc': {'rating_count': 1, 'rating_total': rating}})
+                {'id': id}, {'$inc': {'rating_count': 1, 'rating_total': rating}}, session=session)
             log.info(str(bool(updated_object)))
             return bool(updated_object)
         except Exception:

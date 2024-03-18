@@ -1,6 +1,6 @@
 .quiz_title {
   font-size: 1.2rem;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Merriweather", serif;
   font-weight: bold;
 }
 
@@ -17,4 +17,13 @@
   background-color: white;
   /* background-color: #0A2647;
     color: white; */
+}
+
+.icon_container {
+  display: flex;
+  justify-content: right;
+}
+
+.icon {
+  cursor: pointer;
 }

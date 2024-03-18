@@ -22,9 +22,9 @@ class ResourceRatingData:
 
     table_name: ClassVar[str] = 'ResourceRatings'
 
-    def create(self):
+    def create(self, session=None):
         try:
-            self.get_collection().insert_one(asdict(self))
+            self.get_collection().insert_one(asdict(self), session=session)
             return self
         except Exception:
             log.exception('error on writing new object to db')
@@ -48,14 +48,15 @@ class ResourceRatingData:
     #         return False
 
     @classmethod
-    def delete_ratings_by_resource_id(cls, resource_id: str) -> int:
-        result = cls.get_collection().delete_many({'resource_id': resource_id})
+    def delete_ratings_by_resource_id(cls, resource_id: str, session=None) -> int:
+        result = cls.get_collection().delete_many(
+            {'resource_id': resource_id}, session=session)
         return result.deleted_count
 
     @classmethod
-    def update_rating(cls, id: str, new_rating: int):
+    def update_rating(cls, id: str, new_rating: int, session=None):
         updated_object = cls.get_collection().find_one_and_update(
-            {'id': id}, {'$set': {'rating': new_rating}})
+            {'id': id}, {'$set': {'rating': new_rating}}, session=session)
         return cls.from_dict(updated_object)
 
     @classmethod

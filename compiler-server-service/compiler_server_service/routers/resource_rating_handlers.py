@@ -63,19 +63,19 @@ def create_rating(request: Request, data: POST__Create_Rating):
                     increment = data.rating - old_rating
                     # update rating total
                     if data.resource_type == 'notes':
-                        if not NotesData.update_rating_stats(data.resource_id, increment):
+                        if not NotesData.update_rating_stats(data.resource_id, increment, session=session):
                             raise HTTPException(
                                 status_code=404, detail='Invalid resource ID')
                     elif data.resource_type == 'exam_paper':
-                        if not ExamPaperData.update_rating_stats(data.resource_id, increment):
+                        if not ExamPaperData.update_rating_stats(data.resource_id, increment, session=session):
                             raise HTTPException(
                                 status_code=404, detail='Invalid resource ID')
                     elif data.resource_type == 'exam_solution':
-                        if not ExamSolutionData.update_rating_stats(data.resource_id, increment):
+                        if not ExamSolutionData.update_rating_stats(data.resource_id, increment, session=session):
                             raise HTTPException(
                                 status_code=404, detail='Invalid resource ID')
                     elif data.resource_type == 'video_resource':
-                        if not VideoResourceData.update_rating_stats(data.resource_id, increment):
+                        if not VideoResourceData.update_rating_stats(data.resource_id, increment, session=session):
                             raise HTTPException(
                                 status_code=404, detail='Invalid resource ID')
                     else:
@@ -83,7 +83,7 @@ def create_rating(request: Request, data: POST__Create_Rating):
                             status_code=404, detail='Invalid resource type')
 
                     new_rating = ResourceRatingData.update_rating(
-                        found_rating.id, data.rating)
+                        found_rating.id, data.rating, session=session)
                     if not new_rating:
                         raise HTTPException(
                             status_code=404, detail='Invalid resource ID')
@@ -91,19 +91,19 @@ def create_rating(request: Request, data: POST__Create_Rating):
                 else:
                     # update rating count and total
                     if data.resource_type == 'notes':
-                        if not NotesData.add_rating(data.resource_id, data.rating):
+                        if not NotesData.add_rating(data.resource_id, data.rating, session=session):
                             raise HTTPException(
                                 status_code=404, detail='Invalid resource ID')
                     elif data.resource_type == 'exam_paper':
-                        if not ExamPaperData.add_rating(data.resource_id, data.rating):
+                        if not ExamPaperData.add_rating(data.resource_id, data.rating, session=session):
                             raise HTTPException(
                                 status_code=404, detail='Invalid resource ID')
                     elif data.resource_type == 'exam_solution':
-                        if not ExamSolutionData.add_rating(data.resource_id, data.rating):
+                        if not ExamSolutionData.add_rating(data.resource_id, data.rating, session=session):
                             raise HTTPException(
                                 status_code=404, detail='Invalid resource ID')
                     elif data.resource_type == 'video_resource':
-                        if not VideoResourceData.add_rating(data.resource_id, data.rating):
+                        if not VideoResourceData.add_rating(data.resource_id, data.rating, session=session):
                             raise HTTPException(
                                 status_code=404, detail='Invalid resource ID')
                     else:
@@ -115,7 +115,7 @@ def create_rating(request: Request, data: POST__Create_Rating):
                         resource_id=data.resource_id,
                         rating=data.rating,
                         resource_type=data.resource_type
-                    ).create()
+                    ).create(session=session)
 
                     if not new_rating:
                         raise HTTPException(

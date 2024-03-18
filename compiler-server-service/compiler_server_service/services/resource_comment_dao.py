@@ -24,9 +24,9 @@ class ResourceCommentData:
 
     table_name: ClassVar[str] = 'ResourceComments'
 
-    def create(self):
+    def create(self, session=None):
         try:
-            self.get_collection().insert_one(asdict(self))
+            self.get_collection().insert_one(asdict(self), session=session)
             return self
         except Exception:
             log.exception('error on writing new object to db')
@@ -55,8 +55,9 @@ class ResourceCommentData:
     #     return cls.from_dict(updated_object)
 
     @classmethod
-    def deleted_comments_by_resource_id(cls, resource_id: str) -> int:
-        result = cls.get_collection().delete_many({'resource_id': resource_id})
+    def deleted_comments_by_resource_id(cls, resource_id: str, session=None) -> int:
+        result = cls.get_collection().delete_many(
+            {'resource_id': resource_id}, session=session)
         return result.deleted_count
 
     @classmethod

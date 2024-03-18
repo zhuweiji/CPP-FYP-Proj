@@ -2,16 +2,14 @@ import json
 import logging
 import os
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Annotated
 
 import uuid
 from compiler_server_service.routers.templates import POST_BODY, BasicResponse
 from compiler_server_service.services.limiter.rate_limiter import limiterobj
-from compiler_server_service.services.tutorial_dao import TopicData, TutorialDAO
 from compiler_server_service.services.quiz_dao import QuizData
 from compiler_server_service.services.quiz_question_dao import QuizQuestionData
 from compiler_server_service.services.db_dao import DB_DAO
+from compiler_server_service.services.user_dao import UserData
 from compiler_server_service.utilities import safe_get
 from fastapi import APIRouter, HTTPException, Request, Form, UploadFile, File
 from fastapi.responses import JSONResponse
@@ -29,16 +27,65 @@ router = APIRouter(
 )
 
 
-# class POST__Login(BaseModel):
-#     username: str
+class DELETE_Delete_Quiz(BaseModel):
+    user_id: str
 
-# @router.post('/login')
-# def login(request: Request, data: POST__Login):
-#     if found_user := UserData.find_by_name(data.username):
-#         log.info(found_user)
-#         return {'user_id': found_user.id, 'username': found_user.name}
-#     else:
-#         raise HTTPException(status_code=404, detail='user not found')
+
+@router.delete('/{id}', status_code=200)
+def delete_quiz_by_id(request: Request, id: str, data: DELETE_Delete_Quiz):
+    found_user = UserData.find_by_id(data.user_id)
+    if not found_user:
+        raise HTTPException(
+            status_code=404, detail='user ID does not exist')
+
+    if found_user.privilege != 'admin':
+        raise HTTPException(
+            status_code=403, detail='user not allowed to delete resource')
+
+    found_notes = QuizData.find_by_id(id)
+
+    if not found_notes:
+        raise HTTPException(
+            status_code=404, detail='Quiz ID does not exist')
+
+    client = DB_DAO.db_client
+    # start DB session
+    try:
+        with client.start_session() as session:
+            with session.start_transaction():
+                deleted_count = QuizData.remove_by_id(id, session=session)
+                if deleted_count == 0:
+                    raise HTTPException(
+                        status_code=500, detail='Unknown error occurred')
+
+                # remove corresponding questions
+                result = QuizQuestionData.delete_questions_by_quiz_id(
+                    id, session=session)
+
+                # Convert Cursor object to a list
+                questionsList = [qn for qn in result['questions']]
+                log.info('questions: ' + str(questionsList))
+
+                if result['count'] != len(questionsList):
+                    log.warning('Deleted ' + str(result['count']) +
+                                ' questions but ' + str(len(questionsList)) + ' existed')
+
+                # remove corresponding images if they exist
+                for qn in questionsList:
+                    if qn['image']:
+                        if os.path.exists(qn['image']):
+                            os.remove(qn['image'])
+                        else:
+                            log.warning(
+                                'Could not find the image to delete (' + qn['image'] + ')')
+    except Exception as e:
+        raise e
+
+    return {
+        'detail': 'Quiz successfully deleted',
+        'id': id,
+        'Questions Count': result['count']
+    }
 
 
 class POST_Create_Quiz(BaseModel):
@@ -62,13 +109,7 @@ def create_quiz(request: Request, data: POST_Create_Quiz):
 async def create_whole_quiz(
     file_list: list[UploadFile] = None,
     title: str = Form(...),
-    questions_data: str = Form(...),
-    # question_title_list: str = Form(...),
-    # options_list: str = Form(...),
-    # question_type_list: str = Form(...),
-    # score_list: str = Form(...),
-    # solution_list: str = Form(...),
-    # has_file_list: str = Form(...),
+    questions_data: str = Form(...)
 ):
     if file_list:
         log.info('num files: ' + str(len(file_list)))
@@ -78,13 +119,6 @@ async def create_whole_quiz(
         log.info('none!')
 
     data = json.loads(questions_data)
-
-    # question_titles = json.loads(question_title_list)
-    # options = json.loads(options_list)
-    # question_types = json.loads(question_type_list)
-    # scores = json.loads(score_list)
-    # solutions = json.loads(solution_list)
-    # has_file = json.loads(has_file_list)
 
     client = DB_DAO.db_client
     # start DB session
@@ -98,7 +132,7 @@ async def create_whole_quiz(
                         status_code=409, detail='quiz title already exists')
 
                 # create the quiz first
-                new_quiz = QuizData(title=title).create()
+                new_quiz = QuizData(title=title).create(session=session)
                 if not new_quiz:
                     raise HTTPException(
                         status_code=500, detail='error on quiz creation')
@@ -131,7 +165,7 @@ async def create_whole_quiz(
                         questionType=question['questionType'],
                         image="uploads/images/" +
                         new_file_name if question['hasFile'] else "",
-                        quiz=new_quiz.id).create()
+                        quiz=new_quiz.id).create(session=session)
                     if not new_question:
                         raise HTTPException(
                             status_code=500, detail='error on quiz question creation')
@@ -141,26 +175,9 @@ async def create_whole_quiz(
     except Exception as e:
         raise e
 
-    # log.info(title)
-    # log.info(question_title_list)
-    # log.info(options_list)
-    # log.info(question_type_list)
-    # log.info(score_list)
-    # log.info(solution_list)
-    # log.info(has_file_list)
-
     return {
-        'message': 'Success!'
+        'detail': 'Success!'
     }
-    # found_quiz = QuizData.find_by_title(data.title)
-    # if found_quiz:
-    #     raise HTTPException(
-    #         status_code=409, detail='quiz title already exists')
-
-    # new_quiz = QuizData(title=data.title).create()
-    # if not new_quiz:
-    #     raise HTTPException(status_code=500, detail='error on quiz creation')
-    # return {'quiz_id': new_quiz.id, 'title': new_quiz.title, 'questions': new_quiz.questions}
 
 
 @router.get('/', status_code=200)

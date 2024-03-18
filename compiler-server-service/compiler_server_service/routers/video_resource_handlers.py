@@ -53,14 +53,15 @@ def delete_video_resource_by_id(request: Request, id: str, data: DELETE_Delete_V
     try:
         with client.start_session() as session:
             with session.start_transaction():
-                deleted_count = VideoResourceData.remove_by_id(id)
+                deleted_count = VideoResourceData.remove_by_id(
+                    id, session=session)
                 if deleted_count == 0:
                     raise HTTPException(
                         status_code=500, detail='Unknown error occurred')
 
                 # remove corresponding ratings
                 deleted_ratings_count = ResourceRatingData.delete_ratings_by_resource_id(
-                    id)
+                    id, session=session)
 
                 if found_resource.rating_count != deleted_ratings_count:
                     log.warning('Deleted ' + str(deleted_ratings_count) +
@@ -68,7 +69,7 @@ def delete_video_resource_by_id(request: Request, id: str, data: DELETE_Delete_V
 
                 # remove corresponding comments
                 deleted_comments_count = ResourceCommentData.deleted_comments_by_resource_id(
-                    id)
+                    id, session=session)
 
     except Exception as e:
         raise e
